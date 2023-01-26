@@ -13,72 +13,85 @@
 
 <body>
   <!-- ======= Header ======= -->
-  <header>
+  <!-- <header>
     <div class="burger-list"></div>
     <nav class="navbar">
       <h2 onclick="window.location='/'">GoRoom</h2>
-    </nav>
-  </header><!-- End Header -->
+    </nav> -->
+  <!-- </header>End Header -->
 
   <!-- ======= Main Section ======= -->
-  <div class="viewer">
-    <p class="icon-users" id="viewer-count">人物icon</p>
-  </div>
 
-  <div id="noperm" class="columns">
+
+  <!-- <div id="noperm" class="columns">
     <div class="column notif">
       <article class="notification is-link">
       
       </article>
     </div>
-  </div>
-
-  <div id="peers">
-    <div class="columns is-multiline" id="videos">
-      <div class="column is-6 peer">
-        <video id="localVideo" class="video-area mirror" autoplay muted></video>
-      </div>
-      <div id="noone" class="column is-6 notif">
-        <article id="noonein" class="notification is-primary is-light">
-          <button class="delete"></button>
-        </article>
-        <article class="notification is-primary is-light">
-          <button class="delete"></button>
-        </article>
-      </div>
-      <div id="nocon" class="column is-6 notif">
-        <article class="notification is-danger">
-        </article>
+  </div> -->
+  <div class="container-fluid">
+    <div class="left-section">
+      <div id="peers">
+        <div class="columns is-multiline" id="videos">
+          <div class="each-peer">
+            <video id="localVideo" class="video-area mirror" autoplay muted></video>
+          </div>
+          <!-- <div id="noone" class="column is-6 notif">
+                <article id="noonein" class="notification is-primary is-light">
+                  <button class="delete"></button>
+                </article>
+                <article class="notification is-primary is-light">
+                  <button class="delete"></button>
+                </article>
+              </div>
+              <div id="nocon" class="column is-6 notif">
+                <article class="notification is-danger">
+                </article>
+              </div> -->
+        </div>
       </div>
     </div>
-  </div>
 
-  <div id="chat">
-      <article class="message chat">
+    <div class="right-section">
+      <div id="viewer">
+        <div class="attendanceIcon"></div>
+        <div class="icon-users" id="viewer-count"></div>
+      </div>
+
+      <div id="chat">
+        <div class="message chat">
           <div class="message-header" onclick="slideToggle()">
-              <p>Chat</p>
-              <i id="chat-alert"></i>
+            <p id="chatRoom-title">Chat Room</p>
+            <i id="chat-alert"></i>
           </div>
+          <!-- 包含輸入計入和form -->
           <div id="chat-content">
-              <div class="body">
-                  <div id="log"></div>
-              </div>
-              <form id="form" autocomplete="off">
-                  <div class="field has-addons">
-                      <div class="send">
-                          <div class="control-input">
-                              <input class="input" id="msg" type="text" placeholder="type message...">
-                          </div>
-                          <div class="control">
-                              <input id="chat-button" class="button is-info" type="submit" value="send" />
-                          </div>
-                      </div>
+            <!-- 輸入紀錄 -->
+            <div class="body">
+              <div id="log"></div>
+            </div>
+            <form id="form" autocomplete="off">
+              <div class="field has-addons">
+                <div class="send">
+                  <div class="control-input">
+                    <input class="input" id="msg" type="text" placeholder="type message...">
                   </div>
-              </form>
+                  <div class="control">
+                    <input id="chat-button" class="button is-info" type="submit" value="Send" />
+                  </div>
+                </div>
+              </div>
+            </form>
           </div>
-      </article>
-  </div>
+        </div>
+      </div>
+      <div class="exit">
+        <div class="exit-button">Exit</div>
+      </div>
+    </div>
 
+  </div>
 
 
 

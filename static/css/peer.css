@@ -8,153 +8,122 @@ body {
 
 }
 
+.container-fluid {
+  display: flex;
+}
+
 /*--------------------------------------------------------------
-# Navigation Menu
+# peers
 --------------------------------------------------------------*/
 
-header {
+#peers {
+  border: 3px blue solid;
+}
 
-  height: 70px;
-  /* background-color: #ffffff; */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.left-section {
+  width: 80%;
+}
+
+#localVideo {
   width: 100%;
-  /* background-color: rgba(15, 15, 15, 0.1); */
-}
-
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 70px;
-  margin: 0 auto;
-  width: 1200px;
-}
-
-h2 {
-  font-weight: bold;
-  color: #1158bd;
-  font-size: 30px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 34px;
-  cursor: pointer;
-}
-
-.item-section {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-
-}
-
-.item {
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 13px;
-  color: #1158bd;
-  padding: 10px;
-  cursor: pointer;
-}
-
-.signup {
-  border: 1px solid #1158bd;
-  border-radius: 5px;
-}
-
-.signin:hover {
-  color: #fff;
-  background: #1158bd;
-  border-radius: 5px;
-}
-
-.signup:hover {
-  background-color: #1158bd;
-  color: #fff;
 }
 
 /*--------------------------------------------------------------
-# Main Section
+# Viewer
 --------------------------------------------------------------*/
-span {
-  color: #61a3df;
-}
-
-h1 {
-  font-weight: bold;
-  color: #1158bd;
-  font-size: 50px;
-  font-style: normal;
-  font-weight: 700;
-}
-
-.signin-btn {
-  cursor: pointer;
-  background-color: #61a3df;
-  color: #fff;
-  border-radius: 4px;
-  padding: 8px 32px;
-}
-
-.signin-btn:hover {
-  background-color: #1158bd;
-}
-
-#main {
-  margin-top: 90px;
-  display: flex;
-  justify-content: center;
-}
-
-.intro-info {
-  display: flex;
-  align-items: center;
-}
-
-.main-section {
-  width: 1200px;
-  display: flex;
-  flex-direction: row;
-}
-
-/*--------------------------------------------------------------
-# Footer
---------------------------------------------------------------*/
-
-.footer {
-  width: 100%;
-  height: 104px;
-  background-color: #1158bd;
-  margin: 0 auto;
-  color: #FFFFFF;
-  font-weight: bold;
+#viewer {
+  border: 3px red solid;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: fixed;
-  bottom: 0px;
-
+  gap: 20px
 }
 
+.attendanceIcon {
+  background-image: url("../img/people.png");
+  height: 24px;
+  width: 24px;
+  background-size: center;
+  background-position: center center;
+}
+
+
+
 /*--------------------------------------------------------------
-# Sign in form
+# chat
 --------------------------------------------------------------*/
-.form-label {
+#chat {
+  border: 3px green solid;
+  height: 500px;
+  margin: 0 auto;
+}
+
+.message-header {
+  display: flex;
+  justify-content: center;
   color: #1158bd;
 }
 
-.signup-form-btn {
-  background-color: #61a3df;
-  color: #fff;
+#chatRoom-title {
+  font-size: 20px;
 }
 
-.signup-form-btn:hover {
-  background-color: #1158bd;
-  color: #fff;
+
+.right-section {
+  border: 3px purple solid;
+  width: 20%;
 }
 
-.signup-form {
+.body {
+  height: 500px;
+}
+
+.send {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
+
+.control-input {
+  margin-bottom: 20px;
+}
+
+.send .control-input,
+.send .control {
+  width: 100%;
+}
+
+#msg,
+#chat-button {
+  width: 100%;
+}
+
+#chat-button {
+  background-color: #1158bd;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+
+}
+
+/*--------------------------------------------------------------
+# Exit
+--------------------------------------------------------------*/
+
+.exit {
+  position: relative;
+  border: 3px solid red;
+  width: 100%;
+}
+
+.exit-button {
+  text-align: center;
+  background-color: #1158bd;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  position: absolute;
+  width: 100%;
+  bottom: -200px !important;
+  cursor: pointer;
+} 

@@ -1,3 +1,10 @@
+const exitButton = document.querySelector(".exit-button")
+
+console.log(exitButton)
+exitButton.addEventListener("click", function () {
+  window.location.href = "/";
+});
+
 function copyToClipboard(text) {
   if (window.clipboardData && window.clipboardData.setData) {
     clipboardData.setData("Text", text);
@@ -42,10 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// 按下允許連線
 function connect(stream) {
   document.getElementById('peers').style.display = 'block'
-  document.getElementById('chat').style.display = 'flex'
-  document.getElementById('noperm').style.display = 'none'
+  // document.getElementById('chat').style.display = 'flex'
+  // document.getElementById('noperm').style.display = 'none'
   let pc = new RTCPeerConnection({
     iceServers: [{
       'urls': 'stun:turn.videochat:3478',
@@ -63,15 +71,15 @@ function connect(stream) {
     }
 
     col = document.createElement("div")
-    col.className = "column is-6 peer"
+    col.className = "each-peer"
     let el = document.createElement(event.track.kind)
     el.srcObject = event.streams[0]
     el.setAttribute("controls", "true")
     el.setAttribute("autoplay", "true")
     el.setAttribute("playsinline", "true")
     col.appendChild(el)
-    document.getElementById('noone').style.display = 'none'
-    document.getElementById('nocon').style.display = 'none'
+    // document.getElementById('noone').style.display = 'none'
+    // document.getElementById('nocon').style.display = 'none'
     document.getElementById('videos').appendChild(col)
 
     event.track.onmute = function (event) {
@@ -84,10 +92,10 @@ function connect(stream) {
       if (el.parentNode) {
         el.parentNode.remove()
       }
-      if (document.getElementById('videos').childElementCount <= 3) {
-        document.getElementById('noone').style.display = 'grid'
-        document.getElementById('noonein').style.display = 'grid'
-      }
+      // if (document.getElementById('videos').childElementCount <= 3) {
+      //   document.getElementById('noone').style.display = 'grid'
+      //   document.getElementById('noonein').style.display = 'grid'
+      // }
     }
   }
 
@@ -117,8 +125,8 @@ function connect(stream) {
     while (pr.childElementCount > 3) {
       pr.lastChild.remove()
     }
-    document.getElementById('noone').style.display = 'none'
-    document.getElementById('nocon').style.display = 'flex'
+    // document.getElementById('noone').style.display = 'none'
+    // document.getElementById('nocon').style.display = 'flex'
     setTimeout(function () {
       connect(stream);
     }, 1000);
