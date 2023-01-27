@@ -39,10 +39,10 @@ async function signInAccount(data) {
     let result = await response.json();
     console.log(result)
     if (response.status === 200) {
-      // window.location.reload();
-      console.log("成功了")
-    } else if (response.status === 400) {
-      // loginFail.textContent = result.message;
+      document.location.href = '/member'
+
+    } else if (response.status === 401) {
+      signInFail.textContent = result.message;
       signInEmail.value = ""
       signInPassword.value = ""
     }

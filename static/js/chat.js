@@ -1,10 +1,11 @@
 var msg = document.getElementById("msg");
 var log = document.getElementById("log");
+var chat = document.getElementById('chat-content');
 
 var slideOpen = false;
 
 function slideToggle() {
-    var chat = document.getElementById('chat-content');
+    
     if (slideOpen) {
         chat.style.display = 'none';
         slideOpen = false;

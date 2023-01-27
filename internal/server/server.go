@@ -33,6 +33,7 @@ func Run() error {
 	app.Use(cors.New())
 
 	app.Get("/", handlers.Welcome)
+	app.Get("/member", handlers.Member)
 	app.Get("/room/create", handlers.RoomCreate)
 	app.Get("/room/:uuid", handlers.Room)
 	app.Get("/room/:uuid/websocket", websocket.New(handlers.RoomWebsocket, websocket.Config{
@@ -42,8 +43,10 @@ func Run() error {
 	app.Get("/room/:uuid/chat/websocket", websocket.New(handlers.RoomChatWebsocket))
 	// 影響觀看人數
 	app.Get("/room/:uuid/viewer/websocket", websocket.New(handlers.RoomViewerWebsocket))
-	app.Get("/api/alluser",models.FindALLUsers)
-	app.Put("/api/user/auth",models.PutUser)
+	app.Get("/api/alluser", models.FindALLUsers)
+	app.Get("/api/user/auth", models.GetUser)
+	app.Put("/api/user/auth", models.PutUser)
+	app.Delete("/api/user/auth", models.SignOutUser)
 	app.Static("/", "./static")
 
 	// 讓這兩個變量進行初始化

@@ -18,30 +18,42 @@ import (
 )
 
 func RoomCreate(c *fiber.Ctx) error {
-	return c.Redirect(fmt.Sprintf("/room/%s", guuid.New().String()))
+	livedToken := c.Cookies("MyJWT")
+	if len(livedToken) == 0 {
+		return c.Redirect("/")
+	} else {
+		return c.Redirect(fmt.Sprintf("/room/%s", guuid.New().String()))
+	}
+
 }
 
 func Room(c *fiber.Ctx) error {
-	uuid := c.Params("uuid")
-	if uuid == "" {
-		c.Status(400)
-		return nil
+	livedToken := c.Cookies("MyJWT")
+	if len(livedToken) == 0 {
+		return c.Redirect("/")
+	} else {
+		uuid := c.Params("uuid")
+		if uuid == "" {
+			c.Status(400)
+			return nil
+		}
+
+		ws := "ws"
+		if os.Getenv("ENVIRONMENT") == "PRODUCTION" {
+			ws = "wss"
+		}
+
+		uuid, suuid, _ := createOrGetRoom(uuid)
+		return c.Render("peer", fiber.Map{
+			"RoomWebsocketAddr":   fmt.Sprintf("%s://%s/room/%s/websocket", ws, c.Hostname(), uuid),
+			"RoomLink":            fmt.Sprintf("%s://%s/room/%s", c.Protocol(), c.Hostname(), uuid),
+			"ChatWebsocketAddr":   fmt.Sprintf("%s://%s/room/%s/chat/websocket", ws, c.Hostname(), uuid),
+			"ViewerWebsocketAddr": fmt.Sprintf("%s://%s/room/%s/viewer/websocket", ws, c.Hostname(), uuid),
+			"StreamLink":          fmt.Sprintf("%s://%s/stream/%s", c.Protocol(), c.Hostname(), suuid),
+			"Type":                "room",
+		})
 	}
 
-	ws := "ws"
-	if os.Getenv("ENVIRONMENT") == "PRODUCTION" {
-		ws = "wss"
-	}
-
-	uuid, suuid, _ := createOrGetRoom(uuid)
-	return c.Render("peer", fiber.Map{
-		"RoomWebsocketAddr":   fmt.Sprintf("%s://%s/room/%s/websocket", ws, c.Hostname(), uuid),
-		"RoomLink":            fmt.Sprintf("%s://%s/room/%s", c.Protocol(), c.Hostname(), uuid),
-		"ChatWebsocketAddr":   fmt.Sprintf("%s://%s/room/%s/chat/websocket", ws, c.Hostname(), uuid),
-		"ViewerWebsocketAddr": fmt.Sprintf("%s://%s/room/%s/viewer/websocket", ws, c.Hostname(), uuid),
-		"StreamLink":          fmt.Sprintf("%s://%s/stream/%s", c.Protocol(), c.Hostname(), suuid),
-		"Type":                "room",
-	})
 }
 
 func RoomWebsocket(c *websocket.Conn) {

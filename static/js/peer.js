@@ -2,7 +2,7 @@ const exitButton = document.querySelector(".exit-button")
 
 console.log(exitButton)
 exitButton.addEventListener("click", function () {
-  window.location.href = "/";
+  window.location.href = "/member";
 });
 
 function copyToClipboard(text) {

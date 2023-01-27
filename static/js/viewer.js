@@ -1,5 +1,7 @@
+let viewerCount = document.getElementById("viewer-count");
+
+
 function connectViewer() {
-  viewerCount = document.getElementById("viewer-count");
   viewerWs = new WebSocket(ViewerWebsocketAddr);
   console.log("測試測試")
   console.log(viewerCount)
