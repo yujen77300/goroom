@@ -74,6 +74,18 @@ h2 {
   color: #fff;
 }
 
+.signin-btn {
+  cursor: pointer;
+  background-color: #61a3df;
+  color: #fff;
+  border-radius: 4px;
+  padding: 8px 32px;
+}
+
+.signin-btn:hover {
+  background-color: #1158bd;
+}
+
 /*--------------------------------------------------------------
 # Main Section
 --------------------------------------------------------------*/
@@ -87,18 +99,6 @@ h1 {
   font-size: 50px;
   font-style: normal;
   font-weight: 700;
-}
-
-.signin-btn {
-  cursor: pointer;
-  background-color: #61a3df;
-  color: #fff;
-  border-radius: 4px;
-  padding: 8px 32px;
-}
-
-.signin-btn:hover {
-  background-color: #1158bd;
 }
 
 #main {
@@ -116,6 +116,21 @@ h1 {
   width: 1200px;
   display: flex;
   flex-direction: row;
+}
+
+.home-img{
+  display: none;
+}
+
+/*--------------------------------------------------------------
+# Signup-card
+--------------------------------------------------------------*/
+#signup-card{
+  display: none;
+}
+
+#signin-fail{
+  color: red;
 }
 
 /*--------------------------------------------------------------

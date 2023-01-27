@@ -8,14 +8,14 @@ import (
 )
 
 type User struct {
-	Id       int    `json:"UserId"`
-	Name     string `json:"UserName"`
-	Email    string `json:"UserEmail"`
-	Password string `json:"UserPassword"`
+	Id       int    `json:"id"`
+	Name     string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
-// Get users (test)
-func FindALLUsers(c *fiber.Ctx)error {
+// Get all users (test)
+func FindALLUsers(c *fiber.Ctx) error {
 	db, _ := ConnectToMYSQL()
 	allUsers, err := db.Query("SELECT * FROM member;")
 	if err != nil {
@@ -39,7 +39,6 @@ func FindALLUsers(c *fiber.Ctx)error {
 	}
 
 	return c.JSON(users)
-
 
 	// [
 	// {
@@ -73,6 +72,19 @@ func FindALLUsers(c *fiber.Ctx)error {
 // func LogOutUser(c *gin.Context){
 // }
 
-//Put user  登入會員
-// func PutUser(c *gin.Context){
-// }
+// Put user  登入會員
+func PutUser(c *fiber.Ctx) error {
+	signInInfo := User{}
+	if err := c.BodyParser(&signInInfo); err != nil {
+		fmt.Println("有近來錯誤")
+		return err
+	}
+	fmt.Println(signInInfo)
+	// return c.SendStatus(fiber.StatusOK)
+	//   // 回傳成功的回應
+	// return c.JSON(fiber.Map{
+	//     "message": "success",
+	// })
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "登入成功"})
+
+}

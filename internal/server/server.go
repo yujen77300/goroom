@@ -43,6 +43,7 @@ func Run() error {
 	// 影響觀看人數
 	app.Get("/room/:uuid/viewer/websocket", websocket.New(handlers.RoomViewerWebsocket))
 	app.Get("/api/alluser",models.FindALLUsers)
+	app.Put("/api/user/auth",models.PutUser)
 	app.Static("/", "./static")
 
 	// 讓這兩個變量進行初始化
