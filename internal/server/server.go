@@ -11,6 +11,7 @@ import (
 	"github.com/gofiber/template/html"
 	"github.com/gofiber/websocket/v2"
 	"github.com/yujen77300/goroom/internal/handlers"
+	"github.com/yujen77300/goroom/internal/models"
 	w "github.com/yujen77300/goroom/pkg/webrtc"
 )
 
@@ -41,6 +42,7 @@ func Run() error {
 	app.Get("/room/:uuid/chat/websocket", websocket.New(handlers.RoomChatWebsocket))
 	// 影響觀看人數
 	app.Get("/room/:uuid/viewer/websocket", websocket.New(handlers.RoomViewerWebsocket))
+	app.Get("/api/alluser",models.FindALLUsers)
 	app.Static("/", "./static")
 
 	// 讓這兩個變量進行初始化
