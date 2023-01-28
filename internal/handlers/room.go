@@ -134,19 +134,4 @@ for range ticker.C {
     w.Write([]byte(fmt.Sprintf("%d", len(p.Connections))))
 }
 
-	// for {
-	// 	select {
-	// 	case <-ticker.C:
-	// 		w, err := c.Conn.NextWriter(websocket.TextMessage)
-	// 		if err != nil {
-	// 			return
-	// 		}
-	// 		w.Write([]byte(fmt.Sprintf("%d", len(p.Connections))))
-	// 	}
-	// }
 }
-
-// type websocketMessage struct {
-// 	Event string `json:"event"`
-// 	Data  string `json:"data"`
-// }

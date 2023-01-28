@@ -62,16 +62,60 @@ func FindALLUsers(c *fiber.Ctx) error {
 
 }
 
-// Post user
-// func PostUser(c *gin.Context) {
-// 	user := User{}
-// 	err := c.BindJSON(&user)
-// 	if err != nil {
-// 		c.JSON(http.StatusNotAcceptable, "Error : "+err.Error())
-// 	}
-// 	c.JSON(http.StatusOK, "Successfully posted")
-// 	// 資料庫動作
-// }
+// New user
+func NewUser(c *fiber.Ctx) error {
+	signUpInfo := User{}
+	if err := c.BodyParser(&signUpInfo); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": true, "message": "Cannot parse data to struct",
+		})
+	}
+	fmt.Println("測試一下新增的資料")
+	fmt.Println(signUpInfo.Id)
+	fmt.Println(signUpInfo.Name)
+	fmt.Println(signUpInfo.Password)
+	fmt.Println(signUpInfo.Email)
+
+	viper.SetConfigName("config")
+	viper.AddConfigPath(".")
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatalln(err)
+	}
+	db, _ := ConnectToMYSQL()
+	row, _ := db.Query("SELECT email FROM member WHERE email = ?;", signUpInfo.Email)
+	fmt.Println(row)
+	var signUpMember []User
+	for row.Next() {
+		var member User
+		if dberr := row.Scan(&member.Email); dberr != nil {
+			fmt.Printf("scan failed, err:%v\n", dberr)
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "scan failed"})
+		}
+		signUpMember = append(signUpMember, member)
+	}
+	row.Close()
+	fmt.Println("測試一下")
+	fmt.Println(signUpMember)
+	if len(signUpMember) > 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": true, "message": "Email is already registered"})
+	} else {
+		result, err := db.Exec("INSERT INTO member(username,email,password) values(?,?,?);", signUpInfo.Name, signUpInfo.Email, signUpInfo.Password)
+		if err != nil {
+			fmt.Printf("建立檔案失敗，原因是：%v", err)
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": true, "message": "Internal Server Error"})
+		}
+		rowsaffected, err := result.RowsAffected()
+		if err != nil {
+			fmt.Printf("Get RowsAffected failed,err:%v", err)
+		}
+		fmt.Println("Affected rows:", rowsaffected)
+	}
+
+	return c.JSON(fiber.Map{
+		"ok": true,
+	})
+
+}
 
 // Get user 取得當前登入資料
 func GetUser(c *fiber.Ctx) error {
@@ -127,8 +171,8 @@ func GetUser(c *fiber.Ctx) error {
 // Delete user登出會員
 func SignOutUser(c *fiber.Ctx) error {
 	c.Cookie(&fiber.Cookie{
-		Name:     "MyJWT",
-		Expires:  time.Now().Add(-(time.Hour * 1)),
+		Name:    "MyJWT",
+		Expires: time.Now().Add(-(time.Hour * 1)),
 	})
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"ok": true})
 }
@@ -145,6 +189,7 @@ func PutUser(c *fiber.Ctx) error {
 	db, _ := ConnectToMYSQL()
 	row, _ := db.Query("SELECT id,username,email FROM member WHERE email = ? AND password=?;", signInInfo.Email, signInInfo.Password)
 	fmt.Println(row)
+	defer row.Close()
 	// 建立一個slice來儲存資料
 	var members []User
 	for row.Next() {
@@ -195,7 +240,5 @@ func PutUser(c *fiber.Ctx) error {
 		})
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{"ok": true})
 	}
-	// return c.JSON(fiber.Map{
-	//     "message": "success",
-	// })
+
 }

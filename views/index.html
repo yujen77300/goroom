@@ -18,7 +18,7 @@
     <nav class="navbar">
       <h2 onclick="window.location='/'">GoRoom</h2>
       <div class="item-section">
-        <div class="item signin" id="signin-btn">Sign in</div>
+        <div class="item signin signin-btn">Sign in</div>
         <div class="item signup" id="signup-btn">Sign up</div>
       </div>
       </div>
@@ -33,7 +33,7 @@
           <div>
             <h1>Meeting Solutions<br>for Your <span>Business!</span></h1>
             <div class="d-inline-block">
-              <div class="signin-btn">Sign in</div>
+              <div class="signin-btn" id="signin-btn">Sign in</div>
             </div>
           </div>
         </div>
@@ -45,7 +45,8 @@
 
         <div class="col-lg-6 card bg-glass" id="signup-card">
           <div class="card-body px-4 py-5 px-md-5">
-            <form class="signup-form">
+            <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
+            <form class="signup-form" target="dummyframe">
 
               <div class="row">
                 <div class="form-outline mb-4">
@@ -59,19 +60,20 @@
 
               <div class="form-outline mb-4">
                 <label class="form-label" for="signup-email">Email address</label>
-                <input type="email" id="signup-email" class="form-control" placeholder="Ex : vindeo@gmail.com" />
+                <input type="email" id="signup-email" class="form-control" placeholder="Ex : chat@gmail.com" />
               </div>
 
 
               <div class="form-outline mb-4">
                 <label class="form-label" for="signup-password">Password</label>
-                <input type="password" id="signup-password" class="form-control" placeholder="Ex : +886972145789" />
+                <input type="password" id="signup-password" class="form-control" placeholder="Ex : chat123456" />
               </div>
 
 
-              <button type="submit" class="btn btn-block mb-4 signup-form-btn">
+              <button type="submit" class="btn btn-block mb-4 signup-form-btn" id="signup-card-button">
                 Sign up
               </button>
+              <div id="input-hint"></div>
             </form>
 
           </div>
@@ -79,8 +81,8 @@
 
         <div class="col-lg-6 card bg-glass" id="signin-card">
           <div class="card-body px-4 py-5 px-md-5">
-            <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
-            <form class="signup-form" target="dummyframe">
+            <iframe name="dummyframe2" id="dummyframe2" style="display: none;"></iframe>
+            <form class="signup-form" target="dummyframe2">
 
 
               <div class="form-outline mb-4">
@@ -98,7 +100,7 @@
               <button class="btn btn-block mb-4 signup-form-btn" id="signin-card-button">
                 Sign in
               </button>
-              <div id="signin-fail" ></div>
+              <div id="signin-hint"></div>
             </form>
 
           </div>
