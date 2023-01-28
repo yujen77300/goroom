@@ -1,42 +1,26 @@
 const exitButton = document.querySelector(".exit-button")
+const copyButton = document.querySelector("#copy-button")
 
 console.log(exitButton)
 exitButton.addEventListener("click", function () {
   window.location.href = "/member";
 });
 
-function copyToClipboard(text) {
-  if (window.clipboardData && window.clipboardData.setData) {
-    clipboardData.setData("Text", text);
-    return Swal.fire({
-      position: 'top-end',
-      text: "Copied",
-      showConfirmButton: false,
-      timer: 1000,
-      width: '150px'
-    })
-  } else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
-    var textarea = document.createElement("textarea");
-    textarea.textContent = text;
-    textarea.style.position = "fixed";
-    document.body.appendChild(textarea);
-    textarea.select();
-    try {
-      document.execCommand("copy");
-      return Swal.fire({
-        position: 'top-end',
-        text: "Copied",
-        showConfirmButton: false,
-        timer: 1000,
-        width: '150px'
-      })
-    } catch (ex) {
-      console.warn("Copy to clipboard failed.", ex);
-      return false;
-    } finally {
-      document.body.removeChild(textarea);
-    }
+copyButton.addEventListener("click", () => {
+  copyURL()
+})
+
+function copyURL() {
+  if (!navigator.clipboard) {
+    alert('your broweser does not support clipboard API ');
+    return;
   }
+  let s = `${window.location.href}`;
+  navigator.clipboard.writeText(s).then(() => {
+    alert(`URL Copied!`);
+  }).catch((err) => {
+    alert(`${err}`);
+  });
 }
 
 document.addEventListener('DOMContentLoaded', () => {

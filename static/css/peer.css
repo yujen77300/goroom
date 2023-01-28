@@ -26,6 +26,7 @@ body {
 
 #localVideo {
   width: 100%;
+  /* height: 500px; */
 }
 
 /*--------------------------------------------------------------
@@ -107,6 +108,28 @@ body {
 }
 
 /*--------------------------------------------------------------
+# Coppy
+--------------------------------------------------------------*/
+
+#copy {
+  position: relative;
+  width: 80%;
+}
+
+
+#copy-button {
+  text-align: center;
+  background-color: #1158bd;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  position: absolute;
+  width: 80%;
+  bottom: -160px !important;
+  cursor: pointer;
+}
+
+/*--------------------------------------------------------------
 # Exit
 --------------------------------------------------------------*/
 
@@ -124,6 +147,6 @@ body {
   border-radius: 10px;
   position: absolute;
   width: 100%;
-  bottom: -200px !important;
+  bottom: -205px !important;
   cursor: pointer;
-} 
+}
