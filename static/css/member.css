@@ -55,26 +55,26 @@ h2 {
   line-height: 13px;
   color: #1158bd;
   padding: 10px;
+}
+
+#signout-btn {
+  border: 1px solid #1158bd;
+  border-radius: 5px;
   cursor: pointer;
 }
 
-.signup {
-  border: 1px solid #1158bd;
-  border-radius: 5px;
-}
 
-.signin:hover {
-  color: #fff;
-  background: #1158bd;
-  border-radius: 5px;
-}
-
-.signup:hover {
+#signout-btn:hover {
   background-color: #1158bd;
   color: #fff;
 }
 
-.signin-btn {
+
+/*--------------------------------------------------------------
+# Main Section
+--------------------------------------------------------------*/
+
+.create-room-btn {
   cursor: pointer;
   background-color: #61a3df;
   color: #fff;
@@ -82,13 +82,10 @@ h2 {
   padding: 8px 32px;
 }
 
-.signin-btn:hover {
+.create-room-btn:hover {
   background-color: #1158bd;
 }
 
-/*--------------------------------------------------------------
-# Main Section
---------------------------------------------------------------*/
 span {
   color: #61a3df;
 }
@@ -142,24 +139,3 @@ h1 {
 
 }
 
-/*--------------------------------------------------------------
-# Sign in form
---------------------------------------------------------------*/
-.form-label {
-  color: #1158bd;
-}
-
-.signup-form-btn {
-  background-color: #61a3df;
-  color: #fff;
-}
-
-.signup-form-btn:hover {
-  background-color: #1158bd;
-  color: #fff;
-}
-
-.signup-form {
-  display: flex;
-  flex-direction: column;
-}

@@ -1,6 +1,9 @@
 const signoutBtn = document.getElementById("signout-btn")
+const createRoomBtn = document.querySelector(".create-room-btn")
+const memberName = document.getElementById("member-name")
+nameOnNavbar()
 
-signoutBtn.addEventListener("click", function () {
+signoutBtn.addEventListener("click", () => {
   fetch(
     "/api/user/auth"
   ).then(function (response) {
@@ -8,10 +11,23 @@ signoutBtn.addEventListener("click", function () {
   }).then(function (data) {
     if (data.data != undefined) {
       deleteAccount()
-      console.log("要來刪除")
     }
   })
 });
+
+function nameOnNavbar() {
+  fetch(
+    "/api/user/auth"
+  ).then(function (response) {
+    return response.json();
+  }).then(function (data) {
+    memberName.textContent = "Hello, " + data.data.name
+  })
+}
+
+createRoomBtn.addEventListener("click", () => {
+  document.location.href = "/room/create"
+})
 
 async function deleteAccount() {
   let url = "/api/user/auth"
