@@ -1,5 +1,9 @@
 const exitButton = document.querySelector(".exit-button")
 const copyButton = document.querySelector("#copy-button")
+const switchStreamBtn = document.querySelector('.switch-stream-btn')
+// 判斷視訊畫面是否開啟
+let isStreamStarted = true
+let streamResult
 
 console.log(exitButton)
 exitButton.addEventListener("click", function () {
@@ -36,8 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // 按下允許連線
 function connect(stream) {
   document.getElementById('peers').style.display = 'block'
-  // document.getElementById('chat').style.display = 'flex'
-  // document.getElementById('noperm').style.display = 'none'
   let pc = new RTCPeerConnection({
     iceServers: [{
       'urls': 'stun:turn.videochat:3478',
@@ -61,9 +63,9 @@ function connect(stream) {
     el.setAttribute("controls", "true")
     el.setAttribute("autoplay", "true")
     el.setAttribute("playsinline", "true")
+    el.setAttribute("id", "localVideo")
     col.appendChild(el)
-    // document.getElementById('noone').style.display = 'none'
-    // document.getElementById('nocon').style.display = 'none'
+
     document.getElementById('videos').appendChild(col)
 
     event.track.onmute = function (event) {
@@ -109,8 +111,6 @@ function connect(stream) {
     while (pr.childElementCount > 3) {
       pr.lastChild.remove()
     }
-    // document.getElementById('noone').style.display = 'none'
-    // document.getElementById('nocon').style.display = 'flex'
     setTimeout(function () {
       connect(stream);
     }, 1000);
@@ -173,4 +173,46 @@ navigator.mediaDevices.getUserMedia({
   .then(stream => {
     document.getElementById('localVideo').srcObject = stream
     connect(stream)
+    streamResult = stream
+    // switchStreamBtn.addEventListener('click', () => {
+    //   stopStream(stream)
+    // })
   }).catch(err => console.log(err))
+
+switchStreamBtn.addEventListener("click", () => {
+  if (isStreamStarted) {
+    stopStream(streamResult);
+    isStreamStarted = false;
+  } else {
+    console.log("我來了")
+    navigator.mediaDevices
+      .getUserMedia({
+        video: {
+          width: {
+            max: 1280
+          },
+          height: {
+            max: 720
+          },
+          aspectRatio: 4 / 3,
+          frameRate: 30
+        },
+        audio: {
+          sampleSize: 16,
+          channelCount: 2,
+          echoCancellation: true
+        }
+      })
+      .then(stream => {
+        document.getElementById("localVideo").srcObject = stream;
+        connect(stream);
+        isStreamStarted = true;
+      })
+      .catch(err => console.log(err));
+  }
+})
+
+function stopStream(stream) {
+  stream.getTracks().forEach(track => track.stop());
+}
+
