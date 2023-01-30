@@ -17,7 +17,7 @@ body {
 --------------------------------------------------------------*/
 
 #peers {
-  border: 3px blue solid;
+  /* border: 3px blue solid; */
 }
 
 .left-section {
@@ -26,15 +26,15 @@ body {
 
 #localVideo {
   width: 100%;
-  height: 500px;
-  border: 3px yellow solid;
+  height: 900px;
+  /* border: 3px yellow solid; */
 }
 
 /*--------------------------------------------------------------
 # Viewer
 --------------------------------------------------------------*/
 #viewer {
-  border: 3px red solid;
+  /* border: 3px red solid; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -55,7 +55,7 @@ body {
 # chat
 --------------------------------------------------------------*/
 #chat {
-  border: 3px green solid;
+  /* border: 3px green solid; */
   height: 500px;
   margin: 0 auto;
 }
@@ -72,7 +72,7 @@ body {
 
 
 .right-section {
-  border: 3px purple solid;
+  /* border: 3px purple solid; */
   width: 20%;
 }
 
@@ -136,7 +136,7 @@ body {
 
 .exit {
   position: relative;
-  border: 3px solid red;
+  /* border: 3px solid red; */
   width: 100%;
 }
 
@@ -148,14 +148,14 @@ body {
   border-radius: 10px;
   position: absolute;
   width: 100%;
-  bottom: -205px !important;
+  bottom: -195px !important;
   cursor: pointer;
 }
 
 
 .switch {
   position: relative;
-  border: 3px solid red;
+  /* border: 3px solid red; */
   width: 100%;
 }
 

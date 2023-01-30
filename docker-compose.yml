@@ -3,6 +3,10 @@ version: '3.8'
 services:
   server:
     image: dylanhuang399/goroom
+    environment:
+       - ENVIRONMENT=PRODUCTION
+       - CERT=/etc/nginx/ssl/sslbundle.crt
+       - KEY=/etc/nginx/ssl/private.key
     deploy:
       replicas: 1
     restart: always
@@ -13,9 +17,12 @@ services:
         max-file: "10"
     ports:
       - 8080:8080
+    volumes:
+      - /etc/nginx/ssl/sslbundle.crt:/etc/nginx/ssl/sslbundle.crt
+      - /etc/nginx/ssl/private.key:/etc/nginx/ssl/private.key
     command: --addr :8080
   turn:
-    image: dylanhuang399/goroomturn
+    image: dylanhuang399/goturn
     environment:
       - USERS=user=pass,user=pass
     deploy:

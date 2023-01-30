@@ -2,6 +2,7 @@ package server
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"time"
 
@@ -17,12 +18,17 @@ import (
 
 var (
 	addr = flag.String("addr", ":"+os.Getenv("PORT"), "")
-	cert = flag.String("cert", "", "")
-	key  = flag.String("key", "", "")
+	cert = flag.String("cert", os.Getenv("CERT"), "")
+	key  = flag.String("key", os.Getenv("KEY"), "")
 )
 
 func Run() error {
 	flag.Parse()
+	fmt.Println("進來主程式")
+	fmt.Println(*cert)
+	fmt.Println(*key)
+	fmt.Println(&cert)
+	fmt.Println(&key)
 
 	if *addr == ":" {
 		*addr = ":8080"
