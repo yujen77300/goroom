@@ -1,6 +1,11 @@
 let msg = document.getElementById("msg");
 let log = document.getElementById("log");
 let chat = document.getElementById('chat-content');
+const messageHeader = document.querySelector('.message-header')
+
+messageHeader.addEventListener("click", () => {
+    slideToggle()
+})
 
 var slideOpen = false;
 
