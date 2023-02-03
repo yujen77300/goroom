@@ -67,23 +67,39 @@ func RoomWebsocket(c *websocket.Conn) {
 }
 
 func createOrGetRoom(uuid string) (string, string, *w.Room) {
+	// 鎖住w還是鎖住Rooms?
 	w.RoomsLock.Lock()
 	defer w.RoomsLock.Unlock()
 
+	// 產生hash.Hash的一個interface
 	h := sha256.New()
 	h.Write([]byte(uuid))
 	suuid := fmt.Sprintf("%x", h.Sum(nil))
 
 	if room := w.Rooms[uuid]; room != nil {
+
 		if _, ok := w.Streams[suuid]; !ok {
 			w.Streams[suuid] = room
 		}
+		fmt.Println("測試房間號碼")
+		fmt.Println(room)
+		fmt.Println(*room)
+		fmt.Println("測試uuid")
+		fmt.Println(uuid)
+		fmt.Println("測試suuid")
+		fmt.Println(suuid)
 		return uuid, suuid, room
 	}
 
 	hub := chat.NewHub()
-	fmt.Println("進來測試一下")
+	fmt.Println("進來測試一下hub")
+	fmt.Println(hub)
+	fmt.Println(*hub)
+	fmt.Println(&hub)
+	fmt.Printf("hub的資料型態是%T\n", hub)
+	// 建立新的Peers結構體，並返為地址給指標變數p
 	p := &w.Peers{}
+	// var p *w.Peers = &w.Peers{}
 	fmt.Printf("p的資料型態是%T\n", p)
 	fmt.Println(p)
 	p.TrackLocals = make(map[string]*webrtc.TrackLocalStaticRTP)
@@ -91,12 +107,8 @@ func createOrGetRoom(uuid string) (string, string, *w.Room) {
 		Peers: p,
 		Hub:   hub,
 	}
-	fmt.Println("測試房間")
+	fmt.Println("測試建立或取得房間")
 	fmt.Println(room)
-	fmt.Println("測試uuid")
-	fmt.Println(uuid)
-	fmt.Println("測試suuid")
-	fmt.Println(suuid)
 
 	w.Rooms[uuid] = room
 	w.Streams[suuid] = room
@@ -112,11 +124,14 @@ func RoomViewerWebsocket(c *websocket.Conn) {
 	}
 
 	w.RoomsLock.Lock()
+	fmt.Println("進來RoomViewerWebsocket")
 	if peer, ok := w.Rooms[uuid]; ok {
+		fmt.Println("有近來這一層")
 		w.RoomsLock.Unlock()
 		roomViewerConn(c, peer.Peers)
 		return
 	}
+	fmt.Println("有離開了")
 	w.RoomsLock.Unlock()
 }
 
@@ -125,13 +140,16 @@ func roomViewerConn(c *websocket.Conn, p *w.Peers) {
 	defer ticker.Stop()
 	defer c.Close()
 
-
-for range ticker.C {
-    w, err := c.Conn.NextWriter(websocket.TextMessage)
-    if err != nil {
-        return
-    }
-    w.Write([]byte(fmt.Sprintf("%d", len(p.Connections))))
-}
-
+	for range ticker.C {
+		// websocket.TextMessage=1
+		w, err := c.Conn.NextWriter(websocket.TextMessage)
+		fmt.Println("進來循環")
+		fmt.Println(w)
+		if err != nil {
+			return
+		}
+		fmt.Println("進來循環字串")
+		fmt.Println([]byte(fmt.Sprintf("%d", len(p.Connections))))
+		w.Write([]byte(fmt.Sprintf("%d", len(p.Connections))))
+	}
 }

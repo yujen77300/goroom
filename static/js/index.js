@@ -90,7 +90,7 @@ async function signInAccount(data) {
       document.location.href = '/member'
 
     } else if (response.status === 401) {
-      inputHint.textContent = result.message;
+      signInHint.textContent = result.message;
       signInEmail.value = ""
       signInPassword.value = ""
     }

@@ -14,7 +14,9 @@ import (
 )
 
 var (
+	// 允許多個讀和單個寫
 	RoomsLock sync.RWMutex
+	// 一個字串指向Room結構體的pointer
 	Rooms     map[string]*Room
 	Streams   map[string]*Room
 )

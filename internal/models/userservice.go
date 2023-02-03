@@ -203,6 +203,7 @@ func PutUser(c *fiber.Ctx) error {
 
 	fmt.Println("測試一下搜尋結果")
 	fmt.Println(members)
+	fmt.Println( len(members))
 
 	if len(members) == 0 {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{

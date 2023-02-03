@@ -15,13 +15,14 @@ func RoomConn(c *websocket.Conn, p *Peers) {
 	if os.Getenv("ENVIRONMENT") == "PRODUCTION" {
 		config = turnConfig
 	}
+	// 註冊singalserver
 	peerConnection, err := webrtc.NewPeerConnection(config)
 	if err != nil {
 		log.Print(err)
 		return
 	}
 	defer peerConnection.Close()
-
+	// 註冊codec
 	for _, typ := range []webrtc.RTPCodecType{webrtc.RTPCodecTypeVideo, webrtc.RTPCodecTypeAudio} {
 		if _, err := peerConnection.AddTransceiverFromKind(typ, webrtc.RTPTransceiverInit{
 			Direction: webrtc.RTPTransceiverDirectionRecvonly,

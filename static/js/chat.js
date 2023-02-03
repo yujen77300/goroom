@@ -1,11 +1,11 @@
-var msg = document.getElementById("msg");
-var log = document.getElementById("log");
-var chat = document.getElementById('chat-content');
+let msg = document.getElementById("msg");
+let log = document.getElementById("log");
+let chat = document.getElementById('chat-content');
 
 var slideOpen = false;
 
 function slideToggle() {
-    
+
     if (slideOpen) {
         chat.style.display = 'none';
         slideOpen = false;
@@ -51,8 +51,9 @@ document.getElementById("form").onsubmit = function () {
 };
 
 function connectChat() {
+    //使用 WebSocket 的網址向 Server 開啟連結
     chatWs = new WebSocket(ChatWebsocketAddr)
-
+    //關閉後執行的動作，指定一個 function 會在連結中斷後執行
     chatWs.onclose = function (evt) {
         console.log("websocket has closed")
         document.getElementById('chat-button').disabled = true

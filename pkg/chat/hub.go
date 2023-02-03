@@ -12,12 +12,14 @@ func NewHub() *Hub {
 		broadcast:  make(chan []byte),
 		register:   make(chan *Client),
 		unregister: make(chan *Client),
+		// 紀錄目前的客戶端
 		clients:    make(map[*Client]bool),
 	}
 }
 
 func (h *Hub) Run() {
 	for {
+		// 監聽 register、unregister 和 broadcast 三個 channel，然後有不同動作
 		select {
 		case client := <-h.register:
 			h.clients[client] = true
