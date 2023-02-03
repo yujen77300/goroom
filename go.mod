@@ -11,6 +11,7 @@ require (
 	github.com/pion/webrtc/v3 v3.1.50
 )
 
+
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect

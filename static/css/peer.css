@@ -109,6 +109,18 @@ body {
 
 }
 
+#chat-alert {
+  display: none;
+  border-radius: 50%;
+  background-color: #1158bd;
+  width: 10px;
+  height: 10px;
+}
+
+#chat-body{
+  overflow: auto;
+}
+
 /*--------------------------------------------------------------
 # Coppy
 --------------------------------------------------------------*/
