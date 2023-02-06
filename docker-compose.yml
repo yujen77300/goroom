@@ -23,11 +23,9 @@ services:
     command: --addr :8080
   turn:
     image: dylanhuang399/goturn
-    environment:
-      - USERS=user=pass,user=pass
     deploy:
       replicas: 1
     restart: always
     ports:
       - 3478:3478
-    command: --public-ip 127.0.0.1 --port 3478
+    # command: --public-ip 127.0.0.1 --port 3478

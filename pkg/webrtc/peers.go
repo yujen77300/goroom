@@ -17,25 +17,30 @@ var (
 	// 允許多個讀和單個寫
 	RoomsLock sync.RWMutex
 	// 一個字串指向Room結構體的pointer
-	Rooms     map[string]*Room
-	Streams   map[string]*Room
+	Rooms   map[string]*Room
+	Streams map[string]*Room
 )
 
 var (
 	turnConfig = webrtc.Configuration{
 		ICETransportPolicy: webrtc.ICETransportPolicyRelay,
+		// ICEServers: []webrtc.ICEServer{
+		// 	{
+		// 		URLs: []string{"stun:stun.l.google.com:19302"},
+		// 	},
+		// },
 		ICEServers: []webrtc.ICEServer{
 			{
 
-				URLs: []string{"stun:turn.localhost:3478"},
+				URLs: []string{"stun:stun.l.google.com:19302"},
 			},
 			{
 
-				URLs: []string{"turn:turn.localhost:3478"},
+				URLs: []string{"turn:54.150.244.240:3478"},
 
 				Username: "Dylan",
 
-				Credential:     "WeHelp",
+				Credential: "Wehelp",
 				CredentialType: webrtc.ICECredentialTypePassword,
 			},
 		},

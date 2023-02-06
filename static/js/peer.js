@@ -5,7 +5,6 @@ const switchStreamBtn = document.querySelector('.switch-stream-btn')
 let isStreamStarted = true
 let streamResult
 
-console.log(exitButton)
 exitButton.addEventListener("click", function () {
   window.location.href = "/member";
 });
@@ -27,30 +26,42 @@ function copyURL() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
-    const $notification = $delete.parentNode;
+// DOM 結構被完整的讀取跟解析後就會被觸發，不須等待外部資源讀取完成
+// document.addEventListener('DOMContentLoaded', () => {
+//   (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+//     const $notification = $delete.parentNode;
 
-    $delete.addEventListener('click', () => {
-      $notification.style.display = 'none'
-    });
-  });
-});
+//     $delete.addEventListener('click', () => {
+//       $notification.style.display = 'none'
+//     });
+//   });
+// });
 
 // 按下允許連線
 function connect(stream) {
-  document.getElementById('peers').style.display = 'block'
+  // document.getElementById('peers').style.display = 'block'
   let pc = new RTCPeerConnection({
     iceServers: [{
-      'urls': 'stun:turn.videochat:3478',
+      // 'urls': 'stun:turn.videochat:3478',
+      'urls': 'stun:stun.l.google.com:19302',
     },
-    {
-      'urls': 'turn:turn.videochat:3478',
+      {
+        // 'urls': 'turn:turn.videochat:3478',
+        'urls': 'turn:54.150.244.240:3478',
       'username': 'Dylan',
-      'credential': 'WeHelp',
+      'credential': 'Wehelp',
     }
     ]
   })
+  // let pc = new RTCPeerConnection({
+  //   iceServers: [
+  //     {
+  //       urls: 'stun:stun.l.google.com:19302'
+  //     }
+  //   ]
+  // })
+  // 接收另一端傳遞過來的多媒體資訊(videoTrack ...等)
+  // 完成連線後，透過該事件能夠在發現遠端傳輸的多媒體檔案時觸發，來處理/接收多媒體數據
   pc.ontrack = function (event) {
     if (event.track.kind === 'audio') {
       return
@@ -84,10 +95,14 @@ function connect(stream) {
       // }
     }
   }
-
+  // 透過(addTrack)載入多媒體資訊(ex: videoTrack, audioTrack ...)
+  // 將stream track 與peer connection 透過addTrack()關聯起來，之後建立連結才能進行傳輸
+  // 加入MediaStream object到RTCPeerconnection中。
   stream.getTracks().forEach(track => pc.addTrack(track, stream))
 
   let ws = new WebSocket(RoomWebsocketAddr)
+  // 當查找到相對應的遠端端口時會做onicecandidate，進行網路資訊的共享。
+  // 當查找到相對應的遠端端口時會透過該事件來處理將 icecandidate 傳輸給 remote peers。
   pc.onicecandidate = e => {
     if (!e.candidate) {
       return
@@ -143,7 +158,7 @@ function connect(stream) {
         if (!candidate) {
           return console.log('failed to parse candidate')
         }
-
+        // 當 remotePeer 藉由 Signaling channel 接收到由 localPeer 傳來的 ICE candidate 時，利用addIceCandidate將其丟給瀏覽器解析與匹配，看看這個ICE candidate 所提供的連線方式適不適合。
         pc.addIceCandidate(candidate)
     }
   }
