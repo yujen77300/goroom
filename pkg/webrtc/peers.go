@@ -32,7 +32,7 @@ var (
 			},
 			{
 
-				URLs: []string{"turn:54.150.244.240:3478"},
+				URLs: []string{"turn:public ip:port"},
 
 				Username: "Dylan",
 

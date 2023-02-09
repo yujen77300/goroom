@@ -16,7 +16,7 @@ import (
 
 func main() {
 	fmt.Println("We are in turn server")
-	publicIP := flag.String("public-ip", "54.150.244.240", "IP Address that TURN can be contacted by.")
+	publicIP := flag.String("public-ip", "my public-ip", "IP Address that TURN can be contacted by.")
 	port := flag.Int("port", 3478, "Listening port.")
 	// users := flag.String("users", os.Getenv("USERS"), "List of username and password (e.g. \"user=pass,user=pass\")") // user=pass,user=pass
 	users := flag.String("users","Dylan=Wehelp", "List of username and password (e.g. \"user=pass,user=pass\")")
