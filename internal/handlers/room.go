@@ -56,6 +56,7 @@ func Room(c *fiber.Ctx) error {
 
 }
 
+// WebSocket 處理器，接收連接請求並處理客戶端和伺服器間的通訊。
 func RoomWebsocket(c *websocket.Conn) {
 	uuid := c.Params("uuid")
 	if uuid == "" {
@@ -83,7 +84,6 @@ func createOrGetRoom(uuid string) (string, string, *w.Room) {
 		}
 		fmt.Println("測試房間號碼")
 		fmt.Println(room)
-		fmt.Println(*room)
 		fmt.Println("測試uuid")
 		fmt.Println(uuid)
 		fmt.Println("測試suuid")
@@ -95,13 +95,13 @@ func createOrGetRoom(uuid string) (string, string, *w.Room) {
 	fmt.Println("進來測試一下hub")
 	fmt.Println(hub)
 	fmt.Println(*hub)
-	fmt.Println(&hub)
 	fmt.Printf("hub的資料型態是%T\n", hub)
 	// 建立新的Peers結構體，並返為地址給指標變數p
 	p := &w.Peers{}
 	// var p *w.Peers = &w.Peers{}
 	fmt.Printf("p的資料型態是%T\n", p)
 	fmt.Println(p)
+
 	p.TrackLocals = make(map[string]*webrtc.TrackLocalStaticRTP)
 	room := &w.Room{
 		Peers: p,
@@ -125,7 +125,7 @@ func RoomViewerWebsocket(c *websocket.Conn) {
 
 	w.RoomsLock.Lock()
 	fmt.Println("進來RoomViewerWebsocket")
-	if peer, ok := w.Rooms[uuid]; ok {
+	if peer, ok := w.Rooms[uuid];ok {
 		fmt.Println("有近來這一層")
 		w.RoomsLock.Unlock()
 		roomViewerConn(c, peer.Peers)
@@ -140,16 +140,14 @@ func roomViewerConn(c *websocket.Conn, p *w.Peers) {
 	defer ticker.Stop()
 	defer c.Close()
 
+	// ticker.C=> 建立定時器事件的channel
 	for range ticker.C {
-		// websocket.TextMessage=1
+		// NextWriter返回一個用於寫入下一個消息的寫入器
+		// websocket.TextMessage代表數據類型為text
 		w, err := c.Conn.NextWriter(websocket.TextMessage)
-		fmt.Println("進來循環")
-		fmt.Println(w)
 		if err != nil {
 			return
 		}
-		fmt.Println("進來循環字串")
-		fmt.Println([]byte(fmt.Sprintf("%d", len(p.Connections))))
 		w.Write([]byte(fmt.Sprintf("%d", len(p.Connections))))
 	}
 }
