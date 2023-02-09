@@ -119,6 +119,15 @@ h1 {
   display: none;
 }
 
+.action{
+  display: flex;
+  flex-direction: column;
+  gap:10px; 
+}
+
+.d-inline-block{
+  width: 150px;
+}
 
 /*--------------------------------------------------------------
 # Footer
