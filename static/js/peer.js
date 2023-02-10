@@ -34,7 +34,7 @@ function connect(stream) {
       'urls': 'stun:stun.l.google.com:19302',
     },
     {
-      'urls': 'turn:public ip:port',
+      'urls': 'turn:127.0.0.1:3478',
       'username': 'Dylan',
       'credential': 'Wehelp',
     }
