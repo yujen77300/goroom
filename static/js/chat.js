@@ -106,7 +106,7 @@ function connectChat() {
         }
         for (let i = 0; i < messages.length; i++) {
             let item = document.createElement("div");
-
+            item.className = "log-item";
             item.innerText = currentTime() + " - " + messages[i];
             appendLog(item);
         }

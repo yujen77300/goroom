@@ -196,23 +196,14 @@ function connect(stream) {
 // 這是最一開始
 navigator.mediaDevices.getUserMedia({
   video: {
-    width: {
-      max: 1280
-    },
-    height: {
-      max: 720
-    },
-    aspectRatio: 4 / 3,
-    frameRate: 30,
+    width: { min: 1280 },
+    height: { min: 720 }
   },
-  audio: {
-    sampleSize: 16,
-    channelCount: 2,
-    echoCancellation: true
-  }
+  audio: true
 })
   .then(stream => {
     document.getElementById('localVideo').srcObject = stream
+    // document.getElementById('localVideo2').srcObject = stream
     connect(stream)
     streamResult = stream
     // switchStreamBtn.addEventListener('click', () => {

@@ -4,7 +4,8 @@ body {
   margin: 0;
   padding: 0;
   font-size: 16px;
-  color: #666666;
+  color: #ffffff;
+  background-color: #666666;
 
 }
 
@@ -22,10 +23,47 @@ body {
 }
 
 #localVideo {
-  width: 100%;
-  height: 900px;
-  /* border: 3px yellow solid; */
+  width: 640px;
+  height: 360px;
+  /* border: 3px blue solid; */
+  border-radius: 10px;
 }
+
+.each-peer {
+  width: 640px;
+  height: 360px;
+  /* border: 3px red solid; */
+  margin-top: 20px;
+}
+
+#localVideo1 {
+  width: 640px;
+  height: 360px;
+  border-radius: 10px;
+  position: absolute;
+
+}
+
+#localVideo2 {
+  width: 640px;
+  height: 360px;
+  border-radius: 10px;
+  position: absolute;
+}
+
+.username {
+  background-color: #171925;
+  outline: none;
+  width: 100px;
+  height: 30px;
+  border-radius: 5px;
+  text-align: center;
+  line-height: 30px;
+  position: relative;
+  right: -30px;
+  bottom: -300px;
+}
+
 
 /*--------------------------------------------------------------
 # Viewer
@@ -46,6 +84,9 @@ body {
   background-position: center center;
 }
 
+#viewer-count {
+  color: white;
+}
 
 
 /*--------------------------------------------------------------
@@ -68,7 +109,7 @@ body {
   font-size: 20px;
 }
 
-#chat-content{
+#chat-content {
   display: none;
 }
 
@@ -117,8 +158,12 @@ body {
   height: 10px;
 }
 
-#chat-body{
+#chat-body {
   overflow: auto;
+}
+
+.log-item {
+  color: white;
 }
 
 /*--------------------------------------------------------------
