@@ -21,7 +21,6 @@ function slideToggle() {
     } else {
         chat.style.display = 'block'
         chatAlert.style.display = 'none';
-        // document.getElementById('msg').focus();
         slideOpen = true
     }
 }
@@ -86,9 +85,17 @@ document.getElementById("form").onsubmit = function () {
 };
 
 function connectChat() {
+    let user = ""
+    fetch(
+        "/api/user/auth"
+    ).then(function (response) {
+        return response.json();
+    }).then(function (data) {
+        user = data.data.name
+    })
     //使用 WebSocket 的網址向 Server 開啟連結
     chatWs = new WebSocket(ChatWebsocketAddr)
-    chatWs.onclose = function (evt) {
+    chatWs.onclose = function (e) {
         console.log("websocket has closed")
         chatButton.disabled = true
         setTimeout(function () {
@@ -96,24 +103,25 @@ function connectChat() {
         }, 1000);
     }
 
-    chatWs.onmessage = function (evt) {
+    chatWs.onmessage = function (e) {
         console.log("進來onmessage")
-        console.log(evt)
-        console.log(evt.data)
-        let messages = evt.data.split('\n');
+        console.log(e)
+        console.log(e.data)
+        let receiveMessage = e.data.split('/');
+        let account = receiveMessage[0]
+        let messages = receiveMessage[1]
+        console.log(messages)
         if (slideOpen == false) {
             chatAlert.style.display = 'block'
         }
-        for (let i = 0; i < messages.length; i++) {
-            let item = document.createElement("div");
-            item.className = "log-item";
-            item.innerText = currentTime() + " - " + messages[i];
-            appendLog(item);
-        }
+        let item = document.createElement("div");
+        item.className = "log-item";
+        item.innerText = `${account}`+`(${currentTime()})` + " - " + messages;
+        appendLog(item);
     }
 
-    chatWs.onerror = function (evt) {
-        console.log("error: " + evt.data)
+    chatWs.onerror = function (e) {
+        console.log("error: " + e.data)
     }
 
     setTimeout(function () {

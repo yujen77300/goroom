@@ -19,6 +19,8 @@ type User struct {
 	Password string `json:"password"`
 }
 
+var UserName string
+
 // Get all users (test)
 func FindALLUsers(c *fiber.Ctx) error {
 	db, _ := ConnectToMYSQL()
@@ -158,6 +160,9 @@ func GetUser(c *fiber.Ctx) error {
 				"name":  name,
 				"email": email,
 			}
+			value:= memberData["name"]
+			UserName = value.(string)
+
 			return c.JSON(fiber.Map{
 				"data": memberData,
 			})
@@ -203,7 +208,7 @@ func PutUser(c *fiber.Ctx) error {
 
 	fmt.Println("測試一下搜尋結果")
 	fmt.Println(members)
-	fmt.Println( len(members))
+	fmt.Println(len(members))
 
 	if len(members) == 0 {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{

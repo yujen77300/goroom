@@ -2,10 +2,12 @@ package chat
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"time"
 
 	"github.com/fasthttp/websocket"
+	"github.com/yujen77300/goroom/internal/models"
 )
 
 const (
@@ -58,6 +60,7 @@ func (c *Client) writePump() {
 		ticker.Stop()
 		c.Conn.Close()
 	}()
+
 	for {
 		select {
 		case message, ok := <-c.Send:
@@ -65,11 +68,11 @@ func (c *Client) writePump() {
 			if !ok {
 				return
 			}
-
 			w, err := c.Conn.NextWriter(websocket.TextMessage)
 			if err != nil {
 				return
 			}
+			w.Write([]byte(models.UserName+"/"))
 			w.Write(message)
 
 			n := len(c.Send)
@@ -90,8 +93,15 @@ func (c *Client) writePump() {
 	}
 }
 
+// 建立一個websocket連接的客戶端，與Hub進行通訊。
 func PeerChatConn(c *websocket.Conn, hub *Hub) {
 	client := &Client{Hub: hub, Conn: c, Send: make(chan []byte, 256)}
+	fmt.Println("我到了client.go裡面了唷")
+	fmt.Println(client)
+	fmt.Println(*client.Hub)
+	fmt.Println(*client.Conn)
+	fmt.Println("第二次")
+	fmt.Println(*client)
 	client.Hub.register <- client
 
 	go client.writePump()

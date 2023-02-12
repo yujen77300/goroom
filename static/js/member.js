@@ -72,6 +72,6 @@ roomInput.addEventListener("click", () => {
   joinWrongInput.style.display = "none"
 })
 
-joinBtn.addEventListener("click",()=>{
+joinBtn.addEventListener("click", () => {
   document.location.href = `/room/${roomInput.value}`
 })

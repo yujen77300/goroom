@@ -125,7 +125,7 @@ func RoomViewerWebsocket(c *websocket.Conn) {
 
 	w.RoomsLock.Lock()
 	fmt.Println("進來RoomViewerWebsocket")
-	if peer, ok := w.Rooms[uuid];ok {
+	if peer, ok := w.Rooms[uuid]; ok {
 		fmt.Println("有近來這一層")
 		w.RoomsLock.Unlock()
 		roomViewerConn(c, peer.Peers)

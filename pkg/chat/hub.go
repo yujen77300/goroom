@@ -13,7 +13,7 @@ func NewHub() *Hub {
 		register:   make(chan *Client),
 		unregister: make(chan *Client),
 		// 紀錄目前的客戶端
-		clients:    make(map[*Client]bool),
+		clients: make(map[*Client]bool),
 	}
 }
 

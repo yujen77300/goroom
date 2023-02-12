@@ -32,7 +32,7 @@ body {
 .each-peer {
   width: 640px;
   height: 360px;
-  /* border: 3px red solid; */
+  border: 3px red solid;
   margin-top: 20px;
 }
 
