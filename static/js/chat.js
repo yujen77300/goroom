@@ -6,6 +6,7 @@ const chatButton = document.getElementById('chat-button')
 const chatAlert = document.getElementById('chat-alert')
 const messageHeader = document.querySelector('.message-header')
 const chatBody = document.getElementById('chat-body')
+let account = ""
 
 messageHeader.addEventListener("click", () => {
     slideToggle()
@@ -34,7 +35,7 @@ function appendLog(item) {
     console.log("log.scrollHeight : ", log.scrollHeight)
     // 可見的區域高
     console.log("log.clientHeight: ", log.clientHeight)
-    // Element.scrollTop + Element.clientHeight >= Element.scrollHeight
+
 
     console.log("chatBody高度")
     console.log("chatBody.scrollTop : ", chatBody.scrollTop)
@@ -42,8 +43,6 @@ function appendLog(item) {
     console.log("chatBody.clientHeight : ", chatBody.clientHeight)
 
 
-    // let doScroll = log.scrollTop > log.scrollHeight - log.clientHeight - 1;
-    // console.log(doScroll)
     // body的overflow要從預設的visible改成auto
     log.appendChild(item);
     if (chatBody.clientHeight - log.clientHeight < 20) {
@@ -53,9 +52,6 @@ function appendLog(item) {
         chatBody.scrollTop = chatBody.scrollHeight - chatBody.clientHeight;
         console.log("近來這邊chatBody.scrollTop : ", chatBody.scrollTop)
     }
-    // if (doScroll) {
-    //     log.scrollTop = log.scrollHeight - log.clientHeight;
-    // }
 }
 
 function currentTime() {
@@ -79,19 +75,29 @@ document.getElementById("form").onsubmit = function () {
         return false;
     }
     console.log("近來這個聊天表格")
-    chatWs.send(msg.value);
+    // updateUserName()
+    //     .then(() => {
+    //         console.log("現在的名字是")
+    //         console.log(account)
+    //         chatWs.send(account + "/" + msg.value);
+    //         msg.value = "";
+    //         return false;
+    //     });
+    updateUserName()
+    console.log("現在的名字是")
+    console.log(account)
+    chatWs.send(account+"/"+msg.value);
     msg.value = "";
     return false;
 };
 
 function connectChat() {
-    let user = ""
     fetch(
         "/api/user/auth"
     ).then(function (response) {
         return response.json();
     }).then(function (data) {
-        user = data.data.name
+        account = data.data.name
     })
     //使用 WebSocket 的網址向 Server 開啟連結
     chatWs = new WebSocket(ChatWebsocketAddr)
@@ -108,7 +114,7 @@ function connectChat() {
         console.log(e)
         console.log(e.data)
         let receiveMessage = e.data.split('/');
-        let account = receiveMessage[0]
+        let accountName = receiveMessage[0]
         let messages = receiveMessage[1]
         console.log(messages)
         if (slideOpen == false) {
@@ -116,7 +122,7 @@ function connectChat() {
         }
         let item = document.createElement("div");
         item.className = "log-item";
-        item.innerText = `${account}`+`(${currentTime()})` + " - " + messages;
+        item.innerText = `${accountName}` + `(${currentTime()})` + " - " + messages;
         appendLog(item);
     }
 
@@ -131,3 +137,19 @@ function connectChat() {
     }, 1000);
 }
 
+
+async function updateUserName() {
+    let url = "/api/user/auth"
+    let options = {
+        method: "GET",
+    }
+    try {
+        let response = await fetch(url, options);
+        let result = await response.json();
+        if (response.status === 200) {
+            account = result.data.name
+        }
+    } catch (err) {
+        console.log({ "error": err.message });
+    }
+}

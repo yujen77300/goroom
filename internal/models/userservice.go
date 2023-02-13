@@ -19,7 +19,7 @@ type User struct {
 	Password string `json:"password"`
 }
 
-var UserName string
+// var UserName string
 
 // Get all users (test)
 func FindALLUsers(c *fiber.Ctx) error {
@@ -160,8 +160,10 @@ func GetUser(c *fiber.Ctx) error {
 				"name":  name,
 				"email": email,
 			}
-			value:= memberData["name"]
-			UserName = value.(string)
+			// fmt.Println("看一下username的結果")
+			// value:= memberData["name"]
+			// UserName = value.(string)
+			// fmt.Println(UserName)
 
 			return c.JSON(fiber.Map{
 				"data": memberData,

@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/fasthttp/websocket"
-	"github.com/yujen77300/goroom/internal/models"
+	// "github.com/yujen77300/goroom/internal/models"
 )
 
 const (
@@ -72,7 +72,9 @@ func (c *Client) writePump() {
 			if err != nil {
 				return
 			}
-			w.Write([]byte(models.UserName+"/"))
+			fmt.Println("測試收到的訊息")
+			fmt.Println(string(message))
+			// w.Write([]byte(models.UserName+"/"))
 			w.Write(message)
 
 			n := len(c.Send)
