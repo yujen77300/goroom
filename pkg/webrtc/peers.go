@@ -40,6 +40,21 @@ var (
 				CredentialType: webrtc.ICECredentialTypePassword,
 			},
 		},
+		// ICEServers: []webrtc.ICEServer{
+		// 	{
+
+		// 		URLs: []string{"stun:relay.metered.ca:80"},
+		// 	},
+		// 	{
+
+		// 		URLs: []string{"turn:relay.metered.ca:80"},
+
+		// 		Username: "",
+
+		// 		Credential:     "",
+		// 		CredentialType: webrtc.ICECredentialTypePassword,
+		// 	},
+		// },
 	}
 )
 

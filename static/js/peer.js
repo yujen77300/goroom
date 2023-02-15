@@ -1,9 +1,18 @@
 const exitButton = document.querySelector(".exit-button")
 const copyButton = document.querySelector("#copy-button")
 const switchStreamBtn = document.querySelector('.switch-stream-btn')
+const videos = document.querySelector('#videos')
+let localVideo = document.querySelectorAll('.localVideo')
+let eachPeer = document.querySelectorAll('.each-peer')
+let viewerCountNow = document.querySelector('#viewer-count')
+let userName = document.querySelector('.username')
 // 判斷視訊畫面是否開啟
 let isStreamStarted = true
 let streamResult
+// 一開始有一個人
+let usersAmount = 1
+
+peerSize(usersAmount, localVideo)
 
 exitButton.addEventListener("click", function () {
   window.location.href = "/member";
@@ -79,9 +88,14 @@ function connect(stream) {
     el.setAttribute("autoplay", "true")
     el.setAttribute("playsinline", "true")
     el.setAttribute("id", "localVideo")
+    el.setAttribute("class", "localVideo")
     col.appendChild(el)
 
     document.getElementById('videos').appendChild(col)
+
+    let localVideo = document.querySelectorAll('.localVideo')
+    usersAmount = localVideo.length
+    peerSize(usersAmount, localVideo)
 
     event.track.onmute = function (event) {
       el.play()
@@ -96,7 +110,11 @@ function connect(stream) {
       if (el.parentNode) {
         el.parentNode.remove()
       }
+      let localVideo = document.querySelectorAll('.localVideo')
+      usersAmount = localVideo.length
+      peerSize(usersAmount, localVideo)
     }
+
   }
   // 透過(addTrack)載入多媒體資訊(ex: videoTrack, audioTrack ...)
   // 將stream track 與peer connection 透過addTrack()關聯起來，之後建立連結才能進行傳輸
@@ -246,5 +264,62 @@ switchStreamBtn.addEventListener("click", () => {
 
 function stopStream(stream) {
   stream.getTracks().forEach(track => track.stop());
+}
+
+function peerSize(usersAmount, localVideo) {
+  if (usersAmount === 1) {
+    localVideo[0].style.width = "1160px"
+    eachPeer[0].style.width = "1160px"
+    let videoWidth = (1160 * 9) / 16
+    eachPeer[0].style.height = `${videoWidth}px`
+    userName.style.bottom = `-${videoWidth - 60}px`
+  } else if (usersAmount === 2) {
+    localVideo[0].style.width = "580px"
+    localVideo[1].style.width = "580px"
+    let eachPeer = document.querySelectorAll('.each-peer')
+    eachPeer[0].style.width = "580px"
+    eachPeer[1].style.width = "580px"
+    let videoWidth = (580 * 9) / 16
+    eachPeer[0].style.height = `${videoWidth}px`
+    eachPeer[1].style.height = `${videoWidth}px`
+    userName.style.bottom = `-${videoWidth - 60}px`
+    videos.style.display = "flex"
+    videos.style.gap = "10px"
+  } else if (usersAmount === 3) {
+    localVideo[0].style.width = "580px"
+    localVideo[1].style.width = "580px"
+    localVideo[2].style.width = "580px"
+    let eachPeer = document.querySelectorAll('.each-peer')
+    eachPeer[0].style.width = "580px"
+    eachPeer[1].style.width = "580px"
+    eachPeer[2].style.width = "580px"
+    let videoWidth = (580 * 9) / 16
+    eachPeer[0].style.height = `${videoWidth}px`
+    eachPeer[1].style.height = `${videoWidth}px`
+    eachPeer[2].style.height = `${videoWidth}px`
+    userName.style.bottom = `-${videoWidth - 60}px`
+    videos.style.display = "flex"
+    videos.style.flexWrap = "wrap"
+    videos.style.gap = "10px"
+  } else if (usersAmount === 4) {
+    localVideo[0].style.width = "580px"
+    localVideo[1].style.width = "580px"
+    localVideo[2].style.width = "580px"
+    localVideo[3].style.width = "580px"
+    let eachPeer = document.querySelectorAll('.each-peer')
+    eachPeer[0].style.width = "580px"
+    eachPeer[1].style.width = "580px"
+    eachPeer[2].style.width = "580px"
+    eachPeer[3].style.width = "580px"
+    let videoWidth = (580 * 9) / 16
+    eachPeer[0].style.height = `${videoWidth}px`
+    eachPeer[1].style.height = `${videoWidth}px`
+    eachPeer[2].style.height = `${videoWidth}px`
+    eachPeer[3].style.height = `${videoWidth}px`
+    userName.style.bottom = `-${videoWidth - 60}px`
+    videos.style.display = "flex"
+    videos.style.flexWrap = "wrap"
+    videos.style.gap = "10px"
+  }
 }
 
