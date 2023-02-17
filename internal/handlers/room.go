@@ -95,8 +95,7 @@ func createOrGetRoom(uuid string) (string, string, *w.Room) {
 	fmt.Println("進來測試一下hub")
 	fmt.Println(hub)
 	fmt.Println(*hub)
-	fmt.Printf("hub的資料型態是%T\n", hub)
-	// 建立新的Peers結構體，並返為地址給指標變數p
+	// 創建一個指向 webrtc.Peers 結構體的指標，建立新的Peers結構體，並返為地址給指標變數p
 	p := &w.Peers{}
 	// var p *w.Peers = &w.Peers{}
 	fmt.Printf("p的資料型態是%T\n", p)
@@ -107,9 +106,6 @@ func createOrGetRoom(uuid string) (string, string, *w.Room) {
 		Peers: p,
 		Hub:   hub,
 	}
-	fmt.Println("測試建立或取得房間")
-	fmt.Println(room)
-
 	w.Rooms[uuid] = room
 	w.Streams[suuid] = room
 

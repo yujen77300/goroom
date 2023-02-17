@@ -28,4 +28,3 @@ services:
     restart: always
     ports:
       - 3478:3478
-    # command: --public-ip 127.0.0.1 --port 3478

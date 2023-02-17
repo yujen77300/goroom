@@ -43,7 +43,7 @@ function connect(stream) {
       'urls': 'stun:stun.l.google.com:19302',
     },
     {
-      'urls': 'turn:127.0.0.1:3478',
+      'urls': 'turn:54.150.244.240:3478',
       'username': 'Dylan',
       'credential': 'Wehelp',
     }
@@ -139,7 +139,7 @@ function connect(stream) {
       return
     }
     console.log("ws發送訊息")
-    console.log("e.candidate")
+    console.log(e.candidate)
     ws.send(JSON.stringify({
       event: 'candidate',
       data: JSON.stringify(e.candidate)
@@ -156,7 +156,7 @@ function connect(stream) {
     pc.close();
     pc = null;
     pr = document.getElementById('videos')
-    while (pr.childElementCount > 3) {
+    while (pr.childElementCount > 1) {
       pr.lastChild.remove()
     }
     setTimeout(function () {
@@ -179,13 +179,14 @@ function connect(stream) {
         let offer = JSON.parse(msg.data)
         console.log("如果是offer印出offer")
         console.log(msg)
-        console.log(msg.data)
         console.log(offer)
         if (!offer) {
           return console.log('failed to parse answer')
         }
         pc.setRemoteDescription(offer)
         pc.createAnswer().then(answer => {
+          console.log("進來answer")
+          console.log(answer)
           pc.setLocalDescription(answer)
           ws.send(JSON.stringify({
             event: 'answer',
@@ -220,6 +221,8 @@ navigator.mediaDevices.getUserMedia({
   audio: true
 })
   .then(stream => {
+    console.log("這是一開始的stream")
+    console.log(stream)
     document.getElementById('localVideo').srcObject = stream
     // document.getElementById('localVideo2').srcObject = stream
     connect(stream)

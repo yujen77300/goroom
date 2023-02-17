@@ -32,7 +32,7 @@ var (
 			},
 			{
 
-				URLs: []string{"turn:127.0.0.1:3478"},
+				URLs: []string{"turn:54.150.244.240:3478"},
 
 				Username: "Dylan",
 
@@ -63,7 +63,6 @@ type Room struct {
 	Hub   *chat.Hub
 }
 
-// ListLock讀寫鎖是一種常見的多線程同步機制，在多個 goroutine 同時訪問或修改 Peers 結構體時，可以確保同一時間只有一個 goroutine 能夠修改 Peers，其他的 goroutine 只能讀取。
 type Peers struct {
 	ListLock    sync.RWMutex
 	Connections []PeerConnectionState
@@ -100,6 +99,8 @@ func (p *Peers) AddTrack(t *webrtc.TrackRemote) *webrtc.TrackLocalStaticRTP {
 		log.Println(err.Error())
 		return nil
 	}
+	fmt.Println("新增本地音軌")
+	fmt.Println(trackLocal)
 
 	p.TrackLocals[t.ID()] = trackLocal
 	return trackLocal
@@ -128,6 +129,8 @@ func (p *Peers) SignalPeerConnections() {
 		for i := range p.Connections {
 			if p.Connections[i].PeerConnection.ConnectionState() == webrtc.PeerConnectionStateClosed {
 				p.Connections = append(p.Connections[:i], p.Connections[i+1:]...)
+				fmt.Println("在同步裡面")
+				fmt.Println(p.Connections)
 				log.Println("a", p.Connections)
 				return true
 			}
@@ -167,11 +170,13 @@ func (p *Peers) SignalPeerConnections() {
 			}
 			// 創建一個 Offer，設定為SetLocalDescription
 			offer, err := p.Connections[i].PeerConnection.CreateOffer(nil)
+			fmt.Println("執行CreateOffer")
 			if err != nil {
 				return true
 			}
 
 			if err = p.Connections[i].PeerConnection.SetLocalDescription(offer); err != nil {
+				fmt.Println("設定SetLocalDescription")
 				return true
 			}
 
