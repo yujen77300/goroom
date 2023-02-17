@@ -1,14 +1,15 @@
 const exitButton = document.querySelector(".exit-button")
-const copyButton = document.querySelector("#copy-button")
-const switchStreamBtn = document.querySelector('.switch-stream-btn')
+// const copyButton = document.querySelector("#copy-button")
+const switchVideoBtn = document.querySelector('.switch-video-btn')
+const switchAudioBtn = document.querySelector('.switch-audio-btn')
 const videos = document.querySelector('#videos')
 let localVideo = document.querySelectorAll('.localVideo')
 let eachPeer = document.querySelectorAll('.each-peer')
 let viewerCountNow = document.querySelector('#viewer-count')
 let userName = document.querySelector('.username')
 // 判斷視訊畫面是否開啟
-let isStreamStarted = true
-let streamResult
+let streamOutput = { audio: true, video: true, }
+let streamNow
 // 一開始有一個人
 let usersAmount = 1
 
@@ -18,9 +19,10 @@ exitButton.addEventListener("click", function () {
   window.location.href = "/member";
 });
 
-copyButton.addEventListener("click", () => {
-  copyURL()
-})
+// ===================== 複製url =====================
+// copyButton.addEventListener("click", () => {
+//   copyURL()
+// })
 
 function copyURL() {
   if (!navigator.clipboard) {
@@ -35,7 +37,7 @@ function copyURL() {
   });
 }
 
-
+// ===================== peer to peer連線 =====================
 // 按下允許連線
 function connect(stream) {
   let pc = new RTCPeerConnection({
@@ -223,52 +225,83 @@ navigator.mediaDevices.getUserMedia({
   .then(stream => {
     console.log("這是一開始的stream")
     console.log(stream)
+
     document.getElementById('localVideo').srcObject = stream
     // document.getElementById('localVideo2').srcObject = stream
     connect(stream)
-    streamResult = stream
-    // switchStreamBtn.addEventListener('click', () => {
-    //   stopStream(stream)
-    // })
+    streamNow = stream
   }).catch(err => console.log(err))
 
+
+// ===================== 關閉鏡頭或麥克風 =====================
 // 開關鏡頭的函數
-switchStreamBtn.addEventListener("click", () => {
-  if (isStreamStarted) {
-    stopStream(streamResult);
-    isStreamStarted = false;
+switchVideoBtn.addEventListener("click", () => {
+  if (streamOutput.video) {
+    stopVideo(streamNow);
+    streamOutput.video = false;
+    setBtnText()
   } else {
-    navigator.mediaDevices
-      .getUserMedia({
-        video: {
-          width: {
-            max: 1280
-          },
-          height: {
-            max: 720
-          },
-          aspectRatio: 4 / 3,
-          frameRate: 30
-        },
-        audio: {
-          sampleSize: 16,
-          channelCount: 2,
-          echoCancellation: true
-        }
-      })
-      .then(stream => {
-        document.getElementById("localVideo").srcObject = stream;
-        connect(stream);
-        isStreamStarted = true;
-      })
-      .catch(err => console.log(err));
+    startVideo(streamNow)
+    streamOutput.video = true;
+    setBtnText()
   }
 })
 
-function stopStream(stream) {
-  stream.getTracks().forEach(track => track.stop());
+switchAudioBtn.addEventListener("click", () => {
+  if (streamOutput.audio) {
+    stopAudio(streamNow);
+    streamOutput.audio = false;
+    setBtnText()
+  } else {
+    startAudio(streamNow)
+    streamOutput.audio = true;
+    setBtnText()
+  }
+})
+// 更新文字
+function setBtnText() {
+  console.log("狀態: ", streamOutput.audio)
+  switchAudioBtn.textContent = streamOutput.audio ? 'Turn off microphone' : 'Turn on microphone'
+  switchVideoBtn.textContent = streamOutput.video ? 'Turn off camera' : 'Turn on camera'
 }
 
+function stopVideo(stream) {
+  stream.getVideoTracks()[0].enabled = false;
+
+  // // 才會關閉
+  // stream.getTracks().forEach(track => {
+  //   track.stop()
+  // })
+
+}
+
+function startVideo(stream) {
+  stream.getVideoTracks()[0].enabled = true;
+  // navigator.mediaDevices.getUserMedia({
+  //   video: {
+  //     width: { min: 1280 },
+  //     height: { min: 720 }
+  //   },
+  //   audio: true
+  // })
+  //   .then(stream => {
+  //     document.getElementById('localVideo').srcObject = stream
+  //     stream.getTracks().forEach(track => pc.addTrack(track, stream))
+  //     // connect(stream)
+  //     streamNow = stream
+      
+  //   }).catch(err => console.log(err))
+}
+
+function stopAudio(stream) {
+  stream.getAudioTracks()[0].enabled = false;
+}
+
+function startAudio(stream) {
+  stream.getAudioTracks()[0].enabled = true;
+}
+
+// ===================== 人數切版 =====================
 function peerSize(usersAmount, localVideo) {
   if (usersAmount === 1) {
     localVideo[0].style.width = "1160px"

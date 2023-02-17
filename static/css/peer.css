@@ -191,8 +191,7 @@ body {
   width: 80%;
 }
 
-
-#copy-button {
+/* #copy-button {
   text-align: center;
   background-color: #1158bd;
   color: #fff;
@@ -202,7 +201,7 @@ body {
   width: 80%;
   bottom: -160px !important;
   cursor: pointer;
-}
+} */
 
 /*--------------------------------------------------------------
 # Exit
@@ -222,7 +221,7 @@ body {
   border-radius: 10px;
   position: absolute;
   width: 100%;
-  bottom: -195px !important;
+  bottom: -160px!important;
   cursor: pointer;
 }
 
@@ -233,7 +232,7 @@ body {
   width: 100%;
 }
 
-.switch-stream-btn {
+.switch-video-btn {
   text-align: center;
   background-color: #1158bd;
   color: #fff;
@@ -242,5 +241,17 @@ body {
   position: absolute;
   width: 100%;
   bottom: -225px !important;
+  cursor: pointer;
+}
+
+.switch-audio-btn {
+  text-align: center;
+  background-color: #1158bd;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  position: absolute;
+  width: 100%;
+  bottom: -195px !important;
   cursor: pointer;
 }
