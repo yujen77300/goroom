@@ -1,7 +1,6 @@
 const exitButton = document.querySelector(".exit-button")
 // const copyButton = document.querySelector("#copy-button")
-const switchVideoBtn = document.querySelector('.switch-video-btn')
-const switchAudioBtn = document.querySelector('.switch-audio-btn')
+const shareScreenBtn = document.getElementById('share-btn')
 const videos = document.querySelector('#videos')
 let localVideo = document.querySelectorAll('.localVideo')
 let eachPeer = document.querySelectorAll('.each-peer')
@@ -10,6 +9,7 @@ let userName = document.querySelector('.username')
 // 判斷視訊畫面是否開啟
 let streamOutput = { audio: true, video: true, }
 let streamNow
+let pcNow
 // 一開始有一個人
 let usersAmount = 1
 
@@ -64,6 +64,7 @@ function connect(stream) {
   // })
   console.log("一開始的pc")
   console.log(pc)
+  pcNow = pc
   // 接收另一端傳遞過來的多媒體資訊(videoTrack ...等)
   // 完成連線後，透過該事件能夠在發現遠端傳輸的多媒體檔案時觸發，來處理/接收多媒體數據
   pc.ontrack = function (event) {
@@ -233,42 +234,56 @@ navigator.mediaDevices.getUserMedia({
   }).catch(err => console.log(err))
 
 
-// ===================== 關閉鏡頭或麥克風 =====================
+// ===================== turn of/off microphone and camera =====================
 // 開關鏡頭的函數
-switchVideoBtn.addEventListener("click", () => {
-  if (streamOutput.video) {
-    stopVideo(streamNow);
-    streamOutput.video = false;
-    setBtnText()
-  } else {
-    startVideo(streamNow)
-    streamOutput.video = true;
-    setBtnText()
-  }
+const videoOpenedBtn = document.getElementById('video-opened-btn')
+const videoClosedBtn = document.getElementById('video-closed-btn')
+videoOpenedBtn.addEventListener("click", () => {
+  console.log("要進來關掉視訊了")
+  stopVideo(streamNow);
+  streamOutput.video = false;
+  videoOpenedBtn.style.display = "none"
+  videoClosedBtn.style.display = "block"
 })
 
-switchAudioBtn.addEventListener("click", () => {
-  if (streamOutput.audio) {
-    stopAudio(streamNow);
-    streamOutput.audio = false;
-    setBtnText()
-  } else {
-    startAudio(streamNow)
-    streamOutput.audio = true;
-    setBtnText()
-  }
+videoClosedBtn.addEventListener("click", () => {
+  console.log("要進來開啟視訊了")
+  startVideo(streamNow)
+  streamOutput.video = true;
+  videoClosedBtn.style.display = "none"
+  videoOpenedBtn.style.display = "block"
 })
-// 更新文字
-function setBtnText() {
-  console.log("狀態: ", streamOutput.audio)
-  switchAudioBtn.textContent = streamOutput.audio ? 'Turn off microphone' : 'Turn on microphone'
-  switchVideoBtn.textContent = streamOutput.video ? 'Turn off camera' : 'Turn on camera'
-}
+
+const audioOpendBtn = document.getElementById('audio-opened-btn')
+const audioClosedBtn = document.getElementById('audio-closed-btn')
+
+audioOpendBtn.addEventListener("click", () => {
+  console.log("要進來關掉了")
+  stopAudio(streamNow);
+  streamOutput.audio = false;
+  audioOpendBtn.style.display = "none"
+  audioClosedBtn.style.display = "block"
+})
+
+audioClosedBtn.addEventListener("click", () => {
+  console.log("要進來開始了")
+  startAudio(streamNow)
+  streamOutput.audio = true;
+  audioClosedBtn.style.display = "none"
+  audioOpendBtn.style.display = "block"
+})
 
 function stopVideo(stream) {
   stream.getVideoTracks()[0].enabled = false;
+  // stream.getVideoTracks()[0].stop()
+  // stream.getTracks().forEach(track => pc.removeTrack(pc.addTrack(track, stream)))
 
-  // // 才會關閉
+  // 會讓整個黑色不見
+  // document.getElementById('localVideo').srcObject = null
+
+
+  // 才會關閉
+  // test(stream)
   // stream.getTracks().forEach(track => {
   //   track.stop()
   // })
@@ -285,11 +300,16 @@ function startVideo(stream) {
   //   audio: true
   // })
   //   .then(stream => {
-  //     document.getElementById('localVideo').srcObject = stream
-  //     stream.getTracks().forEach(track => pc.addTrack(track, stream))
-  //     // connect(stream)
   //     streamNow = stream
-      
+  //     if (streamOutput.audio){
+  //       document.getElementById('localVideo').srcObject = stream
+  //       console.log("重新開始後取得的")
+  //       console.log(stream)
+  //       console.log(stream.getTracks())
+  //     }else{
+  //       stopAudio(stream)
+  //       document.getElementById('localVideo').srcObject = stream
+  //     }
   //   }).catch(err => console.log(err))
 }
 
@@ -300,6 +320,34 @@ function stopAudio(stream) {
 function startAudio(stream) {
   stream.getAudioTracks()[0].enabled = true;
 }
+
+
+// ===================== 分享螢幕 =====================
+
+
+// shareScreenBtn.addEventListener("click", () => {
+//   console.log(streamNow.getVideoTracks())
+//   streamNow.getVideoTracks()[0].stop()
+//   const constraints = {
+//     frameRate: 15,
+//     width: 1280,
+//     height: 720,
+//   }
+//   navigator.mediaDevices
+//     .getDisplayMedia(constraints)
+//     .then(shareStream => {
+//       console.log("這是真想螢幕的stream")
+//       console.log(shareStream)
+//       console.log(shareStream.getTracks())
+//       streamNow.getTracks().forEach(track =>{
+//         if (track.kind === 'video') {
+//           pcNow.addTrack(track, shareStream);
+//         }
+//       })
+
+//     })
+//     .catch(err => console.log(err))
+// })
 
 // ===================== 人數切版 =====================
 function peerSize(usersAmount, localVideo) {

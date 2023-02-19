@@ -5,7 +5,7 @@ body {
   padding: 0;
   font-size: 16px;
   color: #ffffff;
-  background-color: #666666;
+  background-color: #171925;
 
 }
 
@@ -20,6 +20,7 @@ body {
 
 .left-section {
   width: 80%;
+  border: 3px solid red;
 }
 
 #localVideo {
@@ -130,7 +131,7 @@ body {
 }
 
 .right-section {
-  /* border: 3px purple solid; */
+  border: 3px purple solid;
   width: 20%;
 }
 
@@ -221,7 +222,7 @@ body {
   border-radius: 10px;
   position: absolute;
   width: 100%;
-  bottom: -160px!important;
+  bottom: -160px !important;
   cursor: pointer;
 }
 
@@ -232,26 +233,80 @@ body {
   width: 100%;
 }
 
-.switch-video-btn {
-  text-align: center;
-  background-color: #1158bd;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  position: absolute;
-  width: 100%;
-  bottom: -225px !important;
+/*--------------------------------------------------------------
+# switch and share screen button
+--------------------------------------------------------------*/
+
+#share-btn {
   cursor: pointer;
+  background-color: #1158bd
 }
 
-.switch-audio-btn {
-  text-align: center;
-  background-color: #1158bd;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  position: absolute;
+/*--------------------------------------------------------------
+# bottom-section
+--------------------------------------------------------------*/
+#bottom-section {
   width: 100%;
-  bottom: -195px !important;
-  cursor: pointer;
+  /* border: 3px solid yellow; */
+  background-color: #1c1f2e;
+  height: 50px;
+}
+
+#bottom-container {
+  /* border: 3px solid brown; */
+}
+
+#bottom-left {
+  width: 80%;
+  /* border: 3px solid green; */
+}
+
+#bottom-right {
+  width: 20%;
+  /* border: 3px solid blue; */
+}
+
+#audio-opened-btn {
+  background-color: #1158bd;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  color: #fff;
+  height: 40px;
+  width: 40px;
+
+}
+
+#audio-closed-btn {
+  /* background-color: #ea4335; */
+  background-color: #171925;
+  border: 2px solid #2e3231;
+  outline: none;
+  border-radius: 10px;
+  color: #fff;
+  height: 40px;
+  width: 40px;
+  display: none;
+}
+
+#video-opened-btn {
+  background-color: #1158bd;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  color: #fff;
+  height: 40px;
+  width: 40px;
+
+}
+
+#video-closed-btn {
+  background-color: #171925;
+  border: 2px solid #2e3231;
+  outline: none;
+  border-radius: 10px;
+  color: #fff;
+  height: 40px;
+  width: 40px;
+  display: none;
 }
