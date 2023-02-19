@@ -21,6 +21,8 @@ body {
 .left-section {
   width: 80%;
   /* border: 3px solid red; */
+  border-right: 3px solid #242736;
+
 }
 
 #localVideo {
@@ -139,6 +141,7 @@ body {
 
 .right-section {
   width: 20%;
+  padding-left: 5px;
 }
 
 .body {
@@ -232,12 +235,28 @@ body {
 #bottom-section {
   width: 100%;
   background-color: #1c1f2e;
-  height: 50px;
+  height: 55px;
+  border-top: 3px solid #242736;
 }
 
 
 #bottom-left {
   width: 80%;
+  /* border: 3px solid red; */
+  height: 55px;
+}
+
+#all-left-btn {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 100%;
+}
+
+.left-btn-section {
+  /* border: 3px solid blue; */
+  display: flex;
+  gap: 20px
 }
 
 #bottom-right {
