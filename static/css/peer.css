@@ -20,7 +20,7 @@ body {
 
 .left-section {
   width: 80%;
-  border: 3px solid red;
+  /* border: 3px solid red; */
 }
 
 #localVideo {
@@ -90,7 +90,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px
+  gap: 20px;
+  height: 5%;
 }
 
 .attendanceIcon {
@@ -110,7 +111,6 @@ body {
 # chat
 --------------------------------------------------------------*/
 #chat {
-  /* border: 3px green solid; */
   height: 500px;
   margin: 0 auto;
 }
@@ -118,8 +118,7 @@ body {
 .message-header {
   display: flex;
   justify-content: center;
-  color: #1158bd;
-  cursor: pointer;
+  height: 30px;
 }
 
 #chatRoom-title {
@@ -129,10 +128,16 @@ body {
 
 #chat-content {
   display: none;
+  height: 600px;
+}
+
+#chat-body {
+  overflow: auto;
+  height: 590px;
+  /* margin-bottom: 14px; */
 }
 
 .right-section {
-  border: 3px purple solid;
   width: 20%;
 }
 
@@ -142,31 +147,24 @@ body {
 
 .send {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
+
+  justify-content: space-around;
+  /* z-index: 9999 !important; */
 }
 
-.control-input {
-  margin-bottom: 20px;
-}
 
-.send .control-input,
-.send .control {
+
+
+#msg {
   width: 100%;
-}
-
-#msg,
-#chat-input-btn {
-  width: 100%;
-}
-
-#chat-input-btn {
-  background-color: #1158bd;
-  color: #fff;
-  border: none;
+  height: 40px;
   border-radius: 10px;
-  display: none;
+  padding-left: 10px;
+}
 
+#chat-input-btn {
+  display: none;
 }
 
 #chat-alert {
@@ -177,9 +175,7 @@ body {
   height: 10px;
 }
 
-#chat-body {
-  overflow: auto;
-}
+
 
 .log-item {
   color: white;
@@ -227,7 +223,6 @@ body {
 
 .switch {
   position: relative;
-  /* border: 3px solid red; */
   width: 100%;
 }
 
@@ -236,23 +231,17 @@ body {
 --------------------------------------------------------------*/
 #bottom-section {
   width: 100%;
-  /* border: 3px solid yellow; */
   background-color: #1c1f2e;
   height: 50px;
 }
 
-/* #bottom-container {
-  border: 3px solid brown;
-} */
 
 #bottom-left {
   width: 80%;
-  /* border: 3px solid green; */
 }
 
 #bottom-right {
   width: 20%;
-  /* border: 3px solid blue; */
 }
 
 #audio-opened-btn {
@@ -267,7 +256,6 @@ body {
 }
 
 #audio-closed-btn {
-  /* background-color: #ea4335; */
   background-color: #171925;
   border: 2px solid #2e3231;
   outline: none;
