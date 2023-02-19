@@ -80,9 +80,6 @@
         <!-- <div id="copy">
         <div id="copy-button">Copy link</div>
       </div> -->
-        <div class="exit">
-          <div class="exit-button">Exit</div>
-        </div>
         <!-- <div class="switch">
         <div id="share-btn">Share screen</div>
       </div> -->
@@ -96,7 +93,7 @@
           <div class="left-btn-section">
             <div>
               <button id="audio-opened-btn">
-                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em"
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="50 50 400 400" height="1em"
                   width="1em" xmlns="http://www.w3.org/2000/svg">
                   <path d="M192 448h128m64-240v32c0 70.4-57.6 128-128 128h0c-70.4 0-128-57.6-128-128v-32m128 160v80"
                     stroke-width="20" stroke-linejoin="round" stroke-linecap="round" fill="none"></path>
@@ -105,8 +102,8 @@
                   </path>
                 </svg>
               </button>
-              <button id="audio-closed-btn"><svg stroke="currentColor" fill="currentColor"
-                  stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+              <button id="audio-closed-btn"><svg stroke="currentColor" fill="currentColor" stroke-width="0"
+                  viewBox="50 50 400 400" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
                   <path fill="none" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M432 400L96 64">
                   </path>
                   <path
@@ -117,7 +114,7 @@
                   </path>
                 </svg></button>
             </div>
-            <div >
+            <div>
               <button id="video-opened-btn">
                 <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em"
                   width="1em" xmlns="http://www.w3.org/2000/svg">
@@ -127,8 +124,7 @@
                 </svg>
               </button>
               <button id="video-closed-btn">
-                <svg
-                  stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em"
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em"
                   width="1em" xmlns="http://www.w3.org/2000/svg">
                   <path
                     d="M336 179.52A67.52 67.52 0 00268.48 112h-79.2a4 4 0 00-2.82 6.83l142.71 142.71a4 4 0 006.83-2.82zM16 180v152a68 68 0 0068 68h184a67.66 67.66 0 0042.84-15.24 4 4 0 00.33-6L54.41 122a4 4 0 00-4.87-.62A68 68 0 0016 180zm448 204.39a32 32 0 01-13-2.77 15.77 15.77 0 01-2.71-1.54l-82.71-58.22A32 32 0 01352 295.7v-79.4a32 32 0 0113.58-26.16l82.71-58.22a15.77 15.77 0 012.71-1.54 32 32 0 0145 29.24v192.76a32 32 0 01-32 32z">
@@ -139,7 +135,18 @@
               </button>
             </div>
           </div>
-          <div class="center-btn-section"></div>
+          <div class="center-btn-section">
+            <button id="exit-btn">
+              <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="20" width="20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill="none" d="M0 0h24v24H0z"></path>
+                <path
+                  d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.956.956 0 01-.29-.7c0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28a11.27 11.27 0 00-2.67-1.85.996.996 0 01-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z">
+                </path>
+              </svg>
+              <span class="hidden sm:block text-xs">Exit</span>
+            </button>
+          </div>
           <div class="right-btn-section"></div>
         </div>
       </div>

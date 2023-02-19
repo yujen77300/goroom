@@ -1,4 +1,4 @@
-const exitButton = document.querySelector(".exit-button")
+const exitButton = document.getElementById("exit-btn")
 // const copyButton = document.querySelector("#copy-button")
 const shareScreenBtn = document.getElementById('share-btn')
 const videos = document.querySelector('#videos')

@@ -205,35 +205,6 @@ body {
 } */
 
 /*--------------------------------------------------------------
-# Exit
---------------------------------------------------------------*/
-
-.exit {
-  position: relative;
-  /* border: 3px solid red; */
-  width: 100%;
-}
-
-.exit-button {
-  text-align: center;
-  background-color: #1158bd;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  position: absolute;
-  width: 100%;
-  bottom: -160px !important;
-  cursor: pointer;
-}
-
-
-.switch {
-  position: relative;
-  /* border: 3px solid red; */
-  width: 100%;
-}
-
-/*--------------------------------------------------------------
 # switch and share screen button
 --------------------------------------------------------------*/
 
@@ -242,6 +213,11 @@ body {
   background-color: #1158bd
 }
 
+.switch {
+  position: relative;
+  /* border: 3px solid red; */
+  width: 100%;
+}
 /*--------------------------------------------------------------
 # bottom-section
 --------------------------------------------------------------*/
@@ -309,4 +285,14 @@ body {
   height: 40px;
   width: 40px;
   display: none;
+}
+
+#exit-btn {
+  background-color: #ea4335;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  height: 40px;
+  width: 90px;
+  color: #fff;
 }
