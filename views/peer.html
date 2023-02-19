@@ -68,7 +68,18 @@
                       <input class="input" id="msg" type="text" placeholder="type message...">
                     </div>
                     <div class="control">
-                      <input id="chat-button" class="button is-info" type="submit" value="Send" />
+                      <input id="chat-input-btn" class="button is-info" type="submit" value="Send" />
+                      <!-- <button id="chat-btn" class="button is-info" type="submit">
+                        Send
+                      </button> -->
+                      <button id="chat-btn"><svg
+                          stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
+                          stroke-linejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                          <line x1="22" y1="2" x2="11" y2="13"></line>
+                          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                      </button>
+
                     </div>
                   </div>
                 </div>
@@ -147,7 +158,18 @@
               <span class="hidden sm:block text-xs">Exit</span>
             </button>
           </div>
-          <div class="right-btn-section"></div>
+          <div class="right-btn-section">
+            <div>
+              <button id="chatroom-btn">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em"
+                  width="1em" xmlns="http://www.w3.org/2000/svg">
+                  <path fill="none" stroke-linejoin="round" stroke-width="32"
+                    d="M408 64H104a56.16 56.16 0 00-56 56v192a56.16 56.16 0 0056 56h40v80l93.72-78.14a8 8 0 015.13-1.86H408a56.16 56.16 0 0056-56V120a56.16 56.16 0 00-56-56z">
+                  </path>
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
       <div id="bottom-right">右邊</div>

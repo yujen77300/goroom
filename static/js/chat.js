@@ -2,29 +2,52 @@ let msg = document.getElementById("msg");
 let log = document.getElementById("log");
 let chat = document.getElementById('chat-content');
 let slideOpen = false;
-const chatButton = document.getElementById('chat-button')
+const chatInputButton = document.getElementById('chat-input-btn')
+const chatBtn = document.getElementById('chat-btn');
 const chatAlert = document.getElementById('chat-alert')
 const messageHeader = document.querySelector('.message-header')
 const chatBody = document.getElementById('chat-body')
 let account = ""
 
-messageHeader.addEventListener("click", () => {
-    slideToggle()
-})
+// messageHeader.addEventListener("click", () => {
+//     slideToggle()
+// })
 
 connectChat();
 
-function slideToggle() {
-
-    if (slideOpen) {
-        chat.style.display = 'none';
-        slideOpen = false;
-    } else {
+// ===================== chatroom展開 =====================
+const chatroomBtn = document.getElementById('chatroom-btn')
+chatroomBtn.addEventListener("click", () => {
+    if (slideOpen == false) {
+        console.log("近來按鈕")
+        console.log(chatroomBtn)
+        chatroomBtn.style.backgroundColor = "#171925"
+        chatroomBtn.style.border = "2px solid #2e3231"
+        // chatroomShowed = false
         chat.style.display = 'block'
         chatAlert.style.display = 'none';
         slideOpen = true
+    } else {
+        console.log("近來這個按鈕")
+        chatroomBtn.style.border = "none"
+        chatroomBtn.style.backgroundColor = "#1158bd"
+        chat.style.display = 'none';
+        slideOpen = false;
     }
-}
+})
+
+
+// function slideToggle() {
+
+//     if (slideOpen) {
+//         chat.style.display = 'none';
+//         slideOpen = false;
+//     } else {
+//         chat.style.display = 'block'
+//         chatAlert.style.display = 'none';
+//         slideOpen = true
+//     }
+// }
 
 function appendLog(item) {
     // 在附加元素之前，檢查是不是可以產生卷軸
@@ -67,6 +90,10 @@ function currentTime() {
     return hour + ":" + minute
 }
 
+chatBtn.addEventListener("click", () => {
+    chatInputButton.click()
+})
+
 document.getElementById("form").onsubmit = function () {
     if (!chatWs) {
         return false;
@@ -75,18 +102,10 @@ document.getElementById("form").onsubmit = function () {
         return false;
     }
     console.log("近來這個聊天表格")
-    // updateUserName()
-    //     .then(() => {
-    //         console.log("現在的名字是")
-    //         console.log(account)
-    //         chatWs.send(account + "/" + msg.value);
-    //         msg.value = "";
-    //         return false;
-    //     });
     updateUserName()
     console.log("現在的名字是")
     console.log(account)
-    chatWs.send(account+"/"+msg.value);
+    chatWs.send(account + "/" + msg.value);
     msg.value = "";
     return false;
 };
@@ -103,7 +122,7 @@ function connectChat() {
     chatWs = new WebSocket(ChatWebsocketAddr)
     chatWs.onclose = function (e) {
         console.log("websocket has closed")
-        chatButton.disabled = true
+        chatInputButton.disabled = true
         setTimeout(function () {
             connectChat();
         }, 1000);
@@ -132,7 +151,7 @@ function connectChat() {
 
     setTimeout(function () {
         if (chatWs.readyState === WebSocket.OPEN) {
-            chatButton.disabled = false
+            chatInputButton.disabled = false
         }
     }, 1000);
 }

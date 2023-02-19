@@ -94,7 +94,7 @@ body {
 }
 
 .attendanceIcon {
-  background-image: url("../img/people.png");
+  background-image: url("../img/conference.png");
   height: 24px;
   width: 24px;
   background-size: center;
@@ -124,6 +124,7 @@ body {
 
 #chatRoom-title {
   font-size: 20px;
+  color: white;
 }
 
 #chat-content {
@@ -155,15 +156,16 @@ body {
 }
 
 #msg,
-#chat-button {
+#chat-input-btn {
   width: 100%;
 }
 
-#chat-button {
+#chat-input-btn {
   background-color: #1158bd;
   color: #fff;
   border: none;
   border-radius: 10px;
+  display: none;
 
 }
 
@@ -181,6 +183,16 @@ body {
 
 .log-item {
   color: white;
+}
+
+#chat-btn {
+  color: white;
+  background-color: #1158bd;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  width: 40px;
+  height: 40px;
 }
 
 /*--------------------------------------------------------------
@@ -218,6 +230,7 @@ body {
   /* border: 3px solid red; */
   width: 100%;
 }
+
 /*--------------------------------------------------------------
 # bottom-section
 --------------------------------------------------------------*/
@@ -228,9 +241,9 @@ body {
   height: 50px;
 }
 
-#bottom-container {
-  /* border: 3px solid brown; */
-}
+/* #bottom-container {
+  border: 3px solid brown;
+} */
 
 #bottom-left {
   width: 80%;
@@ -295,4 +308,14 @@ body {
   height: 40px;
   width: 90px;
   color: #fff;
+}
+
+#chatroom-btn {
+  background-color: #1158bd;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  color: #fff;
+  height: 40px;
+  width: 40px;
 }
