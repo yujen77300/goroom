@@ -141,7 +141,7 @@ body {
 
 .right-section {
   width: 20%;
-  padding-left: 5px;
+  padding-left: 8px;
 }
 
 .body {
@@ -178,10 +178,35 @@ body {
   height: 10px;
 }
 
+#log {
+  /* border: 3px solid blue; */
+}
 
-
-.log-item {
+.log-item, .my-log-item {
   color: white;
+  /* border: 3px solid red; */
+  margin-bottom: 5px;
+}
+
+.my-log-item{
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+}
+
+.log-item .log-msg {
+  background-color: #757575;
+  /* border: 3px solid #242736; */
+  display: inline-block;
+  padding: 3px 5px;
+  border-radius: 5px;
+}
+
+.my-log-item .log-msg {
+  background-color: #1158bd;
+  display: inline-block;
+  padding: 3px 5px;
+  border-radius: 5px;
 }
 
 #chat-btn {

@@ -141,8 +141,26 @@ function connectChat() {
         }
         let item = document.createElement("div");
         item.className = "log-item";
-        item.innerText = `${accountName}` + `(${currentTime()})` + " - " + messages;
-        appendLog(item);
+        // item.innerText = `${accountName}` + `(${currentTime()})` + " - " + messages;
+        let logUser = document.createElement("div")
+        logUser.className = "log-user"
+        logUser.innerText = `${accountName}` + `(${currentTime()})`;
+        let logMsg = document.createElement("div")
+        logMsg.className = "log-msg"
+        logMsg.innerText = messages
+
+        let myLogItem = document.createElement("div")
+        myLogItem.className = "my-log-item"
+        if (account == accountName) {
+            myLogItem.appendChild(logUser)
+            myLogItem.appendChild(logMsg)
+            appendLog(myLogItem);
+        } else {
+            item.appendChild(logUser)
+            item.appendChild(logMsg)
+            appendLog(item);
+        }
+
     }
 
     chatWs.onerror = function (e) {
