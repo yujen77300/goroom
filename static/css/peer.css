@@ -20,7 +20,6 @@ body {
 
 .left-section {
   width: 80%;
-  /* border: 3px solid red; */
   border-right: 3px solid #242736;
 
 }
@@ -35,8 +34,7 @@ body {
 .each-peer {
   /* width: 640px; */
   /* height: 360px;  */
-  /* border: 3px purple solid; */
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 #localVideo1 {
@@ -68,17 +66,14 @@ body {
 }
 
 #videos {
-  /* border: 3px red solid; */
   height: 100%;
 }
 
 #peers {
-  /* border: 5px yellow solid; */
   height: 100%;
 }
 
 .left-section {
-  /* border: 6px blue solid; */
   height: 100%;
   height: 700px;
 }
@@ -129,7 +124,7 @@ body {
 }
 
 #chat-content {
-  display: none;
+  /* display: none; */
   height: 600px;
 }
 
@@ -137,6 +132,20 @@ body {
   overflow: auto;
   height: 590px;
   /* margin-bottom: 14px; */
+}
+
+#chat-body::-webkit-scrollbar{
+  width: 5px;
+}
+
+/* 調整滾動條滑塊的樣式 */
+#chat-body::-webkit-scrollbar-thumb {
+  background-color: #e8e8e8;
+  border-radius: 5px;
+}
+
+#chat-body::-webkit-scrollbar-thumb:hover {
+  background-color: #757575;
 }
 
 .right-section {
@@ -178,9 +187,6 @@ body {
   height: 10px;
 }
 
-#log {
-  /* border: 3px solid blue; */
-}
 
 .log-item, .my-log-item {
   color: white;
@@ -192,11 +198,11 @@ body {
   display: flex;
   flex-direction: column;
   align-items: end;
+  padding-right: 10px;
 }
 
 .log-item .log-msg {
   background-color: #757575;
-  /* border: 3px solid #242736; */
   display: inline-block;
   padding: 3px 5px;
   border-radius: 5px;
@@ -267,7 +273,6 @@ body {
 
 #bottom-left {
   width: 80%;
-  /* border: 3px solid red; */
   height: 55px;
 }
 
@@ -279,7 +284,6 @@ body {
 }
 
 .left-btn-section {
-  /* border: 3px solid blue; */
   display: flex;
   gap: 20px
 }
@@ -350,4 +354,9 @@ body {
   color: #fff;
   height: 40px;
   width: 40px;
+}
+
+.right-btn-section{
+  display:flex;
+  gap:5px
 }

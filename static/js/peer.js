@@ -352,55 +352,131 @@ function startAudio(stream) {
 // ===================== 人數切版 =====================
 function peerSize(usersAmount, localVideo) {
   if (usersAmount === 1) {
-    localVideo[0].style.width = "1160px"
-    eachPeer[0].style.width = "1160px"
+    localVideo[0].style.width = "1140px"
+    eachPeer[0].style.width = "1140px"
     let videoWidth = (1160 * 9) / 16
     eachPeer[0].style.height = `${videoWidth}px`
-    userName.style.bottom = `-${videoWidth - 60}px`
+    // userName.style.bottom = `-${videoWidth - 60}px`
+    videos.style.cssText = "display:flex;justify-content:center;align-items:center;"
   } else if (usersAmount === 2) {
-    localVideo[0].style.width = "580px"
-    localVideo[1].style.width = "580px"
     let eachPeer = document.querySelectorAll('.each-peer')
-    eachPeer[0].style.width = "580px"
-    eachPeer[1].style.width = "580px"
-    let videoWidth = (580 * 9) / 16
+    localVideo[0].style.width = "565px"
+    localVideo[1].style.width = "565px"
+    // let eachPeer = document.querySelectorAll('.each-peer')
+    eachPeer[0].style.width = "565px"
+    eachPeer[1].style.width = "565px"
+    let videoWidth = (565 * 9) / 16
     eachPeer[0].style.height = `${videoWidth}px`
     eachPeer[1].style.height = `${videoWidth}px`
-    userName.style.bottom = `-${videoWidth - 60}px`
+    // userName.style.bottom = `-${videoWidth - 60}px`
     videos.style.display = "flex"
     videos.style.gap = "10px"
   } else if (usersAmount === 3) {
-    localVideo[0].style.width = "580px"
-    localVideo[1].style.width = "580px"
-    localVideo[2].style.width = "580px"
     let eachPeer = document.querySelectorAll('.each-peer')
-    eachPeer[0].style.width = "580px"
-    eachPeer[1].style.width = "580px"
-    eachPeer[2].style.width = "580px"
-    let videoWidth = (580 * 9) / 16
+    localVideo[0].style.width = "565px"
+    localVideo[1].style.width = "565px"
+    localVideo[2].style.width = "565px"
+    // let eachPeer = document.querySelectorAll('.each-peer')
+    eachPeer[0].style.width = "565px"
+    eachPeer[1].style.width = "565px"
+    eachPeer[2].style.width = "565px"
+    let videoWidth = (565 * 9) / 16
     eachPeer[0].style.height = `${videoWidth}px`
     eachPeer[1].style.height = `${videoWidth}px`
     eachPeer[2].style.height = `${videoWidth}px`
-    userName.style.bottom = `-${videoWidth - 60}px`
+    // userName.style.bottom = `-${videoWidth - 60}px`
     videos.style.display = "flex"
     videos.style.flexWrap = "wrap"
     videos.style.gap = "10px"
   } else if (usersAmount === 4) {
-    localVideo[0].style.width = "580px"
-    localVideo[1].style.width = "580px"
-    localVideo[2].style.width = "580px"
-    localVideo[3].style.width = "580px"
     let eachPeer = document.querySelectorAll('.each-peer')
-    eachPeer[0].style.width = "580px"
-    eachPeer[1].style.width = "580px"
-    eachPeer[2].style.width = "580px"
-    eachPeer[3].style.width = "580px"
-    let videoWidth = (580 * 9) / 16
+    localVideo[0].style.width = "565px"
+    localVideo[1].style.width = "565px"
+    localVideo[2].style.width = "565px"
+    localVideo[3].style.width = "565px"
+    // let eachPeer = document.querySelectorAll('.each-peer')
+    eachPeer[0].style.width = "565px"
+    eachPeer[1].style.width = "565px"
+    eachPeer[2].style.width = "565px"
+    eachPeer[3].style.width = "565px"
+    let videoWidth = (565 * 9) / 16
     eachPeer[0].style.height = `${videoWidth}px`
     eachPeer[1].style.height = `${videoWidth}px`
     eachPeer[2].style.height = `${videoWidth}px`
     eachPeer[3].style.height = `${videoWidth}px`
-    userName.style.bottom = `-${videoWidth - 60}px`
+    // userName.style.bottom = `-${videoWidth - 60}px`
+    videos.style.display = "flex"
+    videos.style.flexWrap = "wrap"
+    videos.style.gap = "10px"
+  }else if ((usersAmount>4 && usersAmount<=6)||usersAmount==9){
+    let eachPeer = document.querySelectorAll('.each-peer')
+    let videoWidth = (373 * 9) / 16
+    for (let i =0; i<usersAmount;i++){
+      localVideo[i].style.width = "373px"
+      eachPeer[i].style.width = "373px"
+      eachPeer[i].style.height = `${videoWidth}px`
+    }
+    // userName.style.bottom = `-${videoWidth - 60}px`
+    videos.style.display = "flex"
+    videos.style.flexWrap = "wrap"
+    videos.style.gap = "10px"
+  } else if ((usersAmount > 6 && usersAmount <= 8) || (usersAmount > 9 && usersAmount <= 12)) {
+    let eachPeer = document.querySelectorAll('.each-peer')
+    let videoWidth = (277 * 9) / 16
+    for (let i = 0; i < usersAmount; i++) {
+      localVideo[i].style.width = "277px"
+      eachPeer[i].style.width = "277px"
+      eachPeer[i].style.height = `${videoWidth}px`
+    }
+    // userName.style.bottom = `-${videoWidth - 60}px`
+    videos.style.display = "flex"
+    videos.style.flexWrap = "wrap"
+    videos.style.gap = "10px"
+  } else if ((usersAmount > 12 && usersAmount <= 15) || (usersAmount > 18 && usersAmount <= 20)) {
+    let eachPeer = document.querySelectorAll('.each-peer')
+    let videoWidth = (220 * 9) / 16
+    for (let i = 0; i < usersAmount; i++) {
+      localVideo[i].style.width = "220px"
+      eachPeer[i].style.width = "220px"
+      eachPeer[i].style.height = `${videoWidth}px`
+    }
+    // userName.style.bottom = `-${videoWidth - 60}px`
+    videos.style.display = "flex"
+    videos.style.flexWrap = "wrap"
+    videos.style.gap = "10px"
+  }else if ((usersAmount > 15 && usersAmount <= 18) || (usersAmount > 20 && usersAmount <= 24)) {
+    let eachPeer = document.querySelectorAll('.each-peer')
+    let videoWidth = (181 * 9) / 16
+    for (let i = 0; i < usersAmount; i++) {
+      localVideo[i].style.width = "181px"
+      eachPeer[i].style.width = "181px"
+      eachPeer[i].style.height = `${videoWidth}px`
+    }
+    // userName.style.bottom = `-${videoWidth - 60}px`
+    videos.style.display = "flex"
+    videos.style.flexWrap = "wrap"
+    videos.style.gap = "10px"
+  } else if (usersAmount > 24 && usersAmount <= 28) {
+    let eachPeer = document.querySelectorAll('.each-peer')
+    let videoWidth = (154 * 9) / 16
+    for (let i = 0; i < usersAmount; i++) {
+      localVideo[i].style.width = "154px"
+      eachPeer[i].style.width = "154px"
+      eachPeer[i].style.height = `${videoWidth}px`
+    }
+    // userName.style.bottom = `-${videoWidth - 60}px`
+    videos.style.display = "flex"
+    videos.style.flexWrap = "wrap"
+    videos.style.gap = "10px"
+  } else if (usersAmount > 29) {
+    let eachPeer = document.querySelectorAll('.each-peer')
+    let videoWidth = (133 * 9) / 16
+    for (let i = 0; i < usersAmount; i++) {
+      localVideo[i].style.width = "133px"
+      eachPeer[i].style.width = "133px"
+      eachPeer[i].style.height = `${videoWidth}px`
+    }
+    // userName.style.bottom = `-${videoWidth - 60}px`
     videos.style.display = "flex"
     videos.style.flexWrap = "wrap"
     videos.style.gap = "10px"

@@ -1,7 +1,7 @@
 let msg = document.getElementById("msg");
 let log = document.getElementById("log");
 let chat = document.getElementById('chat-content');
-let slideOpen = false;
+let slideOpen = true;
 const chatInputButton = document.getElementById('chat-input-btn')
 const chatBtn = document.getElementById('chat-btn');
 const chatAlert = document.getElementById('chat-alert')
@@ -15,24 +15,41 @@ let account = ""
 
 connectChat();
 
-// ===================== chatroom展開 =====================
+// ===================== chatroom展開與關閉 =====================
 const chatroomBtn = document.getElementById('chatroom-btn')
+const rightSection = document.querySelector('.right-section')
+const leftSection = document.querySelector('.left-section')
+const bottomLeft = document.getElementById('bottom-left')
+const bottomRight = document.getElementById('bottom-right')
+const videosWithChatroom =document.getElementById('videos')
 chatroomBtn.addEventListener("click", () => {
-    if (slideOpen == false) {
-        console.log("近來按鈕")
+    if (slideOpen == true) {
+        console.log("開變成關")
         console.log(chatroomBtn)
         chatroomBtn.style.backgroundColor = "#171925"
         chatroomBtn.style.border = "2px solid #2e3231"
-        // chatroomShowed = false
-        chat.style.display = 'block'
-        chatAlert.style.display = 'none';
-        slideOpen = true
+        rightSection.style.display="none"
+        leftSection.style.borderRight="none"
+        leftSection.style.width = "100%"
+        rightSection.style.width = "0%"
+        bottomLeft.style.width="100%"
+        bottomRight.style.width = "0%"
+        videosWithChatroom.style.cssText ="display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;"
+ 
+        slideOpen = false
     } else {
-        console.log("近來這個按鈕")
+        console.log("關變成開")
         chatroomBtn.style.border = "none"
         chatroomBtn.style.backgroundColor = "#1158bd"
-        chat.style.display = 'none';
-        slideOpen = false;
+        rightSection.style.display = "block"
+        leftSection.style.borderRight = "3px solid #242736"
+        bottomLeft.style.width = "80%"
+        bottomRight.style.width = "20%"
+        leftSection.style.width = "80%"
+        rightSection.style.width = "20%"
+        videosWithChatroom.style.cssText = "display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;"
+        chatAlert.style.display = 'none';
+        slideOpen = true;
     }
 })
 
