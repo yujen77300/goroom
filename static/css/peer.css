@@ -14,6 +14,76 @@ body {
 }
 
 /*--------------------------------------------------------------
+# beforeEnter-section
+--------------------------------------------------------------*/
+#testVideo {
+  border-radius: 10px;
+  width: 640px;
+  height: 360px;
+  transform: rotateY(180deg);
+}
+
+.beforeEnter-section {
+  /* display: none; */
+  position: absolute;
+  top: 50%;
+  left: 45%;
+  transform: translate(-50%, -50%);
+
+}
+
+.test-ready {
+  font-size: 22px;
+}
+
+
+#test-section {
+  display: flex;
+  /* border: 3px solid red; */
+  gap: 70px
+}
+
+.test-right-section {
+  /* border: 3px solid red; */
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.ready-item {
+  display: flex;
+}
+
+.testAvatar {
+  height: 100px;
+  width: 100px;
+  background-size: cover;
+  background-position: center center;
+  border-radius: 50%;
+  margin-top: 20px;
+}
+
+.testName {
+  font-size: 18px;
+}
+
+
+.test-join-btn,.test-exit-btn {
+  cursor: pointer;
+  background-color: #1158bd;
+  color: #fff;
+  border-radius: 10px;
+  padding: 3px 10px;
+  font-size: 18px;
+}
+
+.test-join-btn:hover,.test-exit-btn:hover {
+  background-color: #61a3df;
+}
+
+/*--------------------------------------------------------------
 # peers
 --------------------------------------------------------------*/
 
@@ -37,20 +107,6 @@ body {
   margin-top: 10px;
 }
 
-#localVideo1 {
-  width: 640px;
-  height: 360px;
-  border-radius: 10px;
-  position: absolute;
-
-}
-
-#localVideo2 {
-  width: 640px;
-  height: 360px;
-  border-radius: 10px;
-  position: absolute;
-}
 
 .username {
   background-color: #171925;
@@ -134,7 +190,7 @@ body {
   /* margin-bottom: 14px; */
 }
 
-#chat-body::-webkit-scrollbar{
+#chat-body::-webkit-scrollbar {
   width: 5px;
 }
 
@@ -188,13 +244,14 @@ body {
 }
 
 
-.log-item, .my-log-item {
+.log-item,
+.my-log-item {
   color: white;
   /* border: 3px solid red; */
   margin-bottom: 5px;
 }
 
-.my-log-item{
+.my-log-item {
   display: flex;
   flex-direction: column;
   align-items: end;
@@ -263,7 +320,12 @@ body {
 /*--------------------------------------------------------------
 # bottom-section
 --------------------------------------------------------------*/
+#body-section {
+  display: none;
+}
+
 #bottom-section {
+  display: none;
   width: 100%;
   background-color: #1c1f2e;
   height: 55px;
@@ -292,7 +354,8 @@ body {
   width: 20%;
 }
 
-#audio-opened-btn {
+#audio-opened-btn,
+#test-audio-opened-btn {
   background-color: #1158bd;
   border: none;
   outline: none;
@@ -303,7 +366,8 @@ body {
 
 }
 
-#audio-closed-btn {
+#audio-closed-btn,
+#test-audio-closed-btn {
   background-color: #171925;
   border: 2px solid #2e3231;
   outline: none;
@@ -314,7 +378,8 @@ body {
   display: none;
 }
 
-#video-opened-btn {
+#video-opened-btn,
+#test-video-opened-btn {
   background-color: #1158bd;
   border: none;
   outline: none;
@@ -325,7 +390,8 @@ body {
 
 }
 
-#video-closed-btn {
+#video-closed-btn,
+#test-video-closed-btn {
   background-color: #171925;
   border: 2px solid #2e3231;
   outline: none;
@@ -356,7 +422,7 @@ body {
   width: 40px;
 }
 
-.right-btn-section{
-  display:flex;
-  gap:5px
+.right-btn-section {
+  display: flex;
+  gap: 5px
 }

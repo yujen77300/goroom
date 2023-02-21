@@ -12,8 +12,78 @@
 </head>
 
 <body>
+  <!-- ======= Test Section ======= -->
+  <div class="beforeEnter-section">
+    <div class="container" id="test-section">
+      <div class="test-left-section">
+        <video id="testVideo" class="testVideo" autoplay></video>
+      </div>
+      <div class="test-right-section">
+        <div class="ready-item">
+          <div class="test-ready">Ready to join?</div>
+        </div>
+        <div class="ready-item">
+          <div class="testAvatar"></div>
+        </div>
+        <div class="ready-item">
+          <div class="testName"></div>
+        </div>
+        <div class="ready-item">
+          <div style="margin-right: 10px;">
+            <button id="test-audio-opened-btn">
+              <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="50 50 400 400" height="1em"
+                width="1em" xmlns="http://www.w3.org/2000/svg">
+                <path d="M192 448h128m64-240v32c0 70.4-57.6 128-128 128h0c-70.4 0-128-57.6-128-128v-32m128 160v80"
+                  stroke-width="20" stroke-linejoin="round" stroke-linecap="round" fill="none"></path>
+                <path
+                  d="M256 320a78.83 78.83 0 01-56.55-24.1A80.89 80.89 0 01176 239V128a79.69 79.69 0 0180-80c44.86 0 80 35.14 80 80v111c0 44.66-35.89 81-80 81z">
+                </path>
+              </svg>
+            </button>
+            <button id="test-audio-closed-btn"><svg stroke="currentColor" fill="currentColor" stroke-width="0"
+                viewBox="50 50 400 400" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                <path fill="none" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M432 400L96 64">
+                </path>
+                <path
+                  d="M400 240v-31.55c0-8.61-6.62-16-15.23-16.43A16 16 0 00368 208v32a111.68 111.68 0 01-2.68 24.38 2 2 0 00.53 1.84l22.59 22.59a2 2 0 003.29-.72A143.27 143.27 0 00400 240zM256 352a112.36 112.36 0 01-112-112v-31.55c0-8.61-6.62-16-15.23-16.43A16 16 0 00112 208v32c0 74 56.1 135.12 128 143.11V432h-47.55c-8.61 0-16 6.62-16.43 15.23A16 16 0 00192 464h127.55c8.61 0 16-6.62 16.43-15.23A16 16 0 00320 432h-48v-48.89a143.08 143.08 0 0052-16.22 4 4 0 00.91-6.35l-18.4-18.39a3 3 0 00-3.41-.58A111 111 0 01256 352zm1.14-304a79.66 79.66 0 00-68.47 36.57 4 4 0 00.54 5L332.59 233a2 2 0 003.41-1.42V128.91C336 85 301 48.6 257.14 48z">
+                </path>
+                <path
+                  d="M179.41 215a2 2 0 00-3.41 1.42V239a80.89 80.89 0 0023.45 56.9 78.55 78.55 0 0077.8 21.19 2 2 0 00.86-3.35z">
+                </path>
+              </svg></button>
+          </div>
+          <div>
+            <button id="test-video-opened-btn">
+              <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em"
+                width="1em" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M336 208v-80a16 16 0 00-16-16H32a16 16 0 00-16 16v256a16 16 0 0016 16h288a16 16 0 0016-16v-80l160 96V112z">
+                </path>
+              </svg>
+            </button>
+            <button id="test-video-closed-btn">
+              <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em"
+                width="1em" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M336 179.52A67.52 67.52 0 00268.48 112h-79.2a4 4 0 00-2.82 6.83l142.71 142.71a4 4 0 006.83-2.82zM16 180v152a68 68 0 0068 68h184a67.66 67.66 0 0042.84-15.24 4 4 0 00.33-6L54.41 122a4 4 0 00-4.87-.62A68 68 0 0016 180zm448 204.39a32 32 0 01-13-2.77 15.77 15.77 0 01-2.71-1.54l-82.71-58.22A32 32 0 01352 295.7v-79.4a32 32 0 0113.58-26.16l82.71-58.22a15.77 15.77 0 012.71-1.54 32 32 0 0145 29.24v192.76a32 32 0 01-32 32z">
+                </path>
+                <path fill="none" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M416 416L80 80">
+                </path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="ready-item">
+          <div class="test-join-btn" style="margin-right: 10px;">Join room</div>
+          <div class="test-exit-btn">Exit</div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
   <!-- ======= Main Section ======= -->
-  <div>
+  <div id="body-section">
     <div class="container-fluid">
       <div class="left-section">
         <div id="peers">
@@ -184,7 +254,7 @@
     console.log("RoomLink : ", RoomLink)
     console.log("StreamLink : ", StreamLink)
   </script>
-  <!-- <script src="/js/index.js"></script> -->
+  <!-- <script type="module" src="/js/before.js"></script> -->
   <script src="/js/peer.js"></script>
   <script src="/js/chat.js"></script>
   <script src="/js/viewer.js"></script>

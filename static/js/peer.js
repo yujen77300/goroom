@@ -8,12 +8,20 @@ let viewerCountNow = document.querySelector('#viewer-count')
 let userName = document.querySelector('.username')
 // 判斷視訊畫面是否開啟
 let streamOutput = { audio: true, video: true, }
+// 是否進行設定
+let defaultSet = false
+// import { streamOutput } from './before.js';
+
 let streamNow
 let pcNow
 // 一開始有一個人
 let usersAmount = 1
 
 peerSize(usersAmount, localVideo)
+peerConnect(defaultSet)
+
+
+
 
 exitButton.addEventListener("click", function () {
   window.location.href = "/member";
@@ -216,22 +224,115 @@ function connect(stream) {
 }
 
 // 這是最一開始
-navigator.mediaDevices.getUserMedia({
-  video: {
-    width: { min: 1280 },
-    height: { min: 720 }
-  },
-  audio: true
-})
-  .then(stream => {
-    console.log("這是一開始的stream")
-    console.log(stream)
+function peerConnect(defaultSet) {
+  if (defaultSet == true) {
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        width: { min: 1280 },
+        height: { min: 720 }
+      },
+      audio: true
+    })
+      .then(stream => {
+        console.log("這是一開始的stream")
+        console.log(stream)
 
-    document.getElementById('localVideo').srcObject = stream
-    // document.getElementById('localVideo2').srcObject = stream
-    connect(stream)
-    streamNow = stream
-  }).catch(err => console.log(err))
+        document.getElementById('localVideo').srcObject = stream
+        connect(stream)
+        streamNow = stream
+        audioVideoDefault(streamOutput.audio, streamOutput.video)
+      }).catch(err => console.log(err))
+  } else {
+    //  ===================== Test section =====================
+    const testVideoClosedBtn = document.getElementById('test-video-closed-btn')
+    const testVideoOpenedBtn = document.getElementById('test-video-opened-btn')
+    const testAudioClosedBtn = document.getElementById('test-audio-closed-btn')
+    const testAudioOpenedBtn = document.getElementById('test-audio-opened-btn')
+
+    getTestUserAvatar()
+    getUserName()
+
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        width: { min: 815 },
+        height: { min: 480 }
+      },
+      audio: true
+    })
+      .then(testStream => {
+        console.log(testStream)
+        document.getElementById('testVideo').srcObject = testStream
+        testVideoOpenedBtn.addEventListener("click", () => {
+          streamOutput.video = false;
+          testVideoOpenedBtn.style.display = "none"
+          testVideoClosedBtn.style.display = "block"
+          testStream.getVideoTracks()[0].enabled = false;
+        })
+        testVideoClosedBtn.addEventListener("click", () => {
+          streamOutput.video = true;
+          testVideoOpenedBtn.style.display = "block"
+          testVideoClosedBtn.style.display = "none"
+          testStream.getVideoTracks()[0].enabled = true;
+        })
+        testAudioClosedBtn.addEventListener("click", () => {
+          streamOutput.audio = true;
+          testAudioOpenedBtn.style.display = "block"
+          testAudioClosedBtn.style.display = "none"
+          testStream.getAudioTracks()[0].enabled = true;
+        })
+        testAudioOpenedBtn.addEventListener("click", () => {
+          streamOutput.audio = false;
+          testAudioOpenedBtn.style.display = "none"
+          testAudioClosedBtn.style.display = "block"
+          testStream.getAudioTracks()[0].enabled = false;
+        })
+      }).catch(err => console.log(err))
+  }
+}
+
+const testExitBtn = document.querySelector('.test-exit-btn')
+const testjoinBtn = document.querySelector('.test-join-btn')
+const beforeEnterSection = document.querySelector('.beforeEnter-section')
+const bodySection = document.getElementById("body-section")
+const bottomSection = document.getElementById("bottom-section")
+
+testExitBtn.addEventListener('click', () => {
+  window.location.href = "/member";
+})
+
+testjoinBtn.addEventListener("click", () => {
+  console.log("進來了拉拉拉拉")
+  defaultSet = true
+  beforeEnterSection.style.display = "none"
+  bodySection.style.display = "block"
+  bottomSection.style.display = "block"
+  peerConnect(defaultSet)
+})
+
+// ===================== microphone and camera default setting =====================
+
+function audioVideoDefault(audioDefault, videoDefault) {
+  if (audioDefault == true) {
+    startAudio(streamNow);
+    audioClosedBtn.style.display = "none"
+    audioOpendBtn.style.display = "block"
+
+  } else if (audioDefault == false) {
+    stopAudio(streamNow);
+    audioOpendBtn.style.display = "none"
+    audioClosedBtn.style.display = "block"
+  }
+  if (videoDefault == true) {
+    startVideo(streamNow)
+    videoClosedBtn.style.display = "none"
+    videoOpenedBtn.style.display = "block"
+
+  } else if (videoDefault == false) {
+    stopVideo(streamNow);
+    videoOpenedBtn.style.display = "none"
+    videoClosedBtn.style.display = "block"
+  }
+}
 
 
 // ===================== turn of/off microphone and camera =====================
@@ -408,10 +509,10 @@ function peerSize(usersAmount, localVideo) {
     videos.style.display = "flex"
     videos.style.flexWrap = "wrap"
     videos.style.gap = "10px"
-  }else if ((usersAmount>4 && usersAmount<=6)||usersAmount==9){
+  } else if ((usersAmount > 4 && usersAmount <= 6) || usersAmount == 9) {
     let eachPeer = document.querySelectorAll('.each-peer')
     let videoWidth = (373 * 9) / 16
-    for (let i =0; i<usersAmount;i++){
+    for (let i = 0; i < usersAmount; i++) {
       localVideo[i].style.width = "373px"
       eachPeer[i].style.width = "373px"
       eachPeer[i].style.height = `${videoWidth}px`
@@ -444,7 +545,7 @@ function peerSize(usersAmount, localVideo) {
     videos.style.display = "flex"
     videos.style.flexWrap = "wrap"
     videos.style.gap = "10px"
-  }else if ((usersAmount > 15 && usersAmount <= 18) || (usersAmount > 20 && usersAmount <= 24)) {
+  } else if ((usersAmount > 15 && usersAmount <= 18) || (usersAmount > 20 && usersAmount <= 24)) {
     let eachPeer = document.querySelectorAll('.each-peer')
     let videoWidth = (181 * 9) / 16
     for (let i = 0; i < usersAmount; i++) {
@@ -483,3 +584,37 @@ function peerSize(usersAmount, localVideo) {
   }
 }
 
+// ===================== Async function =====================
+async function getTestUserAvatar() {
+  const testAvatar = document.querySelector('.testAvatar')
+  let url = "/api/user/avatar"
+  let options = {
+    method: "GET",
+  }
+  try {
+    let response = await fetch(url, options);
+    let result = await response.json();
+    if (response.status === 200) {
+      testAvatar.style.backgroundImage = `url(${result.userAvatar})`
+    }
+  } catch (err) {
+    console.log({ "error": err.message });
+  }
+}
+
+async function getUserName() {
+  const testName = document.querySelector('.testName')
+  let url = "/api/user/auth"
+  let options = {
+    method: "GET",
+  }
+  try {
+    let response = await fetch(url, options);
+    let result = await response.json();
+    if (response.status === 200) {
+      testName.textContent = result.data.name
+    }
+  } catch (err) {
+    console.log({ "error": err.message });
+  }
+}
