@@ -110,17 +110,21 @@ h1 {
   align-items: center;
 }
 
+#main {
+  /* border: 3px solid red; */
+}
+
 .main-section {
+  /* border: 3px solid blue; */
   width: 1200px;
   display: flex;
   flex-direction: row;
 }
 
-.home-img {
-  display: none;
-}
 
 .action {
+  /* border: 3px solid green; */
+  margin-top: 70px;
   display: flex;
   flex-direction: column;
 }
@@ -135,7 +139,7 @@ h1 {
   align-items: center;
   gap: 20px;
   font-size: 18px;
-  margin-top: 20px;
+  margin-top: 40px;
 }
 
 #room-input {
@@ -176,6 +180,57 @@ h1 {
   display: none;
   color: red;
   font-size: 8px;
+}
+
+/*--------------------------------------------------------------
+# avatar
+--------------------------------------------------------------*/
+
+#member-avator {
+  display: block;
+  /* border: 3px solid purple; */
+  border-left: 1px solid rgba(102, 102, 102, 0.3);
+}
+
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  height: 100px;
+  width: 100px;
+  background-size: cover;
+  background-position: center center;
+  border-radius: 50%;
+  margin-top: 20px;
+}
+
+.avatar-update-input {
+  display: none;
+}
+
+.avatar-update-button {
+  cursor: pointer;
+  background-color: #61a3df;
+  color: #fff;
+  outline: none;
+  border-radius: 5px;
+  width: 200px;
+  height: 30px;
+  border: none;
+  margin-top: 40px;
+}
+
+.avatar-update-button:hover {
+  background-color: #1158bd;
+}
+
+.avatar-max,
+.avatar-file {
+  font-size: 14px;
 }
 
 /*--------------------------------------------------------------

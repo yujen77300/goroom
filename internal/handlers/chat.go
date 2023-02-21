@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"fmt"
+	// "fmt"
 
 	"github.com/yujen77300/goroom/pkg/chat"
 	w "github.com/yujen77300/goroom/pkg/webrtc"
@@ -33,11 +33,11 @@ func RoomChatWebsocket(c *websocket.Conn) {
 	if room.Hub == nil {
 		return
 	}
-	fmt.Println("我在chat.go裡面")
-	fmt.Println(*room)
-	fmt.Println(room)
-	fmt.Println(&room)
-	fmt.Println(room.Hub)
+	// fmt.Println("我在chat.go裡面")
+	// fmt.Println(*room)
+	// fmt.Println(room)
+	// fmt.Println(&room)
+	// fmt.Println(room.Hub)
 	chat.PeerChatConn(c.Conn, room.Hub)
 }
 

@@ -2,7 +2,7 @@ package webrtc
 
 import (
 	"encoding/json"
-	"fmt"
+	// "fmt"
 	"log"
 	"sync"
 	"time"
@@ -99,8 +99,8 @@ func (p *Peers) AddTrack(t *webrtc.TrackRemote) *webrtc.TrackLocalStaticRTP {
 		log.Println(err.Error())
 		return nil
 	}
-	fmt.Println("新增本地音軌")
-	fmt.Println(trackLocal)
+	// fmt.Println("新增本地音軌")
+	// fmt.Println(trackLocal)
 
 	p.TrackLocals[t.ID()] = trackLocal
 	return trackLocal
@@ -129,8 +129,8 @@ func (p *Peers) SignalPeerConnections() {
 		for i := range p.Connections {
 			if p.Connections[i].PeerConnection.ConnectionState() == webrtc.PeerConnectionStateClosed {
 				p.Connections = append(p.Connections[:i], p.Connections[i+1:]...)
-				fmt.Println("在同步裡面")
-				fmt.Println(p.Connections)
+				// fmt.Println("在同步裡面")
+				// fmt.Println(p.Connections)
 				log.Println("a", p.Connections)
 				return true
 			}
@@ -140,8 +140,8 @@ func (p *Peers) SignalPeerConnections() {
 				if sender.Track() == nil {
 					continue
 				}
-				fmt.Println("在existingSenders裡面")
-				fmt.Println(existingSenders)
+				// fmt.Println("在existingSenders裡面")
+				// fmt.Println(existingSenders)
 				existingSenders[sender.Track().ID()] = true
 
 				if _, ok := p.TrackLocals[sender.Track().ID()]; !ok {
@@ -160,8 +160,8 @@ func (p *Peers) SignalPeerConnections() {
 			}
 			// 檢查每個track，如果不存在於連接中，則將其加入連接
 			for trackID := range p.TrackLocals {
-				fmt.Println("檢查trackID")
-				fmt.Println(trackID)
+				// fmt.Println("檢查trackID")
+				// fmt.Println(trackID)
 				if _, ok := existingSenders[trackID]; !ok {
 					if _, err := p.Connections[i].PeerConnection.AddTrack(p.TrackLocals[trackID]); err != nil {
 						return true
@@ -170,20 +170,20 @@ func (p *Peers) SignalPeerConnections() {
 			}
 			// 創建一個 Offer，設定為SetLocalDescription
 			offer, err := p.Connections[i].PeerConnection.CreateOffer(nil)
-			fmt.Println("執行CreateOffer")
+			// fmt.Println("執行CreateOffer")
 			if err != nil {
 				return true
 			}
 
 			if err = p.Connections[i].PeerConnection.SetLocalDescription(offer); err != nil {
-				fmt.Println("設定SetLocalDescription")
+				// fmt.Println("設定SetLocalDescription")
 				return true
 			}
 
 			offerString, err := json.Marshal(offer)
-			fmt.Println("offer的字串是什麼開始")
-			fmt.Println(string(offerString))
-			fmt.Println("offer的字串是什麼結束")
+			// fmt.Println("offer的字串是什麼開始")
+			// fmt.Println(string(offerString))
+			// fmt.Println("offer的字串是什麼結束")
 			if err != nil {
 				return true
 			}

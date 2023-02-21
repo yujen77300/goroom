@@ -19,7 +19,12 @@ type User struct {
 	Password string `json:"password"`
 }
 
-// var UserName string
+type UserAvatar struct {
+	Email     string `json:"email"`
+	AvatarUrl string `json:"avatarurl"`
+}
+
+var UserEmail string
 
 // Get all users (test)
 func FindALLUsers(c *fiber.Ctx) error {
@@ -249,4 +254,59 @@ func PutUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{"ok": true})
 	}
 
+}
+
+// 取得當前大頭貼
+func GetAvatar(c *fiber.Ctx) error {
+	livedToken := c.Cookies("MyJWT")
+	if len(livedToken) == 0 {
+		return c.JSON(fiber.Map{
+			"data": "no data",
+		})
+	} else {
+		viper.SetConfigName("config")
+		viper.AddConfigPath(".")
+		err := viper.ReadInConfig()
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		JWTSECRECT := viper.GetString("JWTSECRECT")
+		secretKey := JWTSECRECT
+		secret := []byte(secretKey)
+		token, err := jwt.Parse(livedToken, func(token *jwt.Token) (interface{}, error) {
+			return secret, nil
+		})
+
+		if err != nil {
+			return nil
+		}
+
+		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+			email := claims["email"].(string)
+			memberData := map[string]interface{}{
+				"email": email,
+			}
+			value := memberData["email"]
+			UserEmail = value.(string)
+		} else {
+			log.Printf("Invalid JWT Token")
+		}
+	}
+	db, _ := ConnectToMYSQL()
+	row, err := db.Query("SELECT email,avatar_url FROM member WHERE email = ?;", UserEmail)
+	if err != nil {
+		fmt.Printf("查詢資料庫失敗，原因為：%v\n", err)
+	}
+	defer row.Close()
+	var userAvatar []UserAvatar
+	for row.Next() {
+		var user UserAvatar
+		if dberr := row.Scan(&user.Email,&user.AvatarUrl); dberr != nil {
+			fmt.Printf("scan failed, err:%v\n", dberr)
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "scan failed"})
+		}
+		userAvatar = append(userAvatar, user)
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"user": UserEmail,"userAvatar":userAvatar[0].AvatarUrl})
 }

@@ -82,24 +82,24 @@ func createOrGetRoom(uuid string) (string, string, *w.Room) {
 		if _, ok := w.Streams[suuid]; !ok {
 			w.Streams[suuid] = room
 		}
-		fmt.Println("測試房間號碼")
-		fmt.Println(room)
-		fmt.Println("測試uuid")
-		fmt.Println(uuid)
-		fmt.Println("測試suuid")
-		fmt.Println(suuid)
+		// fmt.Println("測試房間號碼")
+		// fmt.Println(room)
+		// fmt.Println("測試uuid")
+		// fmt.Println(uuid)
+		// fmt.Println("測試suuid")
+		// fmt.Println(suuid)
 		return uuid, suuid, room
 	}
 
 	hub := chat.NewHub()
-	fmt.Println("進來測試一下hub")
-	fmt.Println(hub)
-	fmt.Println(*hub)
+	// fmt.Println("進來測試一下hub")
+	// fmt.Println(hub)
+	// fmt.Println(*hub)
 	// 創建一個指向 webrtc.Peers 結構體的指標，建立新的Peers結構體，並返為地址給指標變數p
 	p := &w.Peers{}
 	// var p *w.Peers = &w.Peers{}
-	fmt.Printf("p的資料型態是%T\n", p)
-	fmt.Println(p)
+	// fmt.Printf("p的資料型態是%T\n", p)
+	// fmt.Println(p)
 
 	p.TrackLocals = make(map[string]*webrtc.TrackLocalStaticRTP)
 	room := &w.Room{
@@ -120,14 +120,14 @@ func RoomViewerWebsocket(c *websocket.Conn) {
 	}
 
 	w.RoomsLock.Lock()
-	fmt.Println("進來RoomViewerWebsocket")
+	// fmt.Println("進來RoomViewerWebsocket")
 	if peer, ok := w.Rooms[uuid]; ok {
-		fmt.Println("有近來這一層")
+		// fmt.Println("有近來這一層")
 		w.RoomsLock.Unlock()
 		roomViewerConn(c, peer.Peers)
 		return
 	}
-	fmt.Println("有離開了")
+	// fmt.Println("有離開了")
 	w.RoomsLock.Unlock()
 }
 

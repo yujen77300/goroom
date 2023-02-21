@@ -2,7 +2,7 @@ package webrtc
 
 import (
 	"encoding/json"
-	"fmt"
+	// "fmt"
 	"log"
 	"os"
 	"sync"
@@ -43,26 +43,26 @@ func RoomConn(c *websocket.Conn, p *Peers) {
 
 	// 把新的PeerConnection加入global list中
 	p.ListLock.Lock()
-	fmt.Println("新的peer")
-	fmt.Println(newPeer)
+	// fmt.Println("新的peer")
+	// fmt.Println(newPeer)
 	p.Connections = append(p.Connections, newPeer)
 	p.ListLock.Unlock()
 
-	fmt.Println("p的連線")
-	fmt.Println(p.Connections)
+	// fmt.Println("p的連線")
+	// fmt.Println(p.Connections)
 	log.Println(p.Connections)
 
 	// 如果新的ICECandidate訊息收集完成時的操作
 	peerConnection.OnICECandidate(func(i *webrtc.ICECandidate) {
-		fmt.Println("OnICECandidate的結果")
-		fmt.Println(i)
+		// fmt.Println("OnICECandidate的結果")
+		// fmt.Println(i)
 		if i == nil {
 			return
 		}
 
 		candidateString, err := json.Marshal(i.ToJSON())
-		fmt.Println("OnICECandidate變成json的結果")
-		fmt.Println(candidateString)
+		// fmt.Println("OnICECandidate變成json的結果")
+		// fmt.Println(candidateString)
 		if err != nil {
 			log.Println(err)
 			return
@@ -79,8 +79,8 @@ func RoomConn(c *websocket.Conn, p *Peers) {
 
 	// 當peerconnection的狀態改變，通常就是自global list移除。
 	peerConnection.OnConnectionStateChange(func(peerConState webrtc.PeerConnectionState) {
-		fmt.Println("PeerConnectionState連接狀態")
-		fmt.Println(peerConState)
+		// fmt.Println("PeerConnectionState連接狀態")
+		// fmt.Println(peerConState)
 		switch peerConState {
 		case webrtc.PeerConnectionStateFailed:
 			if err := peerConnection.Close(); err != nil {
@@ -101,11 +101,11 @@ func RoomConn(c *websocket.Conn, p *Peers) {
 		if trackLocal == nil {
 			return
 		}
-		fmt.Println("觸發了OnTrack事件開始")
-		fmt.Println(t)
-		fmt.Println("觸發了OnTrack事件中間")
-		fmt.Println(trackLocal)
-		fmt.Println("觸發了OnTrack事件結束")
+		// fmt.Println("觸發了OnTrack事件開始")
+		// fmt.Println(t)
+		// fmt.Println("觸發了OnTrack事件中間")
+		// fmt.Println(trackLocal)
+		// fmt.Println("觸發了OnTrack事件結束")
 		defer p.RemoveTrack(trackLocal)
 
 		buf := make([]byte, 1500)
@@ -123,16 +123,16 @@ func RoomConn(c *websocket.Conn, p *Peers) {
 
 	p.SignalPeerConnections()
 	message := &websocketMessage{}
-	fmt.Println("印出message")
-	fmt.Println(message)
-	fmt.Println(message.Event)
+	// fmt.Println("印出message")
+	// fmt.Println(message)
+	// fmt.Println(message.Event)
 	// 用for來循環websocket的訊息
 	for {
 		_, raw, err := c.ReadMessage()
-		fmt.Println("近來循環ws訊息的迴圈開始")
-		fmt.Println(string(raw))
-		fmt.Println(err)
-		fmt.Println("近來循環ws訊息的迴圈結束")
+		// fmt.Println("近來循環ws訊息的迴圈開始")
+		// fmt.Println(string(raw))
+		// fmt.Println(err)
+		// fmt.Println("近來循環ws訊息的迴圈結束")
 		if err != nil {
 			log.Println(err)
 			return
@@ -140,11 +140,11 @@ func RoomConn(c *websocket.Conn, p *Peers) {
 			log.Println(err)
 			return
 		}
-		fmt.Println("for迴圈裏面印出message開始")
-		fmt.Println(message)
-		fmt.Println(message.Event)
-		fmt.Println(message.Data)
-		fmt.Println("for迴圈裏面印出message結束")
+		// fmt.Println("for迴圈裏面印出message開始")
+		// fmt.Println(message)
+		// fmt.Println(message.Event)
+		// fmt.Println(message.Data)
+		// fmt.Println("for迴圈裏面印出message結束")
 
 		switch message.Event {
 		case "candidate":

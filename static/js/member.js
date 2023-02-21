@@ -4,7 +4,23 @@ const memberName = document.getElementById("member-name")
 const roomInput = document.getElementById("room-input")
 const joinBtn = document.getElementById("join-btn")
 const joinWrongInput = document.getElementById("join-wrong-input")
+const avatarUpdateBtn = document.querySelector('.avatar-update-button')
+const hiddenInput = document.querySelector('.avatar-update-input')
+const avatar = document.querySelector('.avatar')
+let avatarUrl = ""
 nameOnNavbar()
+updateUserAvatar()
+
+avatarUpdateBtn.addEventListener('click', function () {
+  console.log(hiddenInput)
+  hiddenInput.click()
+  // hiddenInput.addEventListener('change', function (e) {
+  //   let form = new FormData();
+  //   form.append('form', e.target.files[0])
+  //   uploadImage(form)
+  // })
+})
+
 
 signoutBtn.addEventListener("click", () => {
   fetch(
@@ -75,3 +91,20 @@ roomInput.addEventListener("click", () => {
 joinBtn.addEventListener("click", () => {
   document.location.href = `/room/${roomInput.value}`
 })
+
+
+async function updateUserAvatar() {
+  let url = "/api/user/avatar"
+  let options = {
+    method: "GET",
+  }
+  try {
+    let response = await fetch(url, options);
+    let result = await response.json();
+    if (response.status === 200) {
+      avatar.style.backgroundImage = `url(${result.userAvatar})`
+    }
+  } catch (err) {
+    console.log({ "error": err.message });
+  }
+}

@@ -2,7 +2,7 @@ package chat
 
 import (
 	"bytes"
-	"fmt"
+	// "fmt"
 	"log"
 	"time"
 
@@ -72,8 +72,8 @@ func (c *Client) writePump() {
 			if err != nil {
 				return
 			}
-			fmt.Println("測試收到的訊息")
-			fmt.Println(string(message))
+			// fmt.Println("測試收到的訊息")
+			// fmt.Println(string(message))
 			// w.Write([]byte(models.UserName+"/"))
 			w.Write(message)
 
@@ -98,12 +98,12 @@ func (c *Client) writePump() {
 // 建立一個websocket連接的客戶端，與Hub進行通訊。
 func PeerChatConn(c *websocket.Conn, hub *Hub) {
 	client := &Client{Hub: hub, Conn: c, Send: make(chan []byte, 256)}
-	fmt.Println("我到了client.go裡面了唷")
-	fmt.Println(client)
-	fmt.Println(*client.Hub)
-	fmt.Println(*client.Conn)
-	fmt.Println("第二次")
-	fmt.Println(*client)
+	// fmt.Println("我到了client.go裡面了唷")
+	// fmt.Println(client)
+	// fmt.Println(*client.Hub)
+	// fmt.Println(*client.Conn)
+	// fmt.Println("第二次")
+	// fmt.Println(*client)
 	client.Hub.register <- client
 
 	go client.writePump()
