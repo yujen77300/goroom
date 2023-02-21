@@ -7,18 +7,34 @@ const joinWrongInput = document.getElementById("join-wrong-input")
 const avatarUpdateBtn = document.querySelector('.avatar-update-button')
 const hiddenInput = document.querySelector('.avatar-update-input')
 const avatar = document.querySelector('.avatar')
-let avatarUrl = ""
+const avatarHint = document.querySelector('.avatar-hint')
+let accountEmail = ""
 nameOnNavbar()
-updateUserAvatar()
+getUserAvatar()
 
 avatarUpdateBtn.addEventListener('click', function () {
-  console.log(hiddenInput)
+  // console.log(hiddenInput)
   hiddenInput.click()
-  // hiddenInput.addEventListener('change', function (e) {
-  //   let form = new FormData();
-  //   form.append('form', e.target.files[0])
-  //   uploadImage(form)
-  // })
+  hiddenInput.addEventListener('change', function (e) {
+    // 透過FormData api 進行ajax上傳
+    let form = new FormData();
+    console.log(e.target.files[0].type)
+    let fileType = e.target.files[0].type
+    if ((fileType == "image/jpeg") || (fileType == "image/png")) {
+      form.append('avatarUrl', e.target.files[0])
+      form.append('accountEmail', accountEmail)
+      let object = {};
+      form.forEach((val, key) => {
+        object[key] = val;
+      });
+      console.log(object)
+      avatarHint.style.display = "none"
+      updateAvatar(form)
+    }else{
+      avatarHint.style.display="block"
+    }
+
+  })
 })
 
 
@@ -93,7 +109,7 @@ joinBtn.addEventListener("click", () => {
 })
 
 
-async function updateUserAvatar() {
+async function getUserAvatar() {
   let url = "/api/user/avatar"
   let options = {
     method: "GET",
@@ -103,6 +119,26 @@ async function updateUserAvatar() {
     let result = await response.json();
     if (response.status === 200) {
       avatar.style.backgroundImage = `url(${result.userAvatar})`
+      accountEmail = result.user
+    }
+  } catch (err) {
+    console.log({ "error": err.message });
+  }
+}
+
+async function updateAvatar(form) {
+  let url = "api/user/avatar"
+  console.log(form)
+  let options = {
+    body: form,
+    method: "POST",
+    header: "test"
+  }
+  try {
+    let response = await fetch(url, options);
+    let result = await response.json();
+    if (response.status === 200) {
+      avatar.style.backgroundImage = `url(${result.newAvatarUrl})`
     }
   } catch (err) {
     console.log({ "error": err.message });

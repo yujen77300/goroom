@@ -55,6 +55,7 @@ func Run() error {
 	app.Put("/api/user/auth", models.PutUser)
 	app.Delete("/api/user/auth", models.SignOutUser)
 	app.Get("/api/user/avatar", models.GetAvatar)
+	app.Post("/api/user/avatar", models.UpdateAvatar)
 	app.Static("/", "./static")
 
 	// 讓這兩個變量進行初始化

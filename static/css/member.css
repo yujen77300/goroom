@@ -200,8 +200,8 @@ h1 {
 }
 
 .avatar {
-  height: 100px;
-  width: 100px;
+  height: 150px;
+  width: 150px;
   background-size: cover;
   background-position: center center;
   border-radius: 50%;
@@ -231,6 +231,11 @@ h1 {
 .avatar-max,
 .avatar-file {
   font-size: 14px;
+}
+
+.avatar-hint{
+  color:red;
+  display: none;
 }
 
 /*--------------------------------------------------------------

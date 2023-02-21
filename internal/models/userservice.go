@@ -3,9 +3,15 @@ package models
 import (
 	"fmt"
 	"log"
+
+	"context"
 	"time"
 
-	// "github.com/gin-gonic/gin"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+
+	"math/rand"
+	"strings"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
@@ -299,14 +305,71 @@ func GetAvatar(c *fiber.Ctx) error {
 		fmt.Printf("查詢資料庫失敗，原因為：%v\n", err)
 	}
 	defer row.Close()
+	defer db.Close()
 	var userAvatar []UserAvatar
 	for row.Next() {
 		var user UserAvatar
-		if dberr := row.Scan(&user.Email,&user.AvatarUrl); dberr != nil {
+		if dberr := row.Scan(&user.Email, &user.AvatarUrl); dberr != nil {
 			fmt.Printf("scan failed, err:%v\n", dberr)
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "scan failed"})
 		}
 		userAvatar = append(userAvatar, user)
 	}
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"user": UserEmail,"userAvatar":userAvatar[0].AvatarUrl})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"user": UserEmail, "userAvatar": userAvatar[0].AvatarUrl})
+}
+
+func UpdateAvatar(c *fiber.Ctx) error {
+	region, bucketName, client := ConnectToAWS()
+	// 一個是檔案，而信箱是表單的值
+	userNow := c.FormValue("accountEmail")
+	file, err := c.FormFile("avatarUrl")
+	if err != nil {
+		fmt.Println(err)
+	}
+	contentDisposition := file.Header["Content-Disposition"][0]
+	fileFormat := strings.Split(contentDisposition, ".")[1]
+	fileFormat = strings.Replace(fileFormat, "\"", "", -1)
+	fmt.Println(contentDisposition)
+
+	// random name
+	var alphabet []rune = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
+	alphabetSize := len(alphabet)
+	var sb strings.Builder
+	// 20碼的隨機字串
+	for i := 0; i < 20; i++ {
+		ch := alphabet[rand.Intn(alphabetSize)]
+		sb.WriteRune(ch)
+	}
+	randomFileName := sb.String()
+	fileName := randomFileName + "." + fileFormat
+	fmt.Println(fileName)
+
+	newFile, err := file.Open()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	_, error := client.PutObject(context.TODO(), &s3.PutObjectInput{
+		Bucket: aws.String(bucketName),
+		Key:    aws.String(fileName),
+		Body:   newFile,
+		ACL:    "public-read",
+	})
+	if error != nil {
+		fmt.Printf("Couldn't upload file, Here's why: %v\n", error)
+	}
+
+	// 取得url
+	url := "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + fileName
+	fmt.Println(url)
+	cloudFrontUrl := "https://d1uumvm880lnxp.cloudfront.net/" + fileName
+
+	db, _ := ConnectToMYSQL()
+	_, updateErr := db.Exec("UPDATE member SET avatar_url = ? WHERE email= ?;", cloudFrontUrl, userNow)
+	if updateErr != nil {
+		return updateErr
+	}
+	defer db.Close()
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"userEmail": userNow, "newAvatarUrl": cloudFrontUrl})
 }
