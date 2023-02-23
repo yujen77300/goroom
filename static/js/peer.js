@@ -10,6 +10,7 @@ let userName = document.querySelector('.username')
 let streamOutput = { audio: true, video: true, }
 // 是否進行設定
 let defaultSet = false
+let testStreamNow
 // import { streamOutput } from './before.js';
 
 let streamNow
@@ -260,7 +261,6 @@ function peerConnect(defaultSet) {
       audio: true
     })
       .then(testStream => {
-        console.log(testStream)
         document.getElementById('testVideo').srcObject = testStream
         testVideoOpenedBtn.addEventListener("click", () => {
           streamOutput.video = false;
@@ -286,6 +286,7 @@ function peerConnect(defaultSet) {
           testAudioClosedBtn.style.display = "block"
           testStream.getAudioTracks()[0].enabled = false;
         })
+        testStreamNow = testStream
       }).catch(err => console.log(err))
   }
 }
@@ -301,7 +302,9 @@ testExitBtn.addEventListener('click', () => {
 })
 
 testjoinBtn.addEventListener("click", () => {
-  console.log("進來了拉拉拉拉")
+  testStreamNow.getTracks().forEach(track => {
+    track.stop()
+  })
   defaultSet = true
   beforeEnterSection.style.display = "none"
   bodySection.style.display = "block"
@@ -359,7 +362,8 @@ const audioOpendBtn = document.getElementById('audio-opened-btn')
 const audioClosedBtn = document.getElementById('audio-closed-btn')
 
 audioOpendBtn.addEventListener("click", () => {
-  console.log("要進來關掉了")
+  console.log("要進來關掉麥克風了")
+  console.log(streamOutput.audio)
   stopAudio(streamNow);
   streamOutput.audio = false;
   audioOpendBtn.style.display = "none"
@@ -367,7 +371,7 @@ audioOpendBtn.addEventListener("click", () => {
 })
 
 audioClosedBtn.addEventListener("click", () => {
-  console.log("要進來開始了")
+  console.log("要進來開始麥克風了")
   startAudio(streamNow)
   streamOutput.audio = true;
   audioClosedBtn.style.display = "none"

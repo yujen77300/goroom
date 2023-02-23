@@ -9,6 +9,7 @@ type Hub struct {
 	unregister chan *Client
 }
 
+// 定義 Factory function當作constructor
 func NewHub() *Hub {
 	return &Hub{
 		// 紀錄目前的客戶端

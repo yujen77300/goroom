@@ -70,7 +70,8 @@ body {
 }
 
 
-.test-join-btn,.test-exit-btn {
+.test-join-btn,
+.test-exit-btn {
   cursor: pointer;
   background-color: #1158bd;
   color: #fff;
@@ -79,7 +80,8 @@ body {
   font-size: 18px;
 }
 
-.test-join-btn:hover,.test-exit-btn:hover {
+.test-join-btn:hover,
+.test-exit-btn:hover {
   background-color: #61a3df;
 }
 
@@ -99,6 +101,7 @@ body {
   /* height: 720px; */
   border-radius: 10px;
   position: absolute;
+  transform: rotateY(180deg);
 }
 
 .each-peer {
