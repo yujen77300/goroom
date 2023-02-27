@@ -144,6 +144,8 @@ func roomViewerConn(c *websocket.Conn, p *w.Peers) {
 		if err != nil {
 			return
 		}
+		// viewer := fmt.Sprintf("%d", len(p.Connections))
+		// w.Write([]byte("{\"account\":\"dylan\",\"email\":\"dylan@gmail\",\"url\":\"https:google.com\",\"viewer\":\"" + viewer + "\"}"))
 		w.Write([]byte(fmt.Sprintf("%d", len(p.Connections))))
 	}
 }

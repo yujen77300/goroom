@@ -58,6 +58,7 @@ func Run() error {
 	app.Post("/api/user/avatar", models.UpdateAvatar)
 	app.Static("/", "./static")
 
+
 	// 讓這兩個變量進行初始化
 	w.Rooms = make(map[string]*w.Room)
 	w.Streams = make(map[string]*w.Room)

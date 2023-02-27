@@ -113,6 +113,7 @@ func NewUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": true, "message": "Email is already registered"})
 	} else {
 		result, err := db.Exec("INSERT INTO member(username,email,password) values(?,?,?);", signUpInfo.Name, signUpInfo.Email, signUpInfo.Password)
+		defer db.Close()
 		if err != nil {
 			fmt.Printf("建立檔案失敗，原因是：%v", err)
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": true, "message": "Internal Server Error"})

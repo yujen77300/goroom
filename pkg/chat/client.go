@@ -2,12 +2,14 @@ package chat
 
 import (
 	"bytes"
-	// "fmt"
+	"encoding/json"
+	"fmt"
 	"log"
 	"time"
 
 	"github.com/fasthttp/websocket"
-	// "github.com/yujen77300/goroom/internal/models"
+	"github.com/google/uuid"
+	"github.com/yujen77300/goroom/internal/models"
 )
 
 const (
@@ -50,16 +52,25 @@ func (c *Client) readPump() {
 			break
 		}
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
+		// message = ([]byte("{\"account\":\"dylan\",\"message\":\"你只能打這樣啦\"}"))
 		c.Hub.broadcast <- message
 	}
 }
 
-func (c *Client) writePump() {
+func (c *Client) writeAndStorePump(roomUuid string) {
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
 		ticker.Stop()
 		c.Conn.Close()
 	}()
+
+	uuidObj, err := uuid.NewRandom()
+	participantuuid := uuidObj.String()[0:6]
+	fmt.Println(err)
+	fmt.Println("個人代號")
+	fmt.Println(participantuuid)
+
+	userIteration := 1
 
 	for {
 		select {
@@ -72,11 +83,30 @@ func (c *Client) writePump() {
 			if err != nil {
 				return
 			}
-			// fmt.Println("測試收到的訊息")
-			// fmt.Println(string(message))
-			// w.Write([]byte(models.UserName+"/"))
+
+			var m map[string]interface{}
+			testerr := json.Unmarshal(message, &m)
+			if testerr != nil {
+				fmt.Println(err)
+			}
 			w.Write(message)
 
+			if len(m) > 2 {
+				if userIteration == 1 {
+					fmt.Println("第一個迴圈")
+					fmt.Println(string(message))
+					// fmt.Println("存到資料庫")
+					models.UpdateParticipantInfo(message, roomUuid, participantuuid)
+					userIteration += 1
+				}
+	
+			}
+
+			// w.Write([]byte("{\"account\":\"dylan\",\"message\":\"你只能打這樣啦\"}"))
+
+			fmt.Println("測試測試這邊")
+			fmt.Println(c.Send)
+			fmt.Println(len(c.Send))
 			n := len(c.Send)
 			for i := 0; i < n; i++ {
 				w.Write(newline)
@@ -96,16 +126,11 @@ func (c *Client) writePump() {
 }
 
 // 建立一個websocket連接的客戶端，與Hub進行通訊。
-func PeerChatConn(c *websocket.Conn, hub *Hub) {
+func PeerChatConn(c *websocket.Conn, hub *Hub, roomUuid string) {
 	client := &Client{Hub: hub, Conn: c, Send: make(chan []byte, 256)}
-	// fmt.Println("我到了client.go裡面了唷")
-	// fmt.Println(client)
-	// fmt.Println(*client.Hub)
-	// fmt.Println(*client.Conn)
-	// fmt.Println("第二次")
-	// fmt.Println(*client)
+
 	client.Hub.register <- client
 
-	go client.writePump()
+	go client.writeAndStorePump(roomUuid)
 	client.readPump()
 }

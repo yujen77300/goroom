@@ -2,7 +2,7 @@ package webrtc
 
 import (
 	"encoding/json"
-	// "fmt"
+
 	"log"
 	"os"
 	"sync"
@@ -10,6 +10,8 @@ import (
 	"github.com/gofiber/websocket/v2"
 	"github.com/pion/webrtc/v3"
 )
+
+var Testuser string
 
 func RoomConn(c *websocket.Conn, p *Peers) {
 	var config webrtc.Configuration
@@ -22,6 +24,31 @@ func RoomConn(c *websocket.Conn, p *Peers) {
 		log.Print(err)
 		return
 	}
+
+	//建立datachannel==========================
+	// type Message struct {
+	// 	Email string `json:"email"`
+	// }
+
+	// //建立datachannel看看
+	// peerConnection.OnDataChannel(func(datachannel *webrtc.DataChannel) {
+	// 	if datachannel.Label() == "mydatachannel" {
+	// 		datachannel.OnMessage(func(msg webrtc.DataChannelMessage) {
+	// 			var message Message
+	// 			err := json.Unmarshal(msg.Data, &message)
+	// 			if err != nil {
+	// 				fmt.Println("解析 JSON 失敗：", err)
+	// 				return
+	// 			}
+	// 			fmt.Println("收到的資料：", message.Email)
+	// 			datachannel.SendText(message.Email)
+	// 			// data := string(msg.Data)
+	// 			// fmt.Println("收到的資料")
+	// 			// fmt.Println(data)
+	// 		})
+	// 	}
+	// })
+	//==========================
 	defer peerConnection.Close()
 	// 決定接受傳入的stream類型
 	for _, typ := range []webrtc.RTPCodecType{webrtc.RTPCodecTypeVideo, webrtc.RTPCodecTypeAudio} {
@@ -123,9 +150,6 @@ func RoomConn(c *websocket.Conn, p *Peers) {
 
 	p.SignalPeerConnections()
 	message := &websocketMessage{}
-	// fmt.Println("印出message")
-	// fmt.Println(message)
-	// fmt.Println(message.Event)
 	// 用for來循環websocket的訊息
 	for {
 		_, raw, err := c.ReadMessage()

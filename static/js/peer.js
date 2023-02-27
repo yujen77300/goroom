@@ -5,13 +5,14 @@ const videos = document.querySelector('#videos')
 let localVideo = document.querySelectorAll('.localVideo')
 let eachPeer = document.querySelectorAll('.each-peer')
 let viewerCountNow = document.querySelector('#viewer-count')
-let userName = document.querySelector('.username')
+// let userName = document.querySelector('.username')
+let videoClosedAvatar = document.querySelector('.video-closed-avatar')
 // 判斷視訊畫面是否開啟
 let streamOutput = { audio: true, video: true, }
 // 是否進行設定
 let defaultSet = false
 let testStreamNow
-// import { streamOutput } from './before.js';
+let userEmail = ""
 
 let streamNow
 let pcNow
@@ -74,10 +75,35 @@ function connect(stream) {
   console.log("一開始的pc")
   console.log(pc)
   pcNow = pc
+
+  //建立datachannel==========================
+  // const dataChannel = pc.createDataChannel('mydatachannel');
+  // console.log("一開始的datachannel")
+  // console.log(dataChannel)
+  // pc.ondatachannel = function (event) {
+  //   console.log("我在datachannel裡面")
+  //   console.log(event)
+  //   console.log(event.channel)
+  //   console.log(event.channel.label)
+  // };
+
+
+  // getUserEmail()
+  // dataChannel.onopen = () => {
+  //   console.log(userEmail)
+  //   dataChannel.send(JSON.stringify({ "email": userEmail }))
+  // }
+
+  // dataChannel.onmessage = (event) => {
+  //   const receivedMessage = event.data;
+  //   console.log(`Received message: ${receivedMessage}`);
+  // };
+  //==========================
+
   // 接收另一端傳遞過來的多媒體資訊(videoTrack ...等)
   // 完成連線後，透過該事件能夠在發現遠端傳輸的多媒體檔案時觸發，來處理/接收多媒體數據
   pc.ontrack = function (event) {
-    console.log("ontrack的event")
+    console.log("ontrack裡面的event")
     console.log(event)
     // event => RTCTrackEvent
     // RTCTrackEvent有個streams屬性，每個對像表示track所屬的media stream
@@ -102,6 +128,11 @@ function connect(stream) {
     el.setAttribute("id", "localVideo")
     el.setAttribute("class", "localVideo")
     col.appendChild(el)
+
+    let newUserName = document.createElement("div")
+    // newUserName.className = "username"
+
+    // col.appendChild(newUserName)
 
     document.getElementById('videos').appendChild(col)
 
@@ -226,22 +257,21 @@ function connect(stream) {
 
 // 這是最一開始
 function peerConnect(defaultSet) {
+  getUserAvatar()
   if (defaultSet == true) {
     navigator.mediaDevices.getUserMedia({
       video: {
         width: { min: 1280 },
         height: { min: 720 }
       },
-      audio: true
+      audio: true,
     })
       .then(stream => {
-        console.log("這是一開始的stream")
-        console.log(stream)
-
         document.getElementById('localVideo').srcObject = stream
         connect(stream)
         streamNow = stream
         audioVideoDefault(streamOutput.audio, streamOutput.video)
+        getUserName()
       }).catch(err => console.log(err))
   } else {
     //  ===================== Test section =====================
@@ -249,8 +279,10 @@ function peerConnect(defaultSet) {
     const testVideoOpenedBtn = document.getElementById('test-video-opened-btn')
     const testAudioClosedBtn = document.getElementById('test-audio-closed-btn')
     const testAudioOpenedBtn = document.getElementById('test-audio-opened-btn')
+    const testVideo = document.getElementById('testVideo')
+    const testVideoClosedAvatar = document.getElementById('test-video-closed-avatar')
 
-    getTestUserAvatar()
+    getUserAvatar()
     getUserName()
 
     navigator.mediaDevices.getUserMedia({
@@ -261,15 +293,17 @@ function peerConnect(defaultSet) {
       audio: true
     })
       .then(testStream => {
-        document.getElementById('testVideo').srcObject = testStream
+        testVideo.srcObject = testStream
         testVideoOpenedBtn.addEventListener("click", () => {
           streamOutput.video = false;
+          testVideoClosedAvatar.style.display = "block"
           testVideoOpenedBtn.style.display = "none"
           testVideoClosedBtn.style.display = "block"
           testStream.getVideoTracks()[0].enabled = false;
         })
         testVideoClosedBtn.addEventListener("click", () => {
           streamOutput.video = true;
+          testVideoClosedAvatar.style.display = "none"
           testVideoOpenedBtn.style.display = "block"
           testVideoClosedBtn.style.display = "none"
           testStream.getVideoTracks()[0].enabled = true;
@@ -332,6 +366,7 @@ function audioVideoDefault(audioDefault, videoDefault) {
 
   } else if (videoDefault == false) {
     stopVideo(streamNow);
+    // videoClosedAvatar.style.display = "block"
     videoOpenedBtn.style.display = "none"
     videoClosedBtn.style.display = "block"
   }
@@ -346,6 +381,7 @@ videoOpenedBtn.addEventListener("click", () => {
   console.log("要進來關掉視訊了")
   stopVideo(streamNow);
   streamOutput.video = false;
+  // videoClosedAvatar.style.display = "block"
   videoOpenedBtn.style.display = "none"
   videoClosedBtn.style.display = "block"
 })
@@ -354,6 +390,7 @@ videoClosedBtn.addEventListener("click", () => {
   console.log("要進來開啟視訊了")
   startVideo(streamNow)
   streamOutput.video = true;
+  // videoClosedAvatar.style.display = "none"
   videoClosedBtn.style.display = "none"
   videoOpenedBtn.style.display = "block"
 })
@@ -461,19 +498,22 @@ function peerSize(usersAmount, localVideo) {
     eachPeer[0].style.width = "1140px"
     let videoWidth = (1160 * 9) / 16
     eachPeer[0].style.height = `${videoWidth}px`
+    // videoClosedAvatar.style.bottom = "-220px"
     // userName.style.bottom = `-${videoWidth - 60}px`
     videos.style.cssText = "display:flex;justify-content:center;align-items:center;"
   } else if (usersAmount === 2) {
     let eachPeer = document.querySelectorAll('.each-peer')
+    // let userName = document.querySelectorAll('.username')
     localVideo[0].style.width = "565px"
     localVideo[1].style.width = "565px"
-    // let eachPeer = document.querySelectorAll('.each-peer')
     eachPeer[0].style.width = "565px"
     eachPeer[1].style.width = "565px"
     let videoWidth = (565 * 9) / 16
     eachPeer[0].style.height = `${videoWidth}px`
     eachPeer[1].style.height = `${videoWidth}px`
-    // userName.style.bottom = `-${videoWidth - 60}px`
+    // videoClosedAvatar.style.bottom = "-75px"
+    // userName[0].style.bottom = `-${videoWidth - 60}px`
+    // userName[1].style.bottom = `-${videoWidth - 60}px`
     videos.style.display = "flex"
     videos.style.gap = "10px"
   } else if (usersAmount === 3) {
@@ -481,7 +521,6 @@ function peerSize(usersAmount, localVideo) {
     localVideo[0].style.width = "565px"
     localVideo[1].style.width = "565px"
     localVideo[2].style.width = "565px"
-    // let eachPeer = document.querySelectorAll('.each-peer')
     eachPeer[0].style.width = "565px"
     eachPeer[1].style.width = "565px"
     eachPeer[2].style.width = "565px"
@@ -499,7 +538,6 @@ function peerSize(usersAmount, localVideo) {
     localVideo[1].style.width = "565px"
     localVideo[2].style.width = "565px"
     localVideo[3].style.width = "565px"
-    // let eachPeer = document.querySelectorAll('.each-peer')
     eachPeer[0].style.width = "565px"
     eachPeer[1].style.width = "565px"
     eachPeer[2].style.width = "565px"
@@ -589,8 +627,10 @@ function peerSize(usersAmount, localVideo) {
 }
 
 // ===================== Async function =====================
-async function getTestUserAvatar() {
+async function getUserAvatar() {
   const testAvatar = document.querySelector('.testAvatar')
+  const testVideoClosedAvatar = document.getElementById('test-video-closed-avatar')
+  // let videoClosedAvatar = document.querySelector('.video-closed-avatar')
   let url = "/api/user/avatar"
   let options = {
     method: "GET",
@@ -599,7 +639,13 @@ async function getTestUserAvatar() {
     let response = await fetch(url, options);
     let result = await response.json();
     if (response.status === 200) {
-      testAvatar.style.backgroundImage = `url(${result.userAvatar})`
+      if (defaultSet == false) {
+        testAvatar.style.backgroundImage = `url(${result.userAvatar})`
+        testVideoClosedAvatar.style.backgroundImage = `url(${result.userAvatar})`
+      }
+      // else {
+      //   videoClosedAvatar.style.backgroundImage = `url(${result.userAvatar})`
+      // }
     }
   } catch (err) {
     console.log({ "error": err.message });
@@ -616,7 +662,27 @@ async function getUserName() {
     let response = await fetch(url, options);
     let result = await response.json();
     if (response.status === 200) {
-      testName.textContent = result.data.name
+      if (defaultSet == false) {
+        testName.textContent = result.data.name
+      } else {
+        userName.textContent = result.data.name
+      }
+    }
+  } catch (err) {
+    console.log({ "error": err.message });
+  }
+}
+
+async function getUserEmail() {
+  let url = "/api/user/auth"
+  let options = {
+    method: "GET",
+  }
+  try {
+    let response = await fetch(url, options);
+    let result = await response.json();
+    if (response.status === 200) {
+      userEmail = result.data.email
     }
   } catch (err) {
     console.log({ "error": err.message });

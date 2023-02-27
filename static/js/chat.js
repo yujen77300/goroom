@@ -9,6 +9,7 @@ const messageHeader = document.querySelector('.message-header')
 const chatBody = document.getElementById('chat-body')
 let account = ""
 
+
 // messageHeader.addEventListener("click", () => {
 //     slideToggle()
 // })
@@ -21,21 +22,21 @@ const rightSection = document.querySelector('.right-section')
 const leftSection = document.querySelector('.left-section')
 const bottomLeft = document.getElementById('bottom-left')
 const bottomRight = document.getElementById('bottom-right')
-const videosWithChatroom =document.getElementById('videos')
+const videosWithChatroom = document.getElementById('videos')
 chatroomBtn.addEventListener("click", () => {
     if (slideOpen == true) {
         console.log("開變成關")
         console.log(chatroomBtn)
         chatroomBtn.style.backgroundColor = "#171925"
         chatroomBtn.style.border = "2px solid #2e3231"
-        rightSection.style.display="none"
-        leftSection.style.borderRight="none"
+        rightSection.style.display = "none"
+        leftSection.style.borderRight = "none"
         leftSection.style.width = "100%"
         rightSection.style.width = "0%"
-        bottomLeft.style.width="100%"
+        bottomLeft.style.width = "100%"
         bottomRight.style.width = "0%"
-        videosWithChatroom.style.cssText ="display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;"
- 
+        videosWithChatroom.style.cssText = "display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;"
+
         slideOpen = false
     } else {
         console.log("關變成開")
@@ -122,7 +123,11 @@ document.getElementById("form").onsubmit = function () {
     updateUserName()
     console.log("現在的名字是")
     console.log(account)
-    chatWs.send(account + "/" + msg.value);
+    let chatInfo = {
+    }
+    chatInfo["account"] = account
+    chatInfo["message"] = msg.value
+    chatWs.send(JSON.stringify(chatInfo));
     msg.value = "";
     return false;
 };
@@ -135,7 +140,6 @@ function connectChat() {
     }).then(function (data) {
         account = data.data.name
     })
-    //使用 WebSocket 的網址向 Server 開啟連結
     chatWs = new WebSocket(ChatWebsocketAddr)
     chatWs.onclose = function (e) {
         console.log("websocket has closed")
@@ -145,38 +149,75 @@ function connectChat() {
         }, 1000);
     }
 
+    chatWs.onopen = () => {
+        console.log("進來剛開始")
+
+        let pcps = ""
+        let pcpsID = ""
+        let pcpsEmail = ""
+        fetch(
+            "/api/user/auth"
+        ).then(function (response) {
+            return response.json()
+        }).then(function (data) {
+            let userInfo = {}
+            let pcps = data.data.name
+            let pcpsID = data.data.id
+            let pcpsEmail = data.data.email
+            userInfo["participant"] = pcps
+            userInfo["participantId"] = pcpsID
+            userInfo["participantEmail"] = pcpsEmail
+            return userInfo
+        }).then(function (userInfo) {
+            console.log("我來這邊拉")
+            chatWs.send(JSON.stringify(userInfo))
+        })
+    }
+
     chatWs.onmessage = function (e) {
         console.log("進來onmessage")
         console.log(e)
         console.log(e.data)
-        let receiveMessage = e.data.split('/');
-        let accountName = receiveMessage[0]
-        let messages = receiveMessage[1]
-        console.log(messages)
-        if (slideOpen == false) {
-            chatAlert.style.display = 'block'
-        }
-        let item = document.createElement("div");
-        item.className = "log-item";
-        // item.innerText = `${accountName}` + `(${currentTime()})` + " - " + messages;
-        let logUser = document.createElement("div")
-        logUser.className = "log-user"
-        logUser.innerText = `${accountName}` + `(${currentTime()})`;
-        let logMsg = document.createElement("div")
-        logMsg.className = "log-msg"
-        logMsg.innerText = messages
+        let length = Object.keys(JSON.parse(e.data)).length
+        // 如果超過三個資訊代表可能是後端的
+        if (length >= 3) {
+            console.log("人數測試")
+            console.log(JSON.parse(e.data).participant)
+            console.log(JSON.parse(e.data).participantEmail)
+            return
 
-        let myLogItem = document.createElement("div")
-        myLogItem.className = "my-log-item"
-        if (account == accountName) {
-            myLogItem.appendChild(logUser)
-            myLogItem.appendChild(logMsg)
-            appendLog(myLogItem);
         } else {
-            item.appendChild(logUser)
-            item.appendChild(logMsg)
-            appendLog(item);
+        // if (e.data != "") {
+            let accountName = JSON.parse(e.data).account
+            let messages = JSON.parse(e.data).message
+            console.log("聊天測試")
+            console.log(messages)
+            if (slideOpen == false) {
+                chatAlert.style.display = 'block'
+            }
+            let item = document.createElement("div");
+            item.className = "log-item";
+            let logUser = document.createElement("div")
+            logUser.className = "log-user"
+            logUser.innerText = `${accountName}` + `(${currentTime()})`;
+            let logMsg = document.createElement("div")
+            logMsg.className = "log-msg"
+            logMsg.innerText = messages
+
+            let myLogItem = document.createElement("div")
+            myLogItem.className = "my-log-item"
+            if (account == accountName) {
+                myLogItem.appendChild(logUser)
+                myLogItem.appendChild(logMsg)
+                appendLog(myLogItem);
+            } else {
+                item.appendChild(logUser)
+                item.appendChild(logMsg)
+                appendLog(item);
+            }
         }
+        // }
+
 
     }
 

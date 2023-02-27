@@ -13,13 +13,13 @@ function connectViewer() {
 
   // 接收handlers / room.go 的 roomViewerConn()
   viewerWs.onmessage = function (e) {
-    d = e.data
+    amount = e.data
     // let msg = JSON.parse(e.data);
     // console.log(msg)
-    if (d === parseInt(d, 10)) {
+    if (amount === parseInt(amount, 10)) {
       return
     }
-    viewerCount.innerHTML = d;
+    viewerCount.innerHTML = amount;
   }
 
   viewerWs.onerror = function (e) {

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+
 	// "fmt"
 
 	"github.com/yujen77300/goroom/pkg/chat"
@@ -10,9 +11,6 @@ import (
 	"github.com/gofiber/websocket/v2"
 )
 
-var UserInfo struct {
-	User string `json:"user"`
-}
 
 func RoomChat(c *fiber.Ctx) error {
 	return c.Render("chat", fiber.Map{}, "layouts/main")
@@ -38,7 +36,7 @@ func RoomChatWebsocket(c *websocket.Conn) {
 	// fmt.Println(room)
 	// fmt.Println(&room)
 	// fmt.Println(room.Hub)
-	chat.PeerChatConn(c.Conn, room.Hub)
+	chat.PeerChatConn(c.Conn, room.Hub, uuid)
 }
 
 // func StreamChatWebsocket(c *websocket.Conn) {

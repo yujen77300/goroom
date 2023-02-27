@@ -2,7 +2,7 @@ package webrtc
 
 import (
 	"encoding/json"
-	// "fmt"
+	"fmt"
 	"log"
 	"sync"
 	"time"
@@ -170,10 +170,20 @@ func (p *Peers) SignalPeerConnections() {
 			}
 			// 創建一個 Offer，設定為SetLocalDescription
 			offer, err := p.Connections[i].PeerConnection.CreateOffer(nil)
-			// fmt.Println("執行CreateOffer")
+			fmt.Println("執行CreateOffer")
+
 			if err != nil {
 				return true
 			}
+
+			//建立datachannel
+			// dataChannel, err := p.Connections[i].PeerConnection.CreateDataChannel("mydatachannel", nil)
+			// fmt.Println("執行datachannel")
+			// fmt.Println(dataChannel.Label())
+			// if err != nil {
+			// 	return true
+			// }
+			//==========================
 
 			if err = p.Connections[i].PeerConnection.SetLocalDescription(offer); err != nil {
 				// fmt.Println("設定SetLocalDescription")

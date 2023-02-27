@@ -17,6 +17,9 @@
     <div class="container" id="test-section">
       <div class="test-left-section">
         <video id="testVideo" class="testVideo" autoplay></video>
+        <div id="test-video-avatar">
+          <div id="test-video-closed-avatar"></div>
+        </div>
       </div>
       <div class="test-right-section">
         <div class="ready-item">
@@ -89,8 +92,11 @@
         <div id="peers">
           <div class="columns is-multiline" id="videos">
             <div class="each-peer">
-              <video id="localVideo" class="localVideo" autoplay></video>
-              <!-- <div class="username">dylan</div> -->
+              <video id="localVideo" class="localVideo" autoplay playsinline="true"></video>
+              <!-- <div class="video-avatar">
+                <div class="video-closed-avatar"></div>
+              </div> -->
+              <!-- <div class="username"></div> -->
             </div>
             <!-- <div class="each-peer">
             <video id="localVideo2" autoplay></video>

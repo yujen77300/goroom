@@ -23,6 +23,25 @@ body {
   transform: rotateY(180deg);
 }
 
+#test-video-avatar {
+  position: relative;
+
+}
+
+#test-video-closed-avatar {
+  display: none;
+  height: 150px;
+  width: 150px;
+  background-size: cover;
+  background-position: center center;
+  border-radius: 50%;
+  margin-top: 20px;
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -190%);
+}
+
 .beforeEnter-section {
   /* display: none; */
   position: absolute;
@@ -104,6 +123,20 @@ body {
   transform: rotateY(180deg);
 }
 
+.video-closed-avatar {
+  display: none;
+  height: 150px;
+  width: 150px;
+  background-size: cover;
+  background-position: center center;
+  border-radius: 50%;
+  margin-top: 20px;
+  position: relative;
+  right: -50%;
+  bottom: -220px;
+  transform: translate(-50%);
+}
+
 .each-peer {
   /* width: 640px; */
   /* height: 360px;  */
@@ -121,7 +154,7 @@ body {
   line-height: 30px;
   position: relative;
   right: -30px;
-  /* bottom: -460px; */
+  bottom: -592px;
 }
 
 #videos {
