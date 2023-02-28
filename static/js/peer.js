@@ -50,28 +50,51 @@ function copyURL() {
 // ===================== peer to peer連線 =====================
 // 按下允許連線
 function connect(stream) {
+  // let pc = new RTCPeerConnection({
+  //   iceServers: [{
+  //     'urls': 'stun:stun.l.google.com:19302',
+  //   },
+  //   {
+  //     'urls': 'turn:54.150.244.240:3478',
+  //     'username': 'Dylan',
+  //     'credential': 'Wehelp',
+  //   }
+  //   ]
+  // })
+  // let pc = new RTCPeerConnection({
+  //   iceServers: [
+  //     {
+  //       urls: "stun:relay.metered.ca:80",
+  //     },
+  //     {
+  //       urls: "turn:relay.metered.ca:80",
+  //       username: "",
+  //       credential: "",
+  //     },
+  //     {
+  //       urls: "turn:relay.metered.ca:443",
+  //       username: "",
+  //       credential: "",
+  //     },
+  //     // {
+  //     //   urls: "turn:relay.metered.ca:443?transport=tcp",
+  //     //   username: "",
+  //     //   credential: "",
+  //     // },
+  //   ],
+  // });
   let pc = new RTCPeerConnection({
     iceServers: [{
-      'urls': 'stun:stun.l.google.com:19302',
+      'urls': 'stun:goroom.online:3478',
     },
     {
-      'urls': 'turn:54.150.244.240:3478',
-      'username': 'Dylan',
-      'credential': 'Wehelp',
+      'urls': 'turn:goroom.online:3478',
+      'username': '',
+      'credential': '',
     }
     ]
   })
-  // let pc = new RTCPeerConnection({
-  //   iceServers: [
-  //     {urls: "stun:relay.metered.ca:80",
-  //   },
-  //   {
-  //     urls: "turn:relay.metered.ca:80",
-  //     username: "",
-  //     credential: "",
-  //   },
-  //   ],
-  // })
+
   console.log("一開始的pc")
   console.log(pc)
   pcNow = pc
@@ -109,9 +132,8 @@ function connect(stream) {
     // RTCTrackEvent有個streams屬性，每個對像表示track所屬的media stream
     console.log(event.track)
     // event.track=>MediaStreamTrack
-    // 只處裡MediaStreamTrack是video的，排除音頻
+
     if (event.track.kind === 'audio') {
-      console.log("在ontrack裡面")
       return
     }
 

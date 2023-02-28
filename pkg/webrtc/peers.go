@@ -25,21 +25,21 @@ var (
 var (
 	turnConfig = webrtc.Configuration{
 		ICETransportPolicy: webrtc.ICETransportPolicyRelay,
-		ICEServers: []webrtc.ICEServer{
-			{
+		// ICEServers: []webrtc.ICEServer{
+		// 	{
 
-				URLs: []string{"stun:stun.l.google.com:19302"},
-			},
-			{
+		// 		URLs: []string{"stun:stun.l.google.com:19302"},
+		// 	},
+		// 	{
 
-				URLs: []string{"turn:54.150.244.240:3478"},
+		// 		URLs: []string{"turn:54.150.244.240:3478"},
 
-				Username: "Dylan",
+		// 		Username: "Dylan",
 
-				Credential:     "Wehelp",
-				CredentialType: webrtc.ICECredentialTypePassword,
-			},
-		},
+		// 		Credential:     "Wehelp",
+		// 		CredentialType: webrtc.ICECredentialTypePassword,
+		// 	},
+		// },
 		// ICEServers: []webrtc.ICEServer{
 		// 	{
 
@@ -54,7 +54,40 @@ var (
 		// 		Credential:     "",
 		// 		CredentialType: webrtc.ICECredentialTypePassword,
 		// 	},
+		// 	{
+
+		// 		URLs: []string{"turn:relay.metered.ca:443"},
+
+		// 		Username: "",
+
+		// 		Credential:     "",
+		// 		CredentialType: webrtc.ICECredentialTypePassword,
+		// 	},
+		// 	// {
+
+		// 	// 	URLs: []string{"turn:relay.metered.ca:443?transport=tcp"},
+
+		// 	// 	Username: "",
+
+		// 	// 	Credential:     "",
+		// 	// 	CredentialType: webrtc.ICECredentialTypePassword,
+		// 	// },
 		// },
+				ICEServers: []webrtc.ICEServer{
+			{
+
+				URLs: []string{"stun:goroom.online:3478"},
+			},
+			{
+
+				URLs: []string{"turn:goroom.online:3478"},
+
+				Username: "",
+
+				Credential:     "",
+				CredentialType: webrtc.ICECredentialTypePassword,
+			},
+		},
 	}
 )
 
