@@ -9,7 +9,7 @@ import (
 	"github.com/yujen77300/goroom/pkg/chat"
 	w "github.com/yujen77300/goroom/pkg/webrtc"
 
-	"crypto/sha256"
+	// "crypto/sha256"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
@@ -32,8 +32,8 @@ func Room(c *fiber.Ctx) error {
 	if len(livedToken) == 0 {
 		return c.Redirect("/")
 	} else {
-		uuid := c.Params("uuid")
-		if uuid == "" {
+		ruuid := c.Params("uuid")
+		if ruuid == "" {
 			c.Status(400)
 			return nil
 		}
@@ -43,13 +43,12 @@ func Room(c *fiber.Ctx) error {
 			ws = "wss"
 		}
 
-		uuid, suuid, _ := createOrGetRoom(uuid)
+		uuid, _ := createOrGetRoom(ruuid)
 		return c.Render("peer", fiber.Map{
 			"RoomWebsocketAddr":   fmt.Sprintf("%s://%s/room/%s/websocket", ws, c.Hostname(), uuid),
 			"RoomLink":            fmt.Sprintf("%s://%s/room/%s", c.Protocol(), c.Hostname(), uuid),
 			"ChatWebsocketAddr":   fmt.Sprintf("%s://%s/room/%s/chat/websocket", ws, c.Hostname(), uuid),
 			"ViewerWebsocketAddr": fmt.Sprintf("%s://%s/room/%s/viewer/websocket", ws, c.Hostname(), uuid),
-			"StreamLink":          fmt.Sprintf("%s://%s/stream/%s", c.Protocol(), c.Hostname(), suuid),
 			"Type":                "room",
 		})
 	}
@@ -63,32 +62,17 @@ func RoomWebsocket(c *websocket.Conn) {
 		return
 	}
 
-	_, _, room := createOrGetRoom(uuid)
+	_, room := createOrGetRoom(uuid)
 	w.RoomConn(c, room.Peers)
 }
 
-func createOrGetRoom(uuid string) (string, string, *w.Room) {
-	// 鎖住w還是鎖住Rooms?
+func createOrGetRoom(uuid string) (string, *w.Room) {
 	w.RoomsLock.Lock()
 	defer w.RoomsLock.Unlock()
 
-	// 產生hash.Hash的一個interface
-	h := sha256.New()
-	h.Write([]byte(uuid))
-	suuid := fmt.Sprintf("%x", h.Sum(nil))
 
 	if room := w.Rooms[uuid]; room != nil {
-
-		if _, ok := w.Streams[suuid]; !ok {
-			w.Streams[suuid] = room
-		}
-		// fmt.Println("測試房間號碼")
-		// fmt.Println(room)
-		// fmt.Println("測試uuid")
-		// fmt.Println(uuid)
-		// fmt.Println("測試suuid")
-		// fmt.Println(suuid)
-		return uuid, suuid, room
+		return uuid, room
 	}
 
 	hub := chat.NewHub()
@@ -107,10 +91,9 @@ func createOrGetRoom(uuid string) (string, string, *w.Room) {
 		Hub:   hub,
 	}
 	w.Rooms[uuid] = room
-	w.Streams[suuid] = room
 
 	go hub.Run()
-	return uuid, suuid, room
+	return uuid,room
 }
 
 func RoomViewerWebsocket(c *websocket.Conn) {

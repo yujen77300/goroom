@@ -78,20 +78,13 @@ function appendLog(item) {
     console.log("log.clientHeight: ", log.clientHeight)
 
 
-    console.log("chatBody高度")
-    console.log("chatBody.scrollTop : ", chatBody.scrollTop)
-    console.log("chatBody.scrollHeight : ", chatBody.scrollHeight)
-    console.log("chatBody.clientHeight : ", chatBody.clientHeight)
 
 
     // body的overflow要從預設的visible改成auto
     log.appendChild(item);
     if (chatBody.clientHeight - log.clientHeight < 20) {
-        console.log("近來這邊")
-        console.log(chatBody.scrollHeight)
-        console.log(chatBody.clientHeight)
         chatBody.scrollTop = chatBody.scrollHeight - chatBody.clientHeight;
-        console.log("近來這邊chatBody.scrollTop : ", chatBody.scrollTop)
+       
     }
 }
 

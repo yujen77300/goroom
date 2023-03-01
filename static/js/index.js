@@ -69,7 +69,6 @@ singInCardButton.addEventListener("click", () => {
     console.log(signInData)
     signInAccount(signInData)
   } else {
-    console.log("近來錯誤")
     signInHint.textContent = "Email or password is empty"
   }
 })

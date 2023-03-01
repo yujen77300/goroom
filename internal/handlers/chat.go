@@ -39,22 +39,3 @@ func RoomChatWebsocket(c *websocket.Conn) {
 	chat.PeerChatConn(c.Conn, room.Hub, uuid)
 }
 
-// func StreamChatWebsocket(c *websocket.Conn) {
-// 	suuid := c.Params("suuid")
-// 	if suuid == "" {
-// 		return
-// 	}
-
-// 	w.RoomsLock.Lock()
-// 	if stream, ok := w.Streams[suuid]; ok {
-// 		w.RoomsLock.Unlock()
-// 		if stream.Hub == nil {
-// 			hub := chat.NewHub()
-// 			stream.Hub = hub
-// 			go hub.Run()
-// 		}
-// 		chat.PeerChatConn(c.Conn, stream.Hub)
-// 		return
-// 	}
-// 	w.RoomsLock.Unlock()
-// }

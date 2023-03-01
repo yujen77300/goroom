@@ -1,6 +1,6 @@
 package chat
 
-// import "fmt"
+import "fmt"
 
 type Hub struct {
 	clients    map[*Client]bool
@@ -12,7 +12,6 @@ type Hub struct {
 // 定義 Factory function當作constructor
 func NewHub() *Hub {
 	return &Hub{
-		// 紀錄目前的客戶端
 		clients:    make(map[*Client]bool),
 		broadcast:  make(chan []byte),
 		register:   make(chan *Client),
@@ -38,10 +37,11 @@ func (h *Hub) Run() {
 				close(client.Send)
 			}
 		case message := <-h.broadcast:
-			// fmt.Println("進來廣播")
-			// fmt.Println(string(message))
+			fmt.Println("進來廣播")
+			fmt.Println(string(message))
 			// 這裡先
 			for client := range h.clients {
+				fmt.Println("再多進來一層")
 				select {
 				case client.Send <- message:
 				default:
