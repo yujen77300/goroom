@@ -55,13 +55,12 @@ func Run() error {
 	app.Put("/api/user/auth", models.PutUser)
 	app.Delete("/api/user/auth", models.SignOutUser)
 	app.Get("/api/user/avatar", models.GetAvatar)
+	app.Get("/api/avatar/:useremail", models.GetPcpAvatar)
 	app.Post("/api/user/avatar", models.UpdateAvatar)
 	app.Static("/", "./static")
 
-
 	// 讓這兩個變量進行初始化
 	w.Rooms = make(map[string]*w.Room)
-
 
 	if *cert != "" {
 		return app.ListenTLS(*addr, *cert, *key)

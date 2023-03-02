@@ -30,6 +30,12 @@ type UserAvatar struct {
 	AvatarUrl string `json:"avatarurl"`
 }
 
+type PcpAvatar struct {
+	UserId        int   `json:"id"`
+	Email     string `json:"email"`
+	AvatarUrl string `json:"avatarurl"`
+}
+
 var UserEmail string
 
 // Get all users (test)
@@ -303,7 +309,7 @@ func GetAvatar(c *fiber.Ctx) error {
 	db, _ := ConnectToMYSQL()
 	row, err := db.Query("SELECT email,avatar_url FROM member WHERE email = ?;", UserEmail)
 	if err != nil {
-		fmt.Printf("查詢資料庫失敗，原因為：%v\n", err)
+		fmt.Printf("Database query failed, error：%v\n", err)
 	}
 	defer row.Close()
 	defer db.Close()
@@ -317,6 +323,29 @@ func GetAvatar(c *fiber.Ctx) error {
 		userAvatar = append(userAvatar, user)
 	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"user": UserEmail, "userAvatar": userAvatar[0].AvatarUrl})
+}
+
+func GetPcpAvatar(c *fiber.Ctx) error {
+	pcpEmail := c.Params("useremail")
+	pcpEmail = strings.TrimLeft(pcpEmail, ":")
+	db, _ := ConnectToMYSQL()
+	row, err := db.Query("SELECT id,email,avatar_url FROM member WHERE email = ?;", pcpEmail)
+	if err != nil {
+		fmt.Printf("Database query failed, error：%v\n", err)
+	}
+	defer row.Close()
+	defer db.Close()
+	var pcpAvatar []PcpAvatar
+	for row.Next() {
+		var pcp PcpAvatar
+		if dberr := row.Scan(&pcp.UserId,&pcp.Email, &pcp.AvatarUrl); dberr != nil {
+			fmt.Printf("scan failed, err:%v\n", dberr)
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "scan failed"})
+		}
+		pcpAvatar = append(pcpAvatar, pcp)
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"pcpUserId":pcpAvatar[0].UserId,"pcpEmail": pcpEmail, "pcpAvatarUrl": pcpAvatar[0].AvatarUrl})
 }
 
 func UpdateAvatar(c *fiber.Ctx) error {
