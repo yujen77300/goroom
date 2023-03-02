@@ -2,11 +2,15 @@ let msg = document.getElementById("msg");
 let log = document.getElementById("log");
 let chat = document.getElementById('chat-content');
 let slideOpen = true;
+let pcpsListOpen = false;
 const chatInputButton = document.getElementById('chat-input-btn')
 const chatBtn = document.getElementById('chat-btn');
+const pcpsBtn = document.getElementById('pcps-btn');
 const chatAlert = document.getElementById('chat-alert')
 const messageHeader = document.querySelector('.message-header')
 const chatBody = document.getElementById('chat-body')
+const pcpsRightSection = document.getElementById('pcps-right-section')
+const chatRightSection = document.getElementById('chat-right-section')
 let account = ""
 
 
@@ -42,8 +46,11 @@ chatroomBtn.addEventListener("click", () => {
         console.log("關變成開")
         chatroomBtn.style.border = "none"
         chatroomBtn.style.backgroundColor = "#1158bd"
+        pcpsBtn.style.backgroundColor = "#171925"
         rightSection.style.display = "block"
         leftSection.style.borderRight = "3px solid #242736"
+        chatRightSection.style.display = "block"
+        pcpsRightSection.style.display = "none"
         bottomLeft.style.width = "80%"
         bottomRight.style.width = "20%"
         leftSection.style.width = "80%"
@@ -51,21 +58,52 @@ chatroomBtn.addEventListener("click", () => {
         videosWithChatroom.style.cssText = "display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;"
         chatAlert.style.display = 'none';
         slideOpen = true;
+        pcpsListOpen = false;
+    }
+})
+
+// ===================== 使用者清單展開與關閉 =====================
+pcpsBtn.addEventListener("click", () => {
+    if (pcpsListOpen == true) {
+        console.log("人員清單開變成關")
+        pcpsBtn.style.backgroundColor = "#171925"
+        pcpsBtn.style.border = "2px solid #2e3231"
+        pcpsBtn.firstElementChild.setAttribute('viewBox', '-100 -200 2300 1564');
+        rightSection.style.display = "none"
+        leftSection.style.borderRight = "none"
+        leftSection.style.width = "100%"
+        rightSection.style.width = "0%"
+        bottomLeft.style.width = "100%"
+        bottomRight.style.width = "0%"
+        videosWithChatroom.style.cssText = "display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;"
+
+
+        pcpsListOpen = false
+    } else {
+        console.log("人員清單關變成開")
+        pcpsBtn.style.border = "none"
+        pcpsBtn.style.backgroundColor = "#1158bd"
+        pcpsBtn.firstElementChild.setAttribute('viewBox', '-200 -350 2300 1564');
+        chatRightSection.style.display = "none"
+        pcpsRightSection.style.display = "block"
+        chatroomBtn.style.backgroundColor = "#171925"
+        chatroomBtn.style.border = "2px solid #2e3231"
+        leftSection.style.borderRight = "3px solid #242736"
+        rightSection.style.display = "block"
+        bottomLeft.style.width = "80%"
+        bottomRight.style.width = "20%"
+        leftSection.style.width = "80%"
+        rightSection.style.width = "20%"
+        videosWithChatroom.style.cssText = "display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;"
+
+        pcpsListOpen = true;
+        slideOpen = false;
     }
 })
 
 
-// function slideToggle() {
 
-//     if (slideOpen) {
-//         chat.style.display = 'none';
-//         slideOpen = false;
-//     } else {
-//         chat.style.display = 'block'
-//         chatAlert.style.display = 'none';
-//         slideOpen = true
-//     }
-// }
+
 
 function appendLog(item) {
     // 在附加元素之前，檢查是不是可以產生卷軸
@@ -84,7 +122,7 @@ function appendLog(item) {
     log.appendChild(item);
     if (chatBody.clientHeight - log.clientHeight < 20) {
         chatBody.scrollTop = chatBody.scrollHeight - chatBody.clientHeight;
-       
+
     }
 }
 
@@ -180,7 +218,7 @@ function connectChat() {
             return
 
         } else {
-        // if (e.data != "") {
+            // if (e.data != "") {
             let accountName = JSON.parse(e.data).account
             let messages = JSON.parse(e.data).message
             console.log("聊天測試")

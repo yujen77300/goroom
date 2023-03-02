@@ -1,11 +1,12 @@
-let viewerCount = document.getElementById("viewer-count");
+let viewerCount = document.querySelectorAll(".viewer-count");
 
 
 function connectViewer() {
   viewerWs = new WebSocket(ViewerWebsocketAddr);
   viewerWs.onclose = function (e) {
     console.log("ViewerWebsocket has closed");
-    viewerCount.innerHTML = "0";
+    viewerCount[0].innerHTML = "0";
+    viewerCount[1].innerHTML = "0";
     setTimeout(function () {
       connectViewer();
     }, 1000);
@@ -19,7 +20,8 @@ function connectViewer() {
     if (amount === parseInt(amount, 10)) {
       return
     }
-    viewerCount.innerHTML = amount;
+    viewerCount[0].innerHTML = amount;
+    viewerCount[1].innerHTML = amount;
   }
 
   viewerWs.onerror = function (e) {

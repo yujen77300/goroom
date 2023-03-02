@@ -6,6 +6,7 @@ let localVideo = document.querySelectorAll('.localVideo')
 let eachPeer = document.querySelectorAll('.each-peer')
 let viewerCountNow = document.querySelector('#viewer-count')
 // let userName = document.querySelector('.username')
+let pcpName = document.querySelector(".pcpName")
 let videoClosedAvatar = document.querySelector('.video-closed-avatar')
 // 判斷視訊畫面是否開啟
 let streamOutput = { audio: true, video: true, }
@@ -660,6 +661,7 @@ function peerSize(usersAmount, localVideo) {
 async function getUserAvatar() {
   const testAvatar = document.querySelector('.testAvatar')
   const testVideoClosedAvatar = document.getElementById('test-video-closed-avatar')
+  const pcpAvatar = document.querySelector(".pcpAvatar")
   // let videoClosedAvatar = document.querySelector('.video-closed-avatar')
   let url = "/api/user/avatar"
   let options = {
@@ -672,6 +674,7 @@ async function getUserAvatar() {
       if (defaultSet == false) {
         testAvatar.style.backgroundImage = `url(${result.userAvatar})`
         testVideoClosedAvatar.style.backgroundImage = `url(${result.userAvatar})`
+        pcpAvatar.src = `${result.userAvatar}`
       }
       // else {
       //   videoClosedAvatar.style.backgroundImage = `url(${result.userAvatar})`
@@ -695,7 +698,8 @@ async function getUserName() {
       if (defaultSet == false) {
         testName.textContent = result.data.name
       } else {
-        userName.textContent = result.data.name
+        // userName.textContent = result.data.name
+        pcpName.textContent = result.data.name
       }
     }
   } catch (err) {
