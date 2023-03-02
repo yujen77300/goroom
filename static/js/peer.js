@@ -6,22 +6,28 @@ let localVideo = document.querySelectorAll('.localVideo')
 let eachPeer = document.querySelectorAll('.each-peer')
 let viewerCountNow = document.querySelector('#viewer-count')
 // let userName = document.querySelector('.username')
-// let pcpName = document.querySelector(".pcpName")
 let videoClosedAvatar = document.querySelector('.video-closed-avatar')
+const pcpsInMeeting = document.getElementById('pcpsInMeeting')
 // 判斷視訊畫面是否開啟
 let streamOutput = { audio: true, video: true, }
 // 是否進行設定
 let defaultSet = false
 let testStreamNow
-let userEmail = ""
+let pcpEmail = ""
+let pcpId = ""
+let pcpName = ""
+
 
 let streamNow
 let pcNow
 // 一開始有一個人
 let usersAmount = 1
+// mediastream和user清單
+let streamDict = {};
 
 peerSize(usersAmount, localVideo)
 peerConnect(defaultSet)
+getUserEmail()
 
 
 
@@ -134,9 +140,12 @@ function connect(stream) {
 
   // 接收另一端傳遞過來的多媒體資訊(videoTrack ...等)
   // 完成連線後，透過該事件能夠在發現遠端傳輸的多媒體檔案時觸發，來處理/接收多媒體數據
+  // As it turns out, MediaStreamTracks get a new ID assigned on the other side.MediaStreams however, keep their assigned IDs, so use those when doing AddTrack, and then use a DataChannel to send information about the stream based on its ID.
   pc.ontrack = function (event) {
     console.log("ontrack裡面的event")
     console.log(event)
+    console.log(event.streams)
+    console.log(event.streams[0])
     // event => RTCTrackEvent
     // RTCTrackEvent有個streams屬性，每個對像表示track所屬的media stream
     console.log(event.track)
@@ -179,8 +188,9 @@ function connect(stream) {
     event.streams[0].onremovetrack = ({
       track  //MediaStreamTrack
     }) => {
-      console.log("el的節點是否存在")
+      console.log("我進來刪除")
       console.log(track)
+      console.log(event)
       if (el.parentNode) {
         el.parentNode.remove()
       }
@@ -193,17 +203,16 @@ function connect(stream) {
   // 透過(addTrack)載入多媒體資訊(ex: videoTrack, audioTrack ...)
   // 將stream track 與peer connection 透過addTrack()關聯起來，之後建立連結才能進行傳輸
   // 加入MediaStream object到RTCPeerconnection (pc) 中。
-  console.log("要載入資訊前知道stream")
+  console.log("載入資訊前知道stream")
   // stream是帶入函數的參數
   console.log(stream)
   console.log(stream.getTracks())
   stream.getTracks().forEach(track => pc.addTrack(track, stream))
 
   let ws = new WebSocket(RoomWebsocketAddr)
+  let pcpsWs = new WebSocket(PcpsWebsocketAddr)
   console.log("建立新的ws")
   console.log(ws)
-  console.log("透過(addTrack)載入多媒體後的pc")
-  console.log(pc)
   // 當查找到相對應的遠端端口時會做onicecandidate，也就是透過callback function將icecandidate 傳輸給 remote peers。進行網路資訊的共享。
   pc.onicecandidate = e => {
     console.log("近來onicecandidate")
@@ -220,11 +229,56 @@ function connect(stream) {
     }))
   }
 
+  // 更新上線者清單相關websocket=========================================
+  pcpsWs.onopen = () => {
+    console.log("建立成功")
+    console.log(pcpEmail)
+    console.log("我來這邊拉")
+    console.log(stream)
+    console.log(stream.id)
+    streamDict["streamId"] = stream.id
+    streamDict["pcpEmail"] = pcpEmail
+    streamDict["pcpId"] = pcpId
+    streamDict["pcpName"] = pcpName
+    console.log(streamDict)
+    pcpsWs.send(JSON.stringify({ event: "join", data: JSON.stringify(streamDict) }))
+  }
+
+  pcpsWs.onmessage = function (e) {
+    console.log("收到訊息時觸發")
+    let msg = JSON.parse(e.data)
+    console.log(e)
+    console.log(e.data)
+    console.log(msg)
+    switch (msg.event) {
+      case 'join':
+        console.log(msg.data.pcpEmail)
+        eachPcp = document.createElement("div")
+        eachPcp.className = "each-pcp"
+        eachPcp.id = msg.data.pcpId
+        pcpAvatar = document.createElement("img")
+        pcpAvatar.className = "pcp-avatar"
+        pcpAvatar.alt = msg.data.pcpName
+        pcpName = document.createElement("div")
+        pcpName.className = "pcp-name"
+        pcpName.textContent = msg.data.pcpName
+        getPcpAvatar(msg.data.pcpEmail, pcpAvatar)
+        eachPcp.appendChild(pcpAvatar)
+        eachPcp.appendChild(pcpName)
+        console.log("測試一下")
+        console.log(pcpsInMeeting)
+        pcpsInMeeting.appendChild(eachPcp)
+    }
+  }
+
+
+  // signal server相關websocket=========================================
+
   ws.addEventListener('error', function (event) {
     console.log('error: ', event)
   })
 
-  ws.onclose = function (evt) {
+  ws.onclose = function (e) {
     console.log("websocket has closed結束")
     // 關閉與 WebSocket 相關的 PeerConnection（pc.close()），並將設為null；
     pc.close();
@@ -237,12 +291,12 @@ function connect(stream) {
       connect(stream);
     }, 1000);
   }
-  // 收到 Server 發來的訊息時觸發
-  ws.onmessage = function (evt) {
-    let msg = JSON.parse(evt.data)
+  // 收到 Server 發來的訊息時觸發 webrtc/peers.go 、room.go
+  ws.onmessage = function (e) {
+    let msg = JSON.parse(e.data)
     console.log("收到 Server 發來的訊息時觸發")
-    console.log(evt)
-    console.log(evt.data)
+    console.log(e)
+    console.log(e.data)
     console.log(msg)
     if (!msg) {
       return console.log('failed to parse msg')
@@ -281,8 +335,8 @@ function connect(stream) {
     }
   }
 
-  ws.onerror = function (evt) {
-    console.log("error: " + evt.data)
+  ws.onerror = function (e) {
+    console.log("error: " + e.data)
   }
 }
 
@@ -299,6 +353,8 @@ function peerConnect(defaultSet) {
     })
       .then(stream => {
         document.getElementById('localVideo').srcObject = stream
+        console.log("最最一開始")
+        console.log(stream.getTracks())
         connect(stream)
         streamNow = stream
         audioVideoDefault(streamOutput.audio, streamOutput.video)
@@ -716,7 +772,25 @@ async function getUserEmail() {
     let response = await fetch(url, options);
     let result = await response.json();
     if (response.status === 200) {
-      userEmail = result.data.email
+      pcpEmail = result.data.email
+      pcpId = result.data.id
+      pcpName = result.data.name
+    }
+  } catch (err) {
+    console.log({ "error": err.message });
+  }
+}
+
+async function getPcpAvatar(pcpEmail, pcpAvatar) {
+  let url = `/api/avatar/:${pcpEmail}`
+  let options = {
+    method: "GET",
+  }
+  try {
+    let response = await fetch(url, options);
+    let result = await response.json();
+    if (response.status === 200) {
+      pcpAvatar.src = `${result.pcpAvatarUrl}`
     }
   } catch (err) {
     console.log({ "error": err.message });

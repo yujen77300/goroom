@@ -11,7 +11,7 @@ const messageHeader = document.querySelector('.message-header')
 const chatBody = document.getElementById('chat-body')
 const pcpsRightSection = document.getElementById('pcps-right-section')
 const chatRightSection = document.getElementById('chat-right-section')
-const pcpsInMeeting = document.getElementById('pcpsInMeeting')
+// const pcpsInMeeting = document.getElementById('pcpsInMeeting')
 let account = ""
 
 
@@ -178,30 +178,30 @@ function connectChat() {
         }, 1000);
     }
 
-    chatWs.onopen = () => {
-        console.log("進來剛開始")
+    // chatWs.onopen = () => {
+    //     console.log("進來剛開始")
 
-        let pcps = ""
-        let pcpsID = ""
-        let pcpsEmail = ""
-        fetch(
-            "/api/user/auth"
-        ).then(function (response) {
-            return response.json()
-        }).then(function (data) {
-            let userInfo = {}
-            let pcps = data.data.name
-            let pcpsID = data.data.id
-            let pcpsEmail = data.data.email
-            userInfo["participant"] = pcps
-            userInfo["participantId"] = pcpsID
-            userInfo["participantEmail"] = pcpsEmail
-            return userInfo
-        }).then(function (userInfo) {
-            console.log("我來這邊拉")
-            chatWs.send(JSON.stringify(userInfo))
-        })
-    }
+    //     let pcps = ""
+    //     let pcpsID = ""
+    //     let pcpsEmail = ""
+    //     fetch(
+    //         "/api/user/auth"
+    //     ).then(function (response) {
+    //         return response.json()
+    //     }).then(function (data) {
+    //         let userInfo = {}
+    //         let pcps = data.data.name
+    //         let pcpsID = data.data.id
+    //         let pcpsEmail = data.data.email
+    //         userInfo["participant"] = pcps
+    //         userInfo["participantId"] = pcpsID
+    //         userInfo["participantEmail"] = pcpsEmail
+    //         return userInfo
+    //     }).then(function (userInfo) {
+    //         console.log("我來這邊拉")
+    //         chatWs.send(JSON.stringify(userInfo))
+    //     })
+    // }
 
     chatWs.onmessage = function (e) {
         console.log("進來onmessage")
@@ -212,23 +212,23 @@ function connectChat() {
         if (length >= 3) {
             console.log("人數測試")
             console.log(JSON.parse(e.data).participant)
-            let pcpEmail = JSON.parse(e.data).participantEmail
+            // let pcpEmail = JSON.parse(e.data).participantEmail
 
-            eachPcp = document.createElement("div")
-            eachPcp.className = "each-pcp"
-            eachPcp.id = JSON.parse(e.data).participantId
-            pcpAvatar = document.createElement("img")
-            pcpAvatar.className = "pcp-avatar"
-            pcpAvatar.alt = JSON.parse(e.data).participant
-            pcpName = document.createElement("div")
-            pcpName.className = "pcp-name"
-            pcpName.textContent = JSON.parse(e.data).participant
-            getPcpAvatar(pcpEmail, pcpAvatar)
-            eachPcp.appendChild(pcpAvatar)
-            eachPcp.appendChild(pcpName)
-            console.log("測試一下")
-            console.log(pcpsInMeeting)
-            pcpsInMeeting.appendChild(eachPcp)
+            // eachPcp = document.createElement("div")
+            // eachPcp.className = "each-pcp"
+            // eachPcp.id = JSON.parse(e.data).participantId
+            // pcpAvatar = document.createElement("img")
+            // pcpAvatar.className = "pcp-avatar"
+            // pcpAvatar.alt = JSON.parse(e.data).participant
+            // pcpName = document.createElement("div")
+            // pcpName.className = "pcp-name"
+            // pcpName.textContent = JSON.parse(e.data).participant
+            // getPcpAvatar(pcpEmail, pcpAvatar)
+            // eachPcp.appendChild(pcpAvatar)
+            // eachPcp.appendChild(pcpName)
+            // console.log("測試一下")
+            // console.log(pcpsInMeeting)
+            // pcpsInMeeting.appendChild(eachPcp)
             return
 
         } else {

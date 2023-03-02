@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 
 	"time"
@@ -16,6 +18,18 @@ import (
 	guuid "github.com/google/uuid"
 	"github.com/pion/webrtc/v3"
 )
+
+type PcpsWsPayload struct {
+	Event string `json:"event"`
+	Data  string `json:"data"`
+}
+
+type PcpsInfo struct {
+	StreamID string `json:"streamId"`
+	PCPEmail string `json:"pcpEmail"`
+	PCPId    int    `json:"pcpId"`
+	PCPName  string `json:"pcpName"`
+}
 
 func RoomCreate(c *fiber.Ctx) error {
 	livedToken := c.Cookies("MyJWT")
@@ -49,6 +63,7 @@ func Room(c *fiber.Ctx) error {
 			"RoomLink":            fmt.Sprintf("%s://%s/room/%s", c.Protocol(), c.Hostname(), uuid),
 			"ChatWebsocketAddr":   fmt.Sprintf("%s://%s/room/%s/chat/websocket", ws, c.Hostname(), uuid),
 			"ViewerWebsocketAddr": fmt.Sprintf("%s://%s/room/%s/viewer/websocket", ws, c.Hostname(), uuid),
+			"PcpsWebsocketAddr":   fmt.Sprintf("%s://%s/room/%s/pcps/websocket", ws, c.Hostname(), uuid),
 		})
 	}
 
@@ -126,4 +141,49 @@ func roomViewerConn(c *websocket.Conn, p *w.Peers) {
 		// w.Write([]byte("{\"account\":\"dylan\",\"email\":\"dylan@gmail\",\"url\":\"https:google.com\",\"viewer\":\"" + viewer + "\"}"))
 		w.Write([]byte(fmt.Sprintf("%d", len(p.Connections))))
 	}
+}
+
+func RoomPcpsWebsocket(c *websocket.Conn) {
+	uuid := c.Params("uuid")
+	if uuid == "" {
+		return
+	}
+
+	pcpsInfo := &PcpsWsPayload{}
+	for {
+		_, raw, err := c.ReadMessage()
+		if err != nil {
+			log.Println(err)
+			return
+		} else if err := json.Unmarshal(raw, &pcpsInfo); err != nil {
+			log.Println(err)
+			return
+		}
+		fmt.Println("我只是進來這裡了了啦")
+		fmt.Println(pcpsInfo.Event)
+		fmt.Println(pcpsInfo.Data)
+		switch pcpsInfo.Event {
+		case "join":
+			var newPcpsInfo PcpsInfo
+			err := json.Unmarshal([]byte(pcpsInfo.Data), &newPcpsInfo)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			fmt.Println("我有近來唷")
+			fmt.Println(newPcpsInfo.StreamID)
+			c.WriteJSON(fiber.Map{
+				"event": "join",
+				"data": fiber.Map{
+					"streamId": newPcpsInfo.StreamID,
+					"pcpName": newPcpsInfo.PCPName,
+					"pcpId" : newPcpsInfo.PCPId,
+					"pcpEmail" : newPcpsInfo.PCPEmail,
+				},
+			})
+
+		case "leave":
+		}
+	}
+
 }

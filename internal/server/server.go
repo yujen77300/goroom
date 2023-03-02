@@ -49,6 +49,8 @@ func Run() error {
 	app.Get("/room/:uuid/chat/websocket", websocket.New(handlers.RoomChatWebsocket))
 	// 影響觀看人數
 	app.Get("/room/:uuid/viewer/websocket", websocket.New(handlers.RoomViewerWebsocket))
+	//上線使用者
+	app.Get("/room/:uuid/pcps/websocket", websocket.New(handlers.RoomPcpsWebsocket))
 	app.Post("/api/user", models.NewUser)
 	app.Get("/api/alluser", models.FindALLUsers)
 	app.Get("/api/user/auth", models.GetUser)
