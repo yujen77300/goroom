@@ -49,7 +49,6 @@ func Room(c *fiber.Ctx) error {
 			"RoomLink":            fmt.Sprintf("%s://%s/room/%s", c.Protocol(), c.Hostname(), uuid),
 			"ChatWebsocketAddr":   fmt.Sprintf("%s://%s/room/%s/chat/websocket", ws, c.Hostname(), uuid),
 			"ViewerWebsocketAddr": fmt.Sprintf("%s://%s/room/%s/viewer/websocket", ws, c.Hostname(), uuid),
-			"Type":                "room",
 		})
 	}
 
@@ -69,7 +68,6 @@ func RoomWebsocket(c *websocket.Conn) {
 func createOrGetRoom(uuid string) (string, *w.Room) {
 	w.RoomsLock.Lock()
 	defer w.RoomsLock.Unlock()
-
 
 	if room := w.Rooms[uuid]; room != nil {
 		return uuid, room
@@ -93,7 +91,7 @@ func createOrGetRoom(uuid string) (string, *w.Room) {
 	w.Rooms[uuid] = room
 
 	go hub.Run()
-	return uuid,room
+	return uuid, room
 }
 
 func RoomViewerWebsocket(c *websocket.Conn) {
@@ -103,14 +101,11 @@ func RoomViewerWebsocket(c *websocket.Conn) {
 	}
 
 	w.RoomsLock.Lock()
-	// fmt.Println("進來RoomViewerWebsocket")
 	if peer, ok := w.Rooms[uuid]; ok {
-		// fmt.Println("有近來這一層")
 		w.RoomsLock.Unlock()
 		roomViewerConn(c, peer.Peers)
 		return
 	}
-	// fmt.Println("有離開了")
 	w.RoomsLock.Unlock()
 }
 

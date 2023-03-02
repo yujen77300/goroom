@@ -7,14 +7,14 @@ import (
 	"github.com/yujen77300/goroom/pkg/chat"
 	w "github.com/yujen77300/goroom/pkg/webrtc"
 
-	"github.com/gofiber/fiber/v2"
+	// "github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
 )
 
 
-func RoomChat(c *fiber.Ctx) error {
-	return c.Render("chat", fiber.Map{}, "layouts/main")
-}
+// func RoomChat(c *fiber.Ctx) error {
+// 	return c.Render("chat", fiber.Map{}, "layouts/main")
+// }
 
 func RoomChatWebsocket(c *websocket.Conn) {
 	uuid := c.Params("uuid")

@@ -1,5 +1,5 @@
 const exitButton = document.getElementById("exit-btn")
-// const copyButton = document.querySelector("#copy-button")
+const shareLinkBtn = document.getElementById("share-link-btn")
 const shareScreenBtn = document.getElementById('share-btn')
 const videos = document.querySelector('#videos')
 let localVideo = document.querySelectorAll('.localVideo')
@@ -30,21 +30,29 @@ exitButton.addEventListener("click", function () {
 });
 
 // ===================== 複製url =====================
-// copyButton.addEventListener("click", () => {
-//   copyURL()
-// })
+shareLinkBtn.addEventListener("click", () => {
+  copyURL()
+})
 
 function copyURL() {
   if (!navigator.clipboard) {
     alert('your broweser does not support clipboard API ');
     return;
   }
-  let s = `${window.location.href}`;
-  navigator.clipboard.writeText(s).then(() => {
-    alert(`URL Copied!`);
+  let infoCopied = `${window.location.href}`;
+  navigator.clipboard.writeText(infoCopied).then(() => {
+    notie.alert({
+      type: 'info',
+      text: 'Link Copied Successfully',
+    })
   }).catch((err) => {
     alert(`${err}`);
+    notie.alert({
+      type: 'error',
+      text: `${err}`,
+    })
   });
+
 }
 
 // ===================== peer to peer連線 =====================

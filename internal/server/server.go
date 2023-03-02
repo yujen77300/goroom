@@ -45,7 +45,7 @@ func Run() error {
 	app.Get("/room/:uuid/websocket", websocket.New(handlers.RoomWebsocket, websocket.Config{
 		HandshakeTimeout: 10 * time.Second,
 	}))
-	app.Get("/room/:uuid/chat", handlers.RoomChat)
+	// app.Get("/room/:uuid/chat", handlers.RoomChat)
 	app.Get("/room/:uuid/chat/websocket", websocket.New(handlers.RoomChatWebsocket))
 	// 影響觀看人數
 	app.Get("/room/:uuid/viewer/websocket", websocket.New(handlers.RoomViewerWebsocket))

@@ -37,11 +37,13 @@ type Client struct {
 
 func (c *Client) readPump() {
 	defer func() {
+		// 送到Run()這個receiver function的資訊
 		c.Hub.unregister <- c
 		c.Conn.Close()
 	}()
 	c.Conn.SetReadLimit(maxMessageSize)
 	c.Conn.SetReadDeadline(time.Now().Add(pongWait))
+	// 如果有收到pong重新設定
 	c.Conn.SetPongHandler(func(string) error { c.Conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 	for {
 		_, message, err := c.Conn.ReadMessage()
@@ -53,6 +55,7 @@ func (c *Client) readPump() {
 		}
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
 		// message = ([]byte("{\"account\":\"dylan\",\"message\":\"你只能打這樣啦\"}"))
+		// 送到Run()這個receiver function的資訊
 		c.Hub.broadcast <- message
 	}
 }
@@ -130,6 +133,7 @@ func (c *Client) writeAndStorePump(roomUuid string) {
 func PeerChatConn(c *websocket.Conn, hub *Hub, roomUuid string) {
 	client := &Client{Hub: hub, Conn: c, Send: make(chan []byte, 256)}
 
+	// 送到Run()這個receiver function的資訊
 	client.Hub.register <- client
 
 	go client.writeAndStorePump(roomUuid)

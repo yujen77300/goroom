@@ -24,14 +24,14 @@ func (h *Hub) Run() {
 		// 監聽 register、unregister 和 broadcast 三個 channel，然後有不同動作
 		select {
 		case client := <-h.register:
-			// fmt.Println("進來註冊")
-			// fmt.Println(client.Send)
-			// fmt.Println(*client)
+			fmt.Println("進來註冊")
+			fmt.Println(client.Send)
+			fmt.Println(*client)
 			h.clients[client] = true
 		case client := <-h.unregister:
-			// fmt.Println("進來解除註冊")
-			// fmt.Println(client.Send)
-			// fmt.Println(*client)
+			fmt.Println("進來解除註冊")
+			fmt.Println(client.Send)
+			fmt.Println(*client)
 			if _, ok := h.clients[client]; ok {
 				delete(h.clients, client)
 				close(client.Send)

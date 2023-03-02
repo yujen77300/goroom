@@ -130,7 +130,8 @@ func (p *Peers) AddTrack(t *webrtc.TrackRemote) *webrtc.TrackLocalStaticRTP {
 		p.ListLock.Unlock()
 		p.SignalPeerConnections()
 	}()
-
+	
+	// 建立本地的track
 	trackLocal, err := webrtc.NewTrackLocalStaticRTP(t.Codec().RTPCodecCapability, t.ID(), t.StreamID())
 	if err != nil {
 		log.Println(err.Error())
@@ -144,6 +145,7 @@ func (p *Peers) AddTrack(t *webrtc.TrackRemote) *webrtc.TrackLocalStaticRTP {
 }
 
 func (p *Peers) RemoveTrack(t *webrtc.TrackLocalStaticRTP) {
+	fmt.Println("我進來remove")
 	p.ListLock.Lock()
 	defer func() {
 		p.ListLock.Unlock()
@@ -208,7 +210,6 @@ func (p *Peers) SignalPeerConnections() {
 			// 創建一個 Offer，設定為SetLocalDescription
 			offer, err := p.Connections[i].PeerConnection.CreateOffer(nil)
 			fmt.Println("執行CreateOffer")
-
 			if err != nil {
 				return true
 			}

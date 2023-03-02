@@ -2,7 +2,7 @@ package webrtc
 
 import (
 	"encoding/json"
-
+	"fmt"
 	"log"
 	"os"
 	"sync"
@@ -51,9 +51,9 @@ func RoomConn(c *websocket.Conn, p *Peers) {
 	//==========================
 	defer peerConnection.Close()
 	// 決定接受傳入的stream類型
-	for _, typ := range []webrtc.RTPCodecType{webrtc.RTPCodecTypeVideo, webrtc.RTPCodecTypeAudio} {
+	for _, codecType := range []webrtc.RTPCodecType{webrtc.RTPCodecTypeVideo, webrtc.RTPCodecTypeAudio} {
 		// 定義Transceiver，因後面方向定義為recvonly， transceiver 僅用於接收音頻和視頻數據
-		if _, err := peerConnection.AddTransceiverFromKind(typ, webrtc.RTPTransceiverInit{
+		if _, err := peerConnection.AddTransceiverFromKind(codecType, webrtc.RTPTransceiverInit{
 			Direction: webrtc.RTPTransceiverDirectionRecvonly,
 		}); err != nil {
 			log.Print(err)
@@ -68,34 +68,26 @@ func RoomConn(c *websocket.Conn, p *Peers) {
 			Mutex: sync.Mutex{},
 		}}
 
-	// 把新的PeerConnection加入global list中
 	p.ListLock.Lock()
-	// fmt.Println("新的peer")
-	// fmt.Println(newPeer)
+	// 把新的PeerConnection加入PeerConnectionState的slice中
 	p.Connections = append(p.Connections, newPeer)
 	p.ListLock.Unlock()
-
-	// fmt.Println("p的連線")
-	// fmt.Println(p.Connections)
 	log.Println(p.Connections)
 
 	// 如果新的ICECandidate訊息收集完成時的操作
 	peerConnection.OnICECandidate(func(i *webrtc.ICECandidate) {
-		// fmt.Println("OnICECandidate的結果")
-		// fmt.Println(i)
 		if i == nil {
 			return
 		}
 
 		candidateString, err := json.Marshal(i.ToJSON())
-		// fmt.Println("OnICECandidate變成json的結果")
-		// fmt.Println(candidateString)
+		fmt.Println(string(candidateString))
 		if err != nil {
 			log.Println(err)
 			return
 		}
 
-		// 將WebRTC的 ICE candidate傳送給 WebSocket connection
+		// 將WebRTC的 ICE candidate傳送給 WebSocket connection。peer.js onmessage
 		if writeErr := newPeer.Websocket.WriteJSON(&websocketMessage{
 			Event: "candidate",
 			Data:  string(candidateString),
@@ -106,15 +98,18 @@ func RoomConn(c *websocket.Conn, p *Peers) {
 
 	// 當peerconnection的狀態改變，通常就是自global list移除。
 	peerConnection.OnConnectionStateChange(func(peerConState webrtc.PeerConnectionState) {
-		// fmt.Println("PeerConnectionState連接狀態")
-		// fmt.Println(peerConState)
+		fmt.Println("PeerConnectionState連接狀態")
+		fmt.Println(peerConState)
 		switch peerConState {
 		case webrtc.PeerConnectionStateFailed:
 			if err := peerConnection.Close(); err != nil {
 				log.Print(err)
 			}
 		case webrtc.PeerConnectionStateClosed:
+			fmt.Println("連接失敗")
 			p.SignalPeerConnections()
+		case webrtc.PeerConnectionStateConnected:
+			fmt.Println("連接成功")
 		}
 	})
 
@@ -128,11 +123,6 @@ func RoomConn(c *websocket.Conn, p *Peers) {
 		if trackLocal == nil {
 			return
 		}
-		// fmt.Println("觸發了OnTrack事件開始")
-		// fmt.Println(t)
-		// fmt.Println("觸發了OnTrack事件中間")
-		// fmt.Println(trackLocal)
-		// fmt.Println("觸發了OnTrack事件結束")
 		defer p.RemoveTrack(trackLocal)
 
 		buf := make([]byte, 1500)
@@ -147,6 +137,8 @@ func RoomConn(c *websocket.Conn, p *Peers) {
 			}
 		}
 	})
+
+
 
 	p.SignalPeerConnections()
 	message := &websocketMessage{}

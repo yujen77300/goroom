@@ -448,7 +448,7 @@ body {
   color: #fff;
 }
 
-#chatroom-btn {
+#chatroom-btn,#share-link-btn {
   background-color: #1158bd;
   border: none;
   outline: none;
