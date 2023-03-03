@@ -31,6 +31,17 @@ type PcpsInfo struct {
 	PCPName  string `json:"pcpName"`
 }
 
+type LeavePcpInfo struct {
+	StreamID string `json:"streamId"`
+}
+
+type PcpsConnection struct {
+	Conn *websocket.Conn
+}
+
+// 存放全部上線的人
+var pcpsList []PcpsInfo
+
 func RoomCreate(c *fiber.Ctx) error {
 	livedToken := c.Cookies("MyJWT")
 	if len(livedToken) == 0 {
@@ -143,15 +154,17 @@ func roomViewerConn(c *websocket.Conn, p *w.Peers) {
 	}
 }
 
+var connections []PcpsConnection
+
 func RoomPcpsWebsocket(c *websocket.Conn) {
-	uuid := c.Params("uuid")
-	if uuid == "" {
-		return
-	}
+
+	connections = append(connections, PcpsConnection{Conn: c})
 
 	pcpsInfo := &PcpsWsPayload{}
 	for {
 		_, raw, err := c.ReadMessage()
+		fmt.Println("先來看一下row")
+		fmt.Println(string(raw))
 		if err != nil {
 			log.Println(err)
 			return
@@ -160,6 +173,7 @@ func RoomPcpsWebsocket(c *websocket.Conn) {
 			return
 		}
 		fmt.Println("我只是進來這裡了了啦")
+		fmt.Println(pcpsInfo)
 		fmt.Println(pcpsInfo.Event)
 		fmt.Println(pcpsInfo.Data)
 		switch pcpsInfo.Event {
@@ -170,20 +184,38 @@ func RoomPcpsWebsocket(c *websocket.Conn) {
 				fmt.Println(err)
 				return
 			}
-			fmt.Println("我有近來唷")
-			fmt.Println(newPcpsInfo.StreamID)
-			c.WriteJSON(fiber.Map{
-				"event": "join",
-				"data": fiber.Map{
-					"streamId": newPcpsInfo.StreamID,
-					"pcpName": newPcpsInfo.PCPName,
-					"pcpId" : newPcpsInfo.PCPId,
-					"pcpEmail" : newPcpsInfo.PCPEmail,
-				},
-			})
 
+			pcpsList = append(pcpsList, newPcpsInfo)
+
+			fmt.Println("我有近來唷")
+			for _, conn := range connections {
+				err = conn.Conn.WriteJSON(fiber.Map{
+					"event": "join",
+					"data":  pcpsList,
+				})
+				if err != nil {
+					log.Println(err)
+				}
+			}
+		// c.WriteJSON(fiber.Map{
+		// 	"event": "join",
+		// 	"data": fiber.Map{
+		// 		"streamId": newPcpsInfo.StreamID,
+		// 		"pcpName":  newPcpsInfo.PCPName,
+		// 		"pcpId":    newPcpsInfo.PCPId,
+		// 		"pcpEmail": newPcpsInfo.PCPEmail,
+		// 	},
+		// })
 		case "leave":
+			var leavePcpInfo LeavePcpInfo
+			err := json.Unmarshal([]byte(pcpsInfo.Data), &leavePcpInfo)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			fmt.Println("我離開會議室")
+			fmt.Println(leavePcpInfo)
+
 		}
 	}
-
 }

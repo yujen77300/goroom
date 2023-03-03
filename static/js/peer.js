@@ -189,11 +189,19 @@ function connect(stream) {
       track  //MediaStreamTrack
     }) => {
       console.log("我進來刪除")
-      console.log(track)
-      console.log(event)
+      console.log(event.streams[0].id)
       if (el.parentNode) {
         el.parentNode.remove()
       }
+      // 更新上線者清單相關websocket=========================================
+      if (track.kind == "video") {
+        console.log("要來刪除")
+        let streamRemove = {}
+        streamRemove["streamId"] = event.streams[0].id
+        pcpsWs.send(JSON.stringify({ event: "leave", data: JSON.stringify(streamRemove) }))
+
+      }
+
       let localVideo = document.querySelectorAll('.localVideo')
       usersAmount = localVideo.length
       peerSize(usersAmount, localVideo)
@@ -204,13 +212,11 @@ function connect(stream) {
   // 將stream track 與peer connection 透過addTrack()關聯起來，之後建立連結才能進行傳輸
   // 加入MediaStream object到RTCPeerconnection (pc) 中。
   console.log("載入資訊前知道stream")
-  // stream是帶入函數的參數
   console.log(stream)
   console.log(stream.getTracks())
   stream.getTracks().forEach(track => pc.addTrack(track, stream))
 
   let ws = new WebSocket(RoomWebsocketAddr)
-  let pcpsWs = new WebSocket(PcpsWebsocketAddr)
   console.log("建立新的ws")
   console.log(ws)
   // 當查找到相對應的遠端端口時會做onicecandidate，也就是透過callback function將icecandidate 傳輸給 remote peers。進行網路資訊的共享。
@@ -230,6 +236,7 @@ function connect(stream) {
   }
 
   // 更新上線者清單相關websocket=========================================
+  let pcpsWs = new WebSocket(PcpsWebsocketAddr)
   pcpsWs.onopen = () => {
     console.log("建立成功")
     console.log(pcpEmail)
@@ -245,29 +252,33 @@ function connect(stream) {
   }
 
   pcpsWs.onmessage = function (e) {
-    console.log("收到訊息時觸發")
-    let msg = JSON.parse(e.data)
+    console.log("拿到訊息時觸發")
     console.log(e)
     console.log(e.data)
-    console.log(msg)
+    let msg = JSON.parse(e.data)
     switch (msg.event) {
       case 'join':
-        console.log(msg.data.pcpEmail)
-        eachPcp = document.createElement("div")
-        eachPcp.className = "each-pcp"
-        eachPcp.id = msg.data.pcpId
-        pcpAvatar = document.createElement("img")
-        pcpAvatar.className = "pcp-avatar"
-        pcpAvatar.alt = msg.data.pcpName
-        pcpName = document.createElement("div")
-        pcpName.className = "pcp-name"
-        pcpName.textContent = msg.data.pcpName
-        getPcpAvatar(msg.data.pcpEmail, pcpAvatar)
-        eachPcp.appendChild(pcpAvatar)
-        eachPcp.appendChild(pcpName)
-        console.log("測試一下")
-        console.log(pcpsInMeeting)
-        pcpsInMeeting.appendChild(eachPcp)
+        while (pcpsInMeeting.firstChild) {
+          pcpsInMeeting.removeChild(pcpsInMeeting.firstChild);
+        }
+        for (let i = 0; i < msg.data.length; i++) {
+          console.log(msg.data[i].pcpEmail)
+          eachPcp = document.createElement("div")
+          eachPcp.className = "each-pcp"
+          eachPcp.id = msg.data[i].pcpId
+          pcpAvatar = document.createElement("img")
+          pcpAvatar.className = "pcp-avatar"
+          pcpAvatar.alt = msg.data[i].pcpName
+          pcpName = document.createElement("div")
+          pcpName.className = "pcp-name"
+          pcpName.textContent = msg.data[i].pcpName
+          getPcpAvatar(msg.data[i].pcpEmail, pcpAvatar)
+          eachPcp.appendChild(pcpAvatar)
+          eachPcp.appendChild(pcpName)
+          pcpsInMeeting.appendChild(eachPcp)
+        }
+      case 'leave':
+
     }
   }
 
