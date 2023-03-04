@@ -199,8 +199,8 @@ function connect(stream) {
         let streamRemove = {}
         streamRemove["streamId"] = event.streams[0].id
         pcpsWs.send(JSON.stringify({ event: "leave", data: JSON.stringify(streamRemove) }))
-
       }
+      // // 更新上線者清單相關websocket=========================================
 
       let localVideo = document.querySelectorAll('.localVideo')
       usersAmount = localVideo.length
@@ -239,10 +239,7 @@ function connect(stream) {
   let pcpsWs = new WebSocket(PcpsWebsocketAddr)
   pcpsWs.onopen = () => {
     console.log("建立成功")
-    console.log(pcpEmail)
-    console.log("我來這邊拉")
-    console.log(stream)
-    console.log(stream.id)
+    console.log(pcpsWs)
     streamDict["streamId"] = stream.id
     streamDict["pcpEmail"] = pcpEmail
     streamDict["pcpId"] = pcpId
@@ -255,34 +252,55 @@ function connect(stream) {
     console.log("拿到訊息時觸發")
     console.log(e)
     console.log(e.data)
+    console.log(typeof (e.data))
     let msg = JSON.parse(e.data)
+    let pcpMsg = JSON.parse(msg.data)
+    console.log(msg)
+    console.log(msg.event)
+    console.log(msg.data)
+    console.log(pcpMsg)
     switch (msg.event) {
       case 'join':
-        while (pcpsInMeeting.firstChild) {
-          pcpsInMeeting.removeChild(pcpsInMeeting.firstChild);
-        }
-        for (let i = 0; i < msg.data.length; i++) {
-          console.log(msg.data[i].pcpEmail)
-          eachPcp = document.createElement("div")
-          eachPcp.className = "each-pcp"
-          eachPcp.id = msg.data[i].pcpId
-          pcpAvatar = document.createElement("img")
-          pcpAvatar.className = "pcp-avatar"
-          pcpAvatar.alt = msg.data[i].pcpName
-          pcpName = document.createElement("div")
-          pcpName.className = "pcp-name"
-          pcpName.textContent = msg.data[i].pcpName
-          getPcpAvatar(msg.data[i].pcpEmail, pcpAvatar)
-          eachPcp.appendChild(pcpAvatar)
-          eachPcp.appendChild(pcpName)
-          pcpsInMeeting.appendChild(eachPcp)
-        }
+        eachPcp = document.createElement("div")
+        eachPcp.className = "each-pcp"
+        eachPcp.id = pcpMsg.streamId
+        pcpAvatar = document.createElement("img")
+        pcpAvatar.className = "pcp-avatar"
+        pcpAvatar.alt = pcpMsg.pcpName
+        pcpName = document.createElement("div")
+        pcpName.className = "pcp-name"
+        pcpName.textContent = pcpMsg.pcpName
+        getPcpAvatar(pcpMsg.pcpEmail, pcpAvatar)
+        eachPcp.appendChild(pcpAvatar)
+        eachPcp.appendChild(pcpName)
+        pcpsInMeeting.appendChild(eachPcp)
+        break;
       case 'leave':
+        console.log(pcpsInMeeting.children)
+        const children = pcpsInMeeting.children;
+        Array.from(children).forEach(eachpeer => {
+          if (eachpeer.id == pcpMsg.streamId) {
+            console.log("成功了")
+            pcpsInMeeting.removeChild(eachpeer)
+          }
+        });
+        break;
 
     }
   }
 
 
+  pcpsWs.onclose = function (e) {
+    console.log("測試上線清單websocket has closed")
+    console.log(e)
+    setTimeout(function () {
+      connect(stream);
+    }, 1000);
+  }
+
+  pcpsWs.onerror = function (e) {
+    console.log("error: " + e.data)
+  }
   // signal server相關websocket=========================================
 
   ws.addEventListener('error', function (event) {
@@ -458,12 +476,13 @@ function audioVideoDefault(audioDefault, videoDefault) {
     audioClosedBtn.style.display = "block"
   }
   if (videoDefault == true) {
-    startVideo(streamNow)
+    stream.getVideoTracks()[0].enabled = true;
     videoClosedBtn.style.display = "none"
     videoOpenedBtn.style.display = "block"
 
   } else if (videoDefault == false) {
     stopVideo(streamNow);
+    // stream.getVideoTracks()[0].enabled = false;
     // videoClosedAvatar.style.display = "block"
     videoOpenedBtn.style.display = "none"
     videoClosedBtn.style.display = "block"
@@ -477,18 +496,16 @@ const videoOpenedBtn = document.getElementById('video-opened-btn')
 const videoClosedBtn = document.getElementById('video-closed-btn')
 videoOpenedBtn.addEventListener("click", () => {
   console.log("要進來關掉視訊了")
+  // streamNow.getVideoTracks()[0].stop()
   stopVideo(streamNow);
   streamOutput.video = false;
-  // videoClosedAvatar.style.display = "block"
   videoOpenedBtn.style.display = "none"
   videoClosedBtn.style.display = "block"
 })
 
 videoClosedBtn.addEventListener("click", () => {
-  console.log("要進來開啟視訊了")
   startVideo(streamNow)
   streamOutput.video = true;
-  // videoClosedAvatar.style.display = "none"
   videoClosedBtn.style.display = "none"
   videoOpenedBtn.style.display = "block"
 })
@@ -515,18 +532,10 @@ audioClosedBtn.addEventListener("click", () => {
 
 function stopVideo(stream) {
   stream.getVideoTracks()[0].enabled = false;
-  // stream.getVideoTracks()[0].stop()
   // stream.getTracks().forEach(track => pc.removeTrack(pc.addTrack(track, stream)))
 
   // 會讓整個黑色不見
   // document.getElementById('localVideo').srcObject = null
-
-
-  // 才會關閉
-  // test(stream)
-  // stream.getTracks().forEach(track => {
-  //   track.stop()
-  // })
 
 }
 

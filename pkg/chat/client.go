@@ -77,7 +77,7 @@ func (c *Client) writeAndStorePump(roomUuid string) {
 
 	for {
 		select {
-			// 接受 Run()這個receiver function的資訊
+		// 接受 Run()這個receiver function的資訊
 		case message, ok := <-c.Send:
 			c.Conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
@@ -103,7 +103,7 @@ func (c *Client) writeAndStorePump(roomUuid string) {
 					models.UpdateParticipantInfo(message, roomUuid, participantuuid)
 					userIteration += 1
 				}
-	
+
 			}
 
 			// w.Write([]byte("{\"account\":\"dylan\",\"message\":\"你只能打這樣啦\"}"))

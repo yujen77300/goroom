@@ -138,8 +138,6 @@ func RoomConn(c *websocket.Conn, p *Peers) {
 		}
 	})
 
-
-
 	p.SignalPeerConnections()
 	message := &websocketMessage{}
 	// 用for來循環websocket的訊息

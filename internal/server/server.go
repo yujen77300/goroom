@@ -63,6 +63,7 @@ func Run() error {
 
 	// 讓這兩個變量進行初始化
 	w.Rooms = make(map[string]*w.Room)
+	w.PcpRooms = make(map[string]*w.PcpRoom)
 
 	if *cert != "" {
 		return app.ListenTLS(*addr, *cert, *key)

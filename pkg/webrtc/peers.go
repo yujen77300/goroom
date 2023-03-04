@@ -20,10 +20,13 @@ type websocketMessage struct {
 }
 
 var (
-	// 允許多個讀和單個寫
 	RoomsLock sync.RWMutex
-	// 一個字串指向Room結構體的pointer
-	Rooms   map[string]*Room
+	Rooms     map[string]*Room
+)
+
+var (
+	PcpRoomsLock sync.RWMutex
+	PcpRooms     map[string]*PcpRoom
 )
 
 var (
@@ -96,8 +99,13 @@ var (
 )
 
 type Room struct {
-	Peers *Peers
-	Hub   *chat.Hub
+	Peers  *Peers
+	Hub    *chat.Hub
+}
+
+type PcpRoom struct {
+	Peers  *Peers
+	PcpHub    *chat.PcpHub
 }
 
 type Peers struct {
@@ -130,7 +138,7 @@ func (p *Peers) AddTrack(t *webrtc.TrackRemote) *webrtc.TrackLocalStaticRTP {
 		p.ListLock.Unlock()
 		p.SignalPeerConnections()
 	}()
-	
+
 	// 建立本地的track
 	trackLocal, err := webrtc.NewTrackLocalStaticRTP(t.Codec().RTPCodecCapability, t.ID(), t.StreamID())
 	if err != nil {
