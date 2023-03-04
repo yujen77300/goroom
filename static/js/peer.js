@@ -253,11 +253,11 @@ function connect(stream) {
   }
 
   pcpsWs.onmessage = function (e) {
-    let msg = JSON.parse(e.data)
+    leaveInfo = e.data.split('\n')[0]
+    let msg = JSON.parse(leaveInfo)
     let pcpMsg = JSON.parse(msg.data)
     switch (msg.event) {
       case 'join':
-        console.log("建立成功")
         eachPcp = document.createElement("div")
         eachPcp.className = "each-pcp"
         eachPcp.id = pcpMsg.streamId
@@ -273,12 +273,9 @@ function connect(stream) {
         pcpsInMeeting.appendChild(eachPcp)
         break;
       case 'leave':
-        console.log("蛇頭山")
-        console.log(pcpsInMeeting.children)
         let children = pcpsInMeeting.children;
         Array.from(children).forEach(eachpeer => {
           if (eachpeer.id == pcpMsg.streamId) {
-            console.log("成功了")
             console.log(eachpeer)
             pcpsInMeeting.removeChild(eachpeer)
           }
@@ -849,7 +846,7 @@ async function getPcpInRoom(uuid, streamId) {
         pcpName = document.createElement("div")
         pcpName.className = "pcp-name"
         pcpName.textContent = each.username
-        pcpAvatar.src=each.avatar_url
+        pcpAvatar.src = each.avatar_url
         eachPcp.appendChild(pcpAvatar)
         eachPcp.appendChild(pcpName)
         pcpsInMeeting.appendChild(eachPcp)

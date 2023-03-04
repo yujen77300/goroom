@@ -1,7 +1,6 @@
 package chat
 
 import (
-	// "bytes"
 
 	"encoding/json"
 	"fmt"
@@ -54,13 +53,11 @@ func (c *PcpClient) writePump(roomUuid string) {
 
 			switch eventType {
 			case "join":
-				// 取出 data 欄位的值
 				dataStr, ok := dataMap["data"].(string)
 				if !ok {
 					fmt.Println("There is no data column")
 					return
 				}
-				// 將 data 欄位的值轉換成 byte slice
 				dataByteSlice := []byte(dataStr)
 				if userIteration == 1 {
 					models.UpdateParticipantInfo(dataByteSlice, roomUuid)
@@ -69,6 +66,8 @@ func (c *PcpClient) writePump(roomUuid string) {
 
 				w.Write(message)
 			case "leave":
+				fmt.Println("玉山")
+				fmt.Println(string(message))
 				dataStr, ok := dataMap["data"].(string)
 				if !ok {
 					fmt.Println("There is no data column")
@@ -79,8 +78,6 @@ func (c *PcpClient) writePump(roomUuid string) {
 				w.Write(message)
 
 			}
-
-			// w.Write([]byte("{\"account\":\"dylan\",\"message\":\"你只能打這樣啦\"}"))
 
 			n := len(c.Send)
 			for i := 0; i < n; i++ {
@@ -107,7 +104,6 @@ func (c *PcpClient) readPump() {
 	}()
 	c.Conn.SetReadLimit(maxMessageSize)
 	c.Conn.SetReadDeadline(time.Now().Add(pongWait))
-	// 如果有收到pong重新設定
 	c.Conn.SetPongHandler(func(string) error { c.Conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 	for {
 		_, message, err := c.Conn.ReadMessage()
@@ -124,7 +120,6 @@ func (c *PcpClient) readPump() {
 func PcpRoomConn(c *websocket.Conn, hub *PcpHub, roomUuid string) {
 	pcpclient := &PcpClient{Hub: hub, Conn: c, Send: make(chan []byte, 256)}
 
-	// 送到Run()這個receiver function的資訊
 	pcpclient.Hub.register <- pcpclient
 
 	go pcpclient.writePump(roomUuid)
