@@ -238,8 +238,12 @@ function connect(stream) {
   // 更新上線者清單相關websocket=========================================
   let pcpsWs = new WebSocket(PcpsWebsocketAddr)
   pcpsWs.onopen = () => {
-    console.log("建立成功")
-    console.log(pcpsWs)
+    console.log("當前網址")
+    console.log(window.location.href)
+    let url = window.location.href
+    let segments = url.split('/')
+    let uuid = segments[segments.length - 1]
+    getPcpInRoom(uuid, stream.id)
     streamDict["streamId"] = stream.id
     streamDict["pcpEmail"] = pcpEmail
     streamDict["pcpId"] = pcpId
@@ -249,18 +253,11 @@ function connect(stream) {
   }
 
   pcpsWs.onmessage = function (e) {
-    console.log("拿到訊息時觸發")
-    console.log(e)
-    console.log(e.data)
-    console.log(typeof (e.data))
     let msg = JSON.parse(e.data)
     let pcpMsg = JSON.parse(msg.data)
-    console.log(msg)
-    console.log(msg.event)
-    console.log(msg.data)
-    console.log(pcpMsg)
     switch (msg.event) {
       case 'join':
+        console.log("建立成功")
         eachPcp = document.createElement("div")
         eachPcp.className = "each-pcp"
         eachPcp.id = pcpMsg.streamId
@@ -276,11 +273,13 @@ function connect(stream) {
         pcpsInMeeting.appendChild(eachPcp)
         break;
       case 'leave':
+        console.log("蛇頭山")
         console.log(pcpsInMeeting.children)
-        const children = pcpsInMeeting.children;
+        let children = pcpsInMeeting.children;
         Array.from(children).forEach(eachpeer => {
           if (eachpeer.id == pcpMsg.streamId) {
             console.log("成功了")
+            console.log(eachpeer)
             pcpsInMeeting.removeChild(eachpeer)
           }
         });
@@ -811,6 +810,51 @@ async function getPcpAvatar(pcpEmail, pcpAvatar) {
     let result = await response.json();
     if (response.status === 200) {
       pcpAvatar.src = `${result.pcpAvatarUrl}`
+    }
+  } catch (err) {
+    console.log({ "error": err.message });
+  }
+}
+
+async function getPcpInRoom(uuid, streamId) {
+  console.log("我進來這裡")
+  let url = `/api/allpcp/:${uuid}`
+  let options = {
+    // body: `${streamId}`,
+    method: "GET",
+  }
+  try {
+    let response = await fetch(url, options);
+    let result = await response.json();
+    if (response.status === 200) {
+      console.log("我回來裡面了")
+      console.log(result.allpcps) //會取得不同的array
+      console.log(streamId)
+
+      let existPcpList = []
+      result.allpcps.forEach(each => {
+        if (each.pcp_stream_url !== `${streamId}`) {
+          existPcpList.push(each)
+        }
+      })
+
+      console.log(existPcpList)
+      existPcpList.forEach(each => {
+        eachPcp = document.createElement("div")
+        eachPcp.className = "each-pcp"
+        eachPcp.id = each.id
+        pcpAvatar = document.createElement("img")
+        pcpAvatar.className = "pcp-avatar"
+        pcpAvatar.alt = each.username
+        pcpName = document.createElement("div")
+        pcpName.className = "pcp-name"
+        pcpName.textContent = each.username
+        pcpAvatar.src=each.avatar_url
+        eachPcp.appendChild(pcpAvatar)
+        eachPcp.appendChild(pcpName)
+        pcpsInMeeting.appendChild(eachPcp)
+      })
+
     }
   } catch (err) {
     console.log({ "error": err.message });

@@ -3,11 +3,13 @@ package chat
 import (
 	// "bytes"
 
+	"encoding/json"
 	"fmt"
 	"log"
 	"time"
 
 	"github.com/fasthttp/websocket"
+	"github.com/yujen77300/goroom/internal/models"
 )
 
 type PcpClient struct {
@@ -16,12 +18,14 @@ type PcpClient struct {
 	Send chan []byte
 }
 
-func (c *PcpClient) writePump(){
+func (c *PcpClient) writePump(roomUuid string) {
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
 		ticker.Stop()
 		c.Conn.Close()
 	}()
+
+	userIteration := 1
 
 	for {
 		select {
@@ -35,16 +39,49 @@ func (c *PcpClient) writePump(){
 				return
 			}
 
-			fmt.Println("玉山")
-			fmt.Println(string(message))
+			var dataMap map[string]interface{}
+			error := json.Unmarshal(message, &dataMap)
+			if error != nil {
+				fmt.Println("JSON unmarshal failed:", err)
+				return
+			}
 
-			w.Write(message)
+			eventType, ok := dataMap["event"].(string)
+			if !ok {
+				fmt.Println("There is no event column")
+				return
+			}
+
+			switch eventType {
+			case "join":
+				// 取出 data 欄位的值
+				dataStr, ok := dataMap["data"].(string)
+				if !ok {
+					fmt.Println("There is no data column")
+					return
+				}
+				// 將 data 欄位的值轉換成 byte slice
+				dataByteSlice := []byte(dataStr)
+				if userIteration == 1 {
+					models.UpdateParticipantInfo(dataByteSlice, roomUuid)
+					userIteration += 1
+				}
+
+				w.Write(message)
+			case "leave":
+				dataStr, ok := dataMap["data"].(string)
+				if !ok {
+					fmt.Println("There is no data column")
+					return
+				}
+				dataByteSlice := []byte(dataStr)
+				models.DeleteParticipantInfo(dataByteSlice, roomUuid)
+				w.Write(message)
+
+			}
 
 			// w.Write([]byte("{\"account\":\"dylan\",\"message\":\"你只能打這樣啦\"}"))
 
-			fmt.Println("測試測試這邊")
-			fmt.Println(c.Send)
-			fmt.Println(len(c.Send))
 			n := len(c.Send)
 			for i := 0; i < n; i++ {
 				w.Write(newline)
@@ -90,6 +127,6 @@ func PcpRoomConn(c *websocket.Conn, hub *PcpHub, roomUuid string) {
 	// 送到Run()這個receiver function的資訊
 	pcpclient.Hub.register <- pcpclient
 
-	go pcpclient.writePump()
+	go pcpclient.writePump(roomUuid)
 	pcpclient.readPump()
 }

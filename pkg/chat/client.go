@@ -9,7 +9,7 @@ import (
 
 	"github.com/fasthttp/websocket"
 	"github.com/google/uuid"
-	"github.com/yujen77300/goroom/internal/models"
+	// "github.com/yujen77300/goroom/internal/models"
 )
 
 const (
@@ -73,7 +73,7 @@ func (c *Client) writeAndStorePump(roomUuid string) {
 	fmt.Println("個人代號")
 	fmt.Println(participantuuid)
 
-	userIteration := 1
+	// userIteration := 1
 
 	for {
 		select {
@@ -95,16 +95,16 @@ func (c *Client) writeAndStorePump(roomUuid string) {
 			}
 			w.Write(message)
 
-			if len(m) > 2 {
-				if userIteration == 1 {
-					fmt.Println("第一個迴圈")
-					fmt.Println(string(message))
-					// fmt.Println("存到資料庫")
-					models.UpdateParticipantInfo(message, roomUuid, participantuuid)
-					userIteration += 1
-				}
+			// if len(m) > 2 {
+			// 	if userIteration == 1 {
+			// 		fmt.Println("第一個迴圈")
+			// 		fmt.Println(string(message))
+			// 		// fmt.Println("存到資料庫")
+			// 		models.UpdateParticipantInfo(message, roomUuid, participantuuid)
+			// 		userIteration += 1
+			// 	}
 
-			}
+			// }
 
 			// w.Write([]byte("{\"account\":\"dylan\",\"message\":\"你只能打這樣啦\"}"))
 
