@@ -2,7 +2,7 @@ package webrtc
 
 import (
 	"encoding/json"
-	"fmt"
+	// "fmt"
 	"log"
 	"os"
 	"sync"
@@ -25,30 +25,7 @@ func RoomConn(c *websocket.Conn, p *Peers) {
 		return
 	}
 
-	//建立datachannel==========================
-	// type Message struct {
-	// 	Email string `json:"email"`
-	// }
 
-	// //建立datachannel看看
-	// peerConnection.OnDataChannel(func(datachannel *webrtc.DataChannel) {
-	// 	if datachannel.Label() == "mydatachannel" {
-	// 		datachannel.OnMessage(func(msg webrtc.DataChannelMessage) {
-	// 			var message Message
-	// 			err := json.Unmarshal(msg.Data, &message)
-	// 			if err != nil {
-	// 				fmt.Println("解析 JSON 失敗：", err)
-	// 				return
-	// 			}
-	// 			fmt.Println("收到的資料：", message.Email)
-	// 			datachannel.SendText(message.Email)
-	// 			// data := string(msg.Data)
-	// 			// fmt.Println("收到的資料")
-	// 			// fmt.Println(data)
-	// 		})
-	// 	}
-	// })
-	//==========================
 	defer peerConnection.Close()
 	// 決定接受傳入的stream類型
 	for _, codecType := range []webrtc.RTPCodecType{webrtc.RTPCodecTypeVideo, webrtc.RTPCodecTypeAudio} {
@@ -81,7 +58,7 @@ func RoomConn(c *websocket.Conn, p *Peers) {
 		}
 
 		candidateString, err := json.Marshal(i.ToJSON())
-		fmt.Println(string(candidateString))
+		// fmt.Println(string(candidateString))
 		if err != nil {
 			log.Println(err)
 			return
@@ -96,20 +73,20 @@ func RoomConn(c *websocket.Conn, p *Peers) {
 		}
 	})
 
-	// 當peerconnection的狀態改變，通常就是自global list移除。
+	// 當peerconnection的狀態改變，通常就是自list移除。
 	peerConnection.OnConnectionStateChange(func(peerConState webrtc.PeerConnectionState) {
-		fmt.Println("PeerConnectionState連接狀態")
-		fmt.Println(peerConState)
+		// fmt.Println("PeerConnectionState連接狀態")
+		// fmt.Println(peerConState)
 		switch peerConState {
 		case webrtc.PeerConnectionStateFailed:
 			if err := peerConnection.Close(); err != nil {
 				log.Print(err)
 			}
 		case webrtc.PeerConnectionStateClosed:
-			fmt.Println("連接失敗")
+			// fmt.Println("連接失敗")
 			p.SignalPeerConnections()
 		case webrtc.PeerConnectionStateConnected:
-			fmt.Println("連接成功")
+			// fmt.Println("連接成功")
 		}
 	})
 

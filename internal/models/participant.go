@@ -30,6 +30,12 @@ type PcpInRoomWithAvatar struct {
 	PcpStreamId  string `json:"pcp_stream_url"`
 }
 
+type SpecificPcp struct {
+	PcpId        int    `json:"id"`
+	PcpName      string `json:"username"`
+	PcpAvatarUrl string `json:"avatar_url"`
+}
+
 func UpdateParticipantInfo(participantInfo []byte, roomId string) {
 	var p pcpInRoom
 	err := json.Unmarshal(participantInfo, &p)
@@ -64,9 +70,8 @@ func DeleteParticipantInfo(participantInfo []byte, roomId string) {
 	defer db.Close()
 }
 
-func GetPcpInRoom(c *fiber.Ctx) error {
+func GetAllPcpInRoom(c *fiber.Ctx) error {
 	roomUuid := c.Params("uuid")
-	fmt.Println("看一下是什麼")
 	roomUuid = strings.TrimLeft(roomUuid, ":")
 	db, _ := ConnectToMYSQL()
 	rows, err := db.Query("SELECT member.id,member.username,member.avatar_url,participant.pcp_stream_id FROM member JOIN participant ON member.id = participant.member_id where room_id=?;", roomUuid)
@@ -78,7 +83,7 @@ func GetPcpInRoom(c *fiber.Ctx) error {
 	var pcpInRoomWithAvatar []PcpInRoomWithAvatar
 	for rows.Next() {
 		var eachPcp PcpInRoomWithAvatar
-		if dberr := rows.Scan(&eachPcp.PcpId,&eachPcp.PcpName, &eachPcp.PcpAvatarUrl, &eachPcp.PcpStreamId); dberr != nil {
+		if dberr := rows.Scan(&eachPcp.PcpId, &eachPcp.PcpName, &eachPcp.PcpAvatarUrl, &eachPcp.PcpStreamId); dberr != nil {
 			fmt.Printf("scan failed, err:%v\n", dberr)
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "scan failed"})
 		}
@@ -86,4 +91,29 @@ func GetPcpInRoom(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"allpcps": pcpInRoomWithAvatar})
+}
+
+func GetPcpInfo(c *fiber.Ctx) error {
+	roomUuid := c.Params("uuid")
+	streamId := c.Params("streamId")
+	roomUuid = strings.TrimLeft(roomUuid, ":")
+	streamId = strings.TrimLeft(streamId, ":")
+	db, _ := ConnectToMYSQL()
+	row, err := db.Query("SELECT member.id,member.username,member.avatar_url FROM member JOIN participant ON member.id = participant.member_id where room_id=? and pcp_stream_id=?;", roomUuid, streamId)
+	if err != nil {
+		fmt.Printf("Database query failed, error:%v\n", err)
+	}
+	defer row.Close()
+	defer db.Close()
+	var specificPcp []SpecificPcp
+	for row.Next() {
+		var Pcp SpecificPcp
+		if dberr := row.Scan(&Pcp.PcpId, &Pcp.PcpName, &Pcp.PcpAvatarUrl); dberr != nil {
+			fmt.Printf("scan failed, err:%v\n", dberr)
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "scan failed"})
+		}
+		specificPcp = append(specificPcp, Pcp)
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"pcpId": specificPcp[0].PcpId,"pcpName":specificPcp[0].PcpName,"pcpAvatar":specificPcp[0].PcpAvatarUrl})
 }

@@ -108,9 +108,6 @@ func (c *Client) writeAndStorePump(roomUuid string) {
 
 			// w.Write([]byte("{\"account\":\"dylan\",\"message\":\"你只能打這樣啦\"}"))
 
-			fmt.Println("測試測試這邊")
-			fmt.Println(c.Send)
-			fmt.Println(len(c.Send))
 			n := len(c.Send)
 			for i := 0; i < n; i++ {
 				w.Write(newline)

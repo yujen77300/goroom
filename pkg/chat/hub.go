@@ -41,7 +41,6 @@ func (h *Hub) Run() {
 			fmt.Println(string(message))
 			// 這裡先
 			for client := range h.clients {
-				fmt.Println("再多進來一層")
 				select {
 				case client.Send <- message:
 				default:

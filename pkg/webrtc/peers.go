@@ -2,7 +2,7 @@ package webrtc
 
 import (
 	"encoding/json"
-	"fmt"
+	// "fmt"
 	"log"
 	"sync"
 	"time"
@@ -32,44 +32,22 @@ var (
 var (
 	turnConfig = webrtc.Configuration{
 		ICETransportPolicy: webrtc.ICETransportPolicyRelay,
-		ICEServers: []webrtc.ICEServer{
-			{
-
-				URLs: []string{"stun:stun.l.google.com:19302"},
-			},
-			{
-
-				URLs: []string{"turn:54.150.244.240:3478"},
-
-				Username: "Dylan",
-
-				Credential:     "Wehelp",
-				CredentialType: webrtc.ICECredentialTypePassword,
-			},
-		},
 		// ICEServers: []webrtc.ICEServer{
 		// 	{
 
-		// 		URLs: []string{"stun:relay.metered.ca:80"},
+		// 		URLs: []string{"stun:stun.l.google.com:19302"},
 		// 	},
 		// 	{
 
-		// 		URLs: []string{"turn:relay.metered.ca:80"},
+		// 		URLs: []string{"turn:54.150.244.240:3478"},
 
-		// 		Username: "",
+		// 		Username: "Dylan",
 
-		// 		Credential:     "",
+		// 		Credential:     "Wehelp",
 		// 		CredentialType: webrtc.ICECredentialTypePassword,
 		// 	},
-		// 	{
-
-		// 		URLs: []string{"turn:relay.metered.ca:443"},
-
-		// 		Username: "",
-
-		// 		Credential:     "",
-		// 		CredentialType: webrtc.ICECredentialTypePassword,
-		// 	},
+		// },
+		// ICEServers: []webrtc.ICEServer{
 		// 	// {
 
 		// 	// 	URLs: []string{"turn:relay.metered.ca:443?transport=tcp"},
@@ -80,32 +58,51 @@ var (
 		// 	// 	CredentialType: webrtc.ICECredentialTypePassword,
 		// 	// },
 		// },
-		// ICEServers: []webrtc.ICEServer{
-		// 	{
+		ICEServers: []webrtc.ICEServer{
+			{
+				URLs: []string{"stun:goroom.online:3478"},
+			},
+			{
 
-		// 		URLs: []string{"stun:goroom.online:3478"},
-		// 	},
-		// 	{
+				URLs: []string{"turn:goroom.online:3478"},
 
-		// 		URLs: []string{"turn:goroom.online:3478"},
+				Username: "",
 
-		// 		Username: "",
+				Credential:     "",
+				CredentialType: webrtc.ICECredentialTypePassword,
+			},
+			{
+				URLs: []string{"stun:relay.metered.ca:80"},
+			},
+			{
+				URLs: []string{"turn:relay.metered.ca:80"},
 
-		// 		Credential:     "",
-		// 		CredentialType: webrtc.ICECredentialTypePassword,
-		// 	},
-		// },
+				Username: "",
+
+				Credential:     "",
+				CredentialType: webrtc.ICECredentialTypePassword,
+			},
+			{
+
+				URLs: []string{"turn:relay.metered.ca:443"},
+
+				Username: "",
+
+				Credential:     "",
+				CredentialType: webrtc.ICECredentialTypePassword,
+			},
+		},
 	}
 )
 
 type Room struct {
-	Peers  *Peers
-	Hub    *chat.Hub
+	Peers *Peers
+	Hub   *chat.Hub
 }
 
 type PcpRoom struct {
 	Peers  *Peers
-	PcpHub    *chat.PcpHub
+	PcpHub *chat.PcpHub
 }
 
 type Peers struct {
@@ -153,7 +150,7 @@ func (p *Peers) AddTrack(t *webrtc.TrackRemote) *webrtc.TrackLocalStaticRTP {
 }
 
 func (p *Peers) RemoveTrack(t *webrtc.TrackLocalStaticRTP) {
-	fmt.Println("我進來remove")
+	// fmt.Println("我進來remove")
 	p.ListLock.Lock()
 	defer func() {
 		p.ListLock.Unlock()
@@ -217,7 +214,7 @@ func (p *Peers) SignalPeerConnections() {
 			}
 			// 創建一個 Offer，設定為SetLocalDescription
 			offer, err := p.Connections[i].PeerConnection.CreateOffer(nil)
-			fmt.Println("執行CreateOffer")
+			// fmt.Println("執行CreateOffer")
 			if err != nil {
 				return true
 			}

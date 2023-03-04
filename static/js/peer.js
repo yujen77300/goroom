@@ -5,7 +5,7 @@ const videos = document.querySelector('#videos')
 let localVideo = document.querySelectorAll('.localVideo')
 let eachPeer = document.querySelectorAll('.each-peer')
 let viewerCountNow = document.querySelector('#viewer-count')
-// let userName = document.querySelector('.username')
+let userName = document.querySelector('.user-name')
 let videoClosedAvatar = document.querySelector('.video-closed-avatar')
 const pcpsInMeeting = document.getElementById('pcpsInMeeting')
 // 判斷視訊畫面是否開啟
@@ -65,31 +65,21 @@ function copyURL() {
 // ===================== peer to peer連線 =====================
 // 按下允許連線
 function connect(stream) {
-  let pc = new RTCPeerConnection({
-    iceServers: [{
-      'urls': 'stun:stun.l.google.com:19302',
-    },
-    {
-      'urls': 'turn:54.150.244.240:3478',
-      'username': 'Dylan',
-      'credential': 'Wehelp',
-    }
-    ]
-  })
+  // let pc = new RTCPeerConnection({
+  //   iceServers: [{
+  //     'urls': 'stun:stun.l.google.com:19302',
+  //   },
+  //   {
+  //     'urls': 'turn:54.150.244.240:3478',
+  //     'username': 'Dylan',
+  //     'credential': 'Wehelp',
+  //   }
+  //   ]
+  // })
   // let pc = new RTCPeerConnection({
   //   iceServers: [
   //     {
   //       urls: "stun:relay.metered.ca:80",
-  //     },
-  //     {
-  //       urls: "turn:relay.metered.ca:80",
-  //       username: "",
-  //       credential: "",
-  //     },
-  //     {
-  //       urls: "turn:relay.metered.ca:443",
-  //       username: "",
-  //       credential: "",
   //     },
   //     // {
   //     //   urls: "turn:relay.metered.ca:443?transport=tcp",
@@ -98,45 +88,34 @@ function connect(stream) {
   //     // },
   //   ],
   // });
-  // let pc = new RTCPeerConnection({
-  //   iceServers: [{
-  //     'urls': 'stun:goroom.online:3478',
-  //   },
-  //   {
-  //     'urls': 'turn:goroom.online:3478',
-  //     'username': '',
-  //     'credential': '',
-  //   }
-  //   ]
-  // })
+  let pc = new RTCPeerConnection({
+    iceServers: [{
+      urls: 'stun:goroom.online:3478',
+    },
+    {
+      urls: 'turn:goroom.online:3478',
+      username: '',
+      credential: '',
+    },
+    {
+      'urls': "stun:relay.metered.ca:80",
+    },
+    {
+      urls: "turn:relay.metered.ca:80",
+      username: "",
+      credential: "",
+    },
+    {
+      urls: "turn:relay.metered.ca:443",
+      username: "",
+      credential: "",
+    },
+    ]
+  })
 
   console.log("一開始的pc")
   console.log(pc)
   pcNow = pc
-
-  //建立datachannel==========================
-  // const dataChannel = pc.createDataChannel('mydatachannel');
-  // console.log("一開始的datachannel")
-  // console.log(dataChannel)
-  // pc.ondatachannel = function (event) {
-  //   console.log("我在datachannel裡面")
-  //   console.log(event)
-  //   console.log(event.channel)
-  //   console.log(event.channel.label)
-  // };
-
-
-  // getUserEmail()
-  // dataChannel.onopen = () => {
-  //   console.log(userEmail)
-  //   dataChannel.send(JSON.stringify({ "email": userEmail }))
-  // }
-
-  // dataChannel.onmessage = (event) => {
-  //   const receivedMessage = event.data;
-  //   console.log(`Received message: ${receivedMessage}`);
-  // };
-  //==========================
 
   // 接收另一端傳遞過來的多媒體資訊(videoTrack ...等)
   // 完成連線後，透過該事件能夠在發現遠端傳輸的多媒體檔案時觸發，來處理/接收多媒體數據
@@ -155,26 +134,31 @@ function connect(stream) {
       return
     }
 
-    col = document.createElement("div")
-    col.className = "each-peer"
+    eachPeerTag = document.createElement("div")
+    eachPeerTag.className = "each-peer"
+    eachPeerTag.id = event.streams[0].id
     let el = document.createElement(event.track.kind)
     // event.streams[0] 為MediaStream
     console.log("增加的video")
     console.log(event.streams[0])
     el.srcObject = event.streams[0]
-    el.setAttribute("controls", "true")
+    // el.setAttribute("controls", "true")
     el.setAttribute("autoplay", "true")
     el.setAttribute("playsinline", "true")
     el.setAttribute("id", "localVideo")
     el.setAttribute("class", "localVideo")
-    col.appendChild(el)
+    eachPeerTag.appendChild(el)
 
     let newUserName = document.createElement("div")
-    // newUserName.className = "username"
+    newUserName.className = "user-name"
 
-    // col.appendChild(newUserName)
+    eachPeerTag.appendChild(newUserName)
+    let url = window.location.href
+    let segments = url.split('/')
+    let uuid = segments[segments.length - 1]
+    getPcpInfo(uuid, event.streams[0].id, newUserName)
 
-    document.getElementById('videos').appendChild(col)
+    document.getElementById('videos').appendChild(eachPeerTag)
 
     let localVideo = document.querySelectorAll('.localVideo')
     usersAmount = localVideo.length
@@ -243,7 +227,7 @@ function connect(stream) {
     let url = window.location.href
     let segments = url.split('/')
     let uuid = segments[segments.length - 1]
-    getPcpInRoom(uuid, stream.id)
+    getAllPcpInRoom(uuid, stream.id)
     streamDict["streamId"] = stream.id
     streamDict["pcpEmail"] = pcpEmail
     streamDict["pcpId"] = pcpId
@@ -319,10 +303,6 @@ function connect(stream) {
   // 收到 Server 發來的訊息時觸發 webrtc/peers.go 、room.go
   ws.onmessage = function (e) {
     let msg = JSON.parse(e.data)
-    console.log("收到 Server 發來的訊息時觸發")
-    console.log(e)
-    console.log(e.data)
-    console.log(msg)
     if (!msg) {
       return console.log('failed to parse msg')
     }
@@ -330,16 +310,11 @@ function connect(stream) {
     switch (msg.event) {
       case 'offer':
         let offer = JSON.parse(msg.data)
-        console.log("如果是offer印出offer")
-        console.log(msg)
-        console.log(offer)
         if (!offer) {
           return console.log('failed to parse answer')
         }
         pc.setRemoteDescription(offer)
         pc.createAnswer().then(answer => {
-          console.log("進來answer")
-          console.log(answer)
           pc.setLocalDescription(answer)
           ws.send(JSON.stringify({
             event: 'answer',
@@ -380,6 +355,8 @@ function peerConnect(defaultSet) {
         document.getElementById('localVideo').srcObject = stream
         console.log("最最一開始")
         console.log(stream.getTracks())
+        let eachPeer = document.querySelector('.each-peer')
+        eachPeer.id = stream.id
         connect(stream)
         streamNow = stream
         audioVideoDefault(streamOutput.audio, streamOutput.video)
@@ -602,11 +579,11 @@ function peerSize(usersAmount, localVideo) {
     let videoWidth = (1160 * 9) / 16
     eachPeer[0].style.height = `${videoWidth}px`
     // videoClosedAvatar.style.bottom = "-220px"
-    // userName.style.bottom = `-${videoWidth - 60}px`
+    userName.style.bottom = `-${videoWidth - 60}px`
     videos.style.cssText = "display:flex;justify-content:center;align-items:center;"
   } else if (usersAmount === 2) {
     let eachPeer = document.querySelectorAll('.each-peer')
-    // let userName = document.querySelectorAll('.username')
+    let userName = document.querySelectorAll('.user-name')
     localVideo[0].style.width = "565px"
     localVideo[1].style.width = "565px"
     eachPeer[0].style.width = "565px"
@@ -615,12 +592,13 @@ function peerSize(usersAmount, localVideo) {
     eachPeer[0].style.height = `${videoWidth}px`
     eachPeer[1].style.height = `${videoWidth}px`
     // videoClosedAvatar.style.bottom = "-75px"
-    // userName[0].style.bottom = `-${videoWidth - 60}px`
-    // userName[1].style.bottom = `-${videoWidth - 60}px`
+    userName[0].style.bottom = `-${videoWidth - 60}px`
+    userName[1].style.bottom = `-${videoWidth - 60}px`
     videos.style.display = "flex"
     videos.style.gap = "10px"
   } else if (usersAmount === 3) {
     let eachPeer = document.querySelectorAll('.each-peer')
+    let userName = document.querySelectorAll('.user-name')
     localVideo[0].style.width = "565px"
     localVideo[1].style.width = "565px"
     localVideo[2].style.width = "565px"
@@ -631,12 +609,15 @@ function peerSize(usersAmount, localVideo) {
     eachPeer[0].style.height = `${videoWidth}px`
     eachPeer[1].style.height = `${videoWidth}px`
     eachPeer[2].style.height = `${videoWidth}px`
-    // userName.style.bottom = `-${videoWidth - 60}px`
+    userName[0].style.bottom = `-${videoWidth - 60}px`
+    userName[1].style.bottom = `-${videoWidth - 60}px`
+    userName[2].style.bottom = `-${videoWidth - 60}px`
     videos.style.display = "flex"
     videos.style.flexWrap = "wrap"
     videos.style.gap = "10px"
   } else if (usersAmount === 4) {
     let eachPeer = document.querySelectorAll('.each-peer')
+    let userName = document.querySelectorAll('.user-name')
     localVideo[0].style.width = "565px"
     localVideo[1].style.width = "565px"
     localVideo[2].style.width = "565px"
@@ -650,19 +631,23 @@ function peerSize(usersAmount, localVideo) {
     eachPeer[1].style.height = `${videoWidth}px`
     eachPeer[2].style.height = `${videoWidth}px`
     eachPeer[3].style.height = `${videoWidth}px`
-    // userName.style.bottom = `-${videoWidth - 60}px`
+    userName[0].style.bottom = `-${videoWidth - 60}px`
+    userName[1].style.bottom = `-${videoWidth - 60}px`
+    userName[2].style.bottom = `-${videoWidth - 60}px`
+    userName[3].style.bottom = `-${videoWidth - 60}px`
     videos.style.display = "flex"
     videos.style.flexWrap = "wrap"
     videos.style.gap = "10px"
   } else if ((usersAmount > 4 && usersAmount <= 6) || usersAmount == 9) {
     let eachPeer = document.querySelectorAll('.each-peer')
+    let userName = document.querySelectorAll('.user-name')
     let videoWidth = (373 * 9) / 16
     for (let i = 0; i < usersAmount; i++) {
       localVideo[i].style.width = "373px"
       eachPeer[i].style.width = "373px"
       eachPeer[i].style.height = `${videoWidth}px`
+      userName[i].style.bottom = `-${videoWidth - 60}px`
     }
-    // userName.style.bottom = `-${videoWidth - 60}px`
     videos.style.display = "flex"
     videos.style.flexWrap = "wrap"
     videos.style.gap = "10px"
@@ -758,7 +743,9 @@ async function getUserAvatar() {
 }
 
 async function getUserName() {
+
   const testName = document.querySelector('.testName')
+  const userName = document.querySelector('.user-name')
   let url = "/api/user/auth"
   let options = {
     method: "GET",
@@ -767,12 +754,9 @@ async function getUserName() {
     let response = await fetch(url, options);
     let result = await response.json();
     if (response.status === 200) {
-      if (defaultSet == false) {
-        testName.textContent = result.data.name
-      } else {
-        // userName.textContent = result.data.name
-        // pcpName.textContent = result.data.name
-      }
+      testName.textContent = result.data.name
+      userName.textContent = result.data.name
+      // pcpName.textContent = result.data.name
     }
   } catch (err) {
     console.log({ "error": err.message });
@@ -813,7 +797,7 @@ async function getPcpAvatar(pcpEmail, pcpAvatar) {
   }
 }
 
-async function getPcpInRoom(uuid, streamId) {
+async function getAllPcpInRoom(uuid, streamId) {
   console.log("我進來這裡")
   let url = `/api/allpcp/:${uuid}`
   let options = {
@@ -824,7 +808,7 @@ async function getPcpInRoom(uuid, streamId) {
     let response = await fetch(url, options);
     let result = await response.json();
     if (response.status === 200) {
-      console.log("我回來裡面了")
+
       console.log(result.allpcps) //會取得不同的array
       console.log(streamId)
 
@@ -852,6 +836,24 @@ async function getPcpInRoom(uuid, streamId) {
         pcpsInMeeting.appendChild(eachPcp)
       })
 
+    }
+  } catch (err) {
+    console.log({ "error": err.message });
+  }
+}
+
+
+async function getPcpInfo(uuid, streamId, newUserName) {
+  let url = `/api/pcp/:${uuid}/:${streamId}`
+  let options = {
+    method: "GET",
+  }
+  try {
+    let response = await fetch(url, options);
+    let result = await response.json();
+    if (response.status === 200) {
+      console.log(result)
+      newUserName.textContent = result.pcpName
     }
   } catch (err) {
     console.log({ "error": err.message });

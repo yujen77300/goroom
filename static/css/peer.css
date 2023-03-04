@@ -58,12 +58,10 @@ body {
 
 #test-section {
   display: flex;
-  /* border: 3px solid red; */
   gap: 70px
 }
 
 .test-right-section {
-  /* border: 3px solid red; */
   width: 250px;
   display: flex;
   flex-direction: column;
@@ -144,7 +142,7 @@ body {
 }
 
 
-.username {
+.user-name {
   background-color: #171925;
   outline: none;
   width: 100px;
@@ -175,7 +173,6 @@ body {
 # Viewer
 --------------------------------------------------------------*/
 #viewer {
-  /* border: 3px red solid; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -283,7 +280,6 @@ body {
 .log-item,
 .my-log-item {
   color: white;
-  /* border: 3px solid red; */
   margin-bottom: 5px;
 }
 
@@ -476,13 +472,11 @@ body {
 
 #chat-right-section {
   display: block;
-  border: 2px solid red;
 }
 
 #pcps-right-section {
   display: none;
   margin-top: 10px;
-  /* border: 2px solid blue; */
 }
 
 #pcpsInMeeting {
@@ -490,7 +484,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  /* border: 2px solid yellow; */
 }
 
 #pcpsIcon {
