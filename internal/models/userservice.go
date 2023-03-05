@@ -388,5 +388,5 @@ func UpdateAvatar(c *fiber.Ctx) error {
 	defer db.Close()
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"userEmail": userNow, "newAvatarUrl": cloudFrontUrl})
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"ok": true})
+	
 }
