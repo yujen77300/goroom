@@ -122,7 +122,7 @@ body {
 }
 
 .video-closed-avatar {
-  display: none;
+  /* display: none; */
   height: 150px;
   width: 150px;
   background-size: cover;
@@ -138,6 +138,7 @@ body {
 .each-peer {
   /* width: 640px; */
   /* height: 360px;  */
+  position: relative;
   margin-top: 10px;
 }
 
@@ -220,14 +221,12 @@ body {
 #chat-body {
   overflow: auto;
   height: 590px;
-  /* margin-bottom: 14px; */
 }
 
 #chat-body::-webkit-scrollbar {
   width: 5px;
 }
 
-/* 調整滾動條滑塊的樣式 */
 #chat-body::-webkit-scrollbar-thumb {
   background-color: #e8e8e8;
   border-radius: 5px;
@@ -251,7 +250,6 @@ body {
   flex-direction: row;
 
   justify-content: space-around;
-  /* z-index: 9999 !important; */
 }
 
 
@@ -323,17 +321,6 @@ body {
   width: 80%;
 }
 
-/* #copy-button {
-  text-align: center;
-  background-color: #1158bd;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  position: absolute;
-  width: 80%;
-  bottom: -160px !important;
-  cursor: pointer;
-} */
 
 /*--------------------------------------------------------------
 # switch and share screen button

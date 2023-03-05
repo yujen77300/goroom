@@ -46,8 +46,6 @@ func FindALLUsers(c *fiber.Ctx) error {
 		fmt.Printf("查詢資料庫失敗，原因為：%v\n", err)
 	}
 	defer allUsers.Close()
-	fmt.Println("測試全部的使用者")
-	fmt.Println(allUsers)
 	// 宣告一個User結構的slice，這個 slice 將會存放查詢得到的所有使用者
 	// users := []User{}
 	var users []User
@@ -215,7 +213,7 @@ func PutUser(c *fiber.Ctx) error {
 	row, _ := db.Query("SELECT id,username,email FROM member WHERE email = ? AND password=?;", signInInfo.Email, signInInfo.Password)
 	fmt.Println(row)
 	defer row.Close()
-	// 建立一個slice來儲存資料
+
 	var members []User
 	for row.Next() {
 		var member User
@@ -226,9 +224,6 @@ func PutUser(c *fiber.Ctx) error {
 		members = append(members, member)
 	}
 
-	fmt.Println("測試一下搜尋結果")
-	fmt.Println(members)
-	fmt.Println(len(members))
 
 	if len(members) == 0 {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -257,7 +252,6 @@ func PutUser(c *fiber.Ctx) error {
 				"message": "jwt token error",
 			})
 		}
-		fmt.Println(jwtToken)
 		c.Cookie(&fiber.Cookie{
 			Name:     "MyJWT",
 			Value:    jwtToken,
@@ -359,7 +353,6 @@ func UpdateAvatar(c *fiber.Ctx) error {
 	contentDisposition := file.Header["Content-Disposition"][0]
 	fileFormat := strings.Split(contentDisposition, ".")[1]
 	fileFormat = strings.Replace(fileFormat, "\"", "", -1)
-	fmt.Println(contentDisposition)
 
 	// random name
 	var alphabet []rune = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
@@ -372,7 +365,6 @@ func UpdateAvatar(c *fiber.Ctx) error {
 	}
 	randomFileName := sb.String()
 	fileName := randomFileName + "." + fileFormat
-	fmt.Println(fileName)
 
 	newFile, err := file.Open()
 	if err != nil {

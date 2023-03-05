@@ -66,8 +66,6 @@ func (c *PcpClient) writePump(roomUuid string) {
 
 				w.Write(message)
 			case "leave":
-				fmt.Println("玉山")
-				fmt.Println(string(message))
 				dataStr, ok := dataMap["data"].(string)
 				if !ok {
 					fmt.Println("There is no data column")

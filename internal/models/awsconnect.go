@@ -32,7 +32,6 @@ func ConnectToAWS() (string, string, *s3.Client) {
 
 	// Load the Shared AWS Configuration
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(AWS_REGION), config.WithCredentialsProvider(staticProvider))
-	fmt.Println(AWS_BUCKET_NAME)
 	if err != nil {
 		log.Fatalln(err)
 	}

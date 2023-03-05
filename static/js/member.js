@@ -128,7 +128,6 @@ async function getUserAvatar() {
 
 async function updateAvatar(form) {
   let url = "api/user/avatar"
-  console.log(form)
   let options = {
     body: form,
     method: "POST",

@@ -102,9 +102,9 @@ func createOrGetRoom(uuid string) (string, *w.Room) {
 
 	hub := chat.NewHub()
 	pcphub := chat.NewPcpHub()
-	fmt.Println("進來測試一下hub")
-	fmt.Println(hub)
-	fmt.Println(pcphub)
+	// fmt.Println("進來測試一下hub")
+	// fmt.Println(hub)
+	// fmt.Println(pcphub)
 	// 創建一個指向 webrtc.Peers 結構體的指標，建立新的Peers結構體，並返為地址給指標變數p
 	p := &w.Peers{}
 	// var p *w.Peers = &w.Peers{}
@@ -162,107 +162,7 @@ func roomViewerConn(c *websocket.Conn, p *w.Peers) {
 	}
 }
 
-// 更新上線者清單相關==================================
-// var connections []PcpsConnection
 
-// func RoomPcpsWebsocket(c *websocket.Conn) {
-// 	uuid := c.Params("uuid")
-// 	if uuid == "" {
-// 		return
-// 	}
-
-// 	//  後端用c  來判斷你是誰來
-// 	//要有個房間的結構體  包含c
-// 	// 新的uuid room的資訊
-// 	// defer func() {
-// 	// 	if err := recover(); err != nil {
-// 	// 		fmt.Println("錯誤的異常內容")
-// 	// 		fmt.Println(err)
-// 	// 	}
-// 	// }()
-
-// 	pcpsInfo := &PcpsWsPayload{}
-// 	for {
-// 		_, raw, err := c.ReadMessage()
-// 		fmt.Println("看一下row")
-// 		fmt.Println(string(raw))
-// 		if err != nil {
-// 			log.Println(err)
-// 			return
-// 		} else if err := json.Unmarshal(raw, &pcpsInfo); err != nil {
-// 			log.Println(err)
-// 			return
-// 		}
-// 		fmt.Println("我只是進來這裡了了啦")
-// 		fmt.Println(pcpsInfo)
-// 		fmt.Println(pcpsInfo.Event)
-// 		fmt.Println(pcpsInfo.Data)
-// 		switch pcpsInfo.Event {
-// 		case "join":
-// 			var newPcpsInfo PcpsInfo
-// 			err := json.Unmarshal([]byte(pcpsInfo.Data), &newPcpsInfo)
-// 			if err != nil {
-// 				fmt.Println(err)
-// 				return
-// 			}
-
-// 			pcpsList = append(pcpsList, newPcpsInfo)
-
-// 			fmt.Println("我有近來唷")
-// 			fmt.Println(pcpsList)
-// 			for _, conn := range connections {
-// 				fmt.Println("看一下")
-// 				fmt.Println(conn)
-// 				fmt.Println(conn.Conn)
-// 				err = conn.Conn.WriteJSON(fiber.Map{
-// 					"event": "join",
-// 					"data":  pcpsList,
-// 				})
-// 				if err != nil {
-
-// 					log.Println(err)
-// 				}
-// 			}
-
-// 		case "leave":
-// 			var leavePcpInfo LeavePcpInfo
-// 			err := json.Unmarshal([]byte(pcpsInfo.Data), &leavePcpInfo)
-// 			if err != nil {
-// 				fmt.Println(err)
-// 				return
-// 			}
-// 			// 要傳遞需要刪除的元素
-// 			var deletedPcpInfo PcpsInfo
-// 			fmt.Println("我離開會議室")
-// 			fmt.Println(leavePcpInfo)
-// 			for i, pcpInfo := range pcpsList {
-// 				if pcpInfo.StreamID == leavePcpInfo.StreamID {
-// 					// 找到要刪除的元素，先儲存其資料
-// 					deletedPcpInfo = pcpInfo
-// 					// 從 pcpsList 中刪除該元素
-// 					pcpsList = append(pcpsList[:i], pcpsList[i+1:]...)
-// 					break
-// 				}
-// 			}
-// 			fmt.Println("刪除的元素")
-// 			fmt.Println(deletedPcpInfo)
-// 			if deletedPcpInfo.StreamID != "" {
-
-//					for _, conn := range connections {
-//						err = conn.Conn.WriteJSON(fiber.Map{
-//							"event": "leave",
-//							"data":  deletedPcpInfo,
-//						})
-//						if err != nil {
-//							log.Println(err)
-//						}
-//					}
-//				}
-//			}
-//		}
-//	}
-//
-// 更新上線者清單相關=================================
 func RoomPcpsWebsocket(c *websocket.Conn) {
 	uuid := c.Params("uuid")
 	if uuid == "" {
@@ -270,8 +170,8 @@ func RoomPcpsWebsocket(c *websocket.Conn) {
 	}
 	w.PcpRoomsLock.Lock()
 	room := w.PcpRooms[uuid]
-	fmt.Println("我在這個裡面")
-	fmt.Println(room)
+	// fmt.Println("我在這個裡面")
+	// fmt.Println(room)
 	w.PcpRoomsLock.Unlock()
 	if room == nil {
 		return

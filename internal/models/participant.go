@@ -1,7 +1,6 @@
 package models
 
 import (
-	// "log"
 
 	"encoding/json"
 	"fmt"
@@ -9,7 +8,6 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gofiber/fiber/v2"
-	// "github.com/spf13/viper"
 )
 
 type pcpInRoom struct {

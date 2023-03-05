@@ -1,8 +1,5 @@
 package chat
 
-import (
-	"fmt"
-)
 
 
 type PcpHub struct {
@@ -22,7 +19,6 @@ func NewPcpHub() *PcpHub {
 }
 
 func (h *PcpHub) Run() {
-	fmt.Println("有有來跑")
 	for {
 		select {
 		case client := <-h.register:

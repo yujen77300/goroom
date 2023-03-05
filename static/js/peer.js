@@ -8,9 +8,7 @@ let viewerCountNow = document.querySelector('#viewer-count')
 let userName = document.querySelector('.user-name')
 let videoClosedAvatar = document.querySelector('.video-closed-avatar')
 const pcpsInMeeting = document.getElementById('pcpsInMeeting')
-// 判斷視訊畫面是否開啟
 let streamOutput = { audio: true, video: true, }
-// 是否進行設定
 let defaultSet = false
 let testStreamNow
 let pcpEmail = ""
@@ -65,17 +63,17 @@ function copyURL() {
 // ===================== peer to peer連線 =====================
 // 按下允許連線
 function connect(stream) {
-  // let pc = new RTCPeerConnection({
-  //   iceServers: [{
-  //     'urls': 'stun:stun.l.google.com:19302',
-  //   },
-  //   {
-  //     'urls': 'turn:54.150.244.240:3478',
-  //     'username': 'Dylan',
-  //     'credential': 'Wehelp',
-  //   }
-  //   ]
-  // })
+  let pc = new RTCPeerConnection({
+    iceServers: [{
+      'urls': 'stun:stun.l.google.com:19302',
+    },
+    {
+      'urls': 'turn:54.150.244.240:3478',
+      'username': 'Dylan',
+      'credential': 'Wehelp',
+    }
+    ]
+  })
   // let pc = new RTCPeerConnection({
   //   iceServers: [
   //     {
@@ -88,47 +86,46 @@ function connect(stream) {
   //     // },
   //   ],
   // });
-  let pc = new RTCPeerConnection({
-    iceServers: [{
-      urls: 'stun:goroom.online:3478',
-    },
-    {
-      urls: 'turn:goroom.online:3478',
-      username: '',
-      credential: '',
-    },
-    {
-      'urls': "stun:relay.metered.ca:80",
-    },
-    {
-      urls: "turn:relay.metered.ca:80",
-      username: "",
-      credential: "",
-    },
-    {
-      urls: "turn:relay.metered.ca:443",
-      username: "",
-      credential: "",
-    },
-    ]
-  })
+  // let pc = new RTCPeerConnection({
+  //   iceServers: [{
+  //     urls: 'stun:goroom.online:3478',
+  //   },
+  //   {
+  //     urls: 'turn:goroom.online:3478',
+  //     username: '',
+  //     credential: '',
+  //   },
+  //   {
+  //     'urls': "stun:relay.metered.ca:80",
+  //   },
+  //   {
+  //     urls: "turn:relay.metered.ca:80",
+  //     username: "",
+  //     credential: "",
+  //   },
+  //   {
+  //     urls: "turn:relay.metered.ca:443",
+  //     username: "",
+  //     credential: "",
+  //   },
+  //   ]
+  // })
 
-  console.log("一開始的pc")
-  console.log(pc)
+  // console.log("一開始的pc")
+  // console.log(pc)
   pcNow = pc
 
   // 接收另一端傳遞過來的多媒體資訊(videoTrack ...等)
   // 完成連線後，透過該事件能夠在發現遠端傳輸的多媒體檔案時觸發，來處理/接收多媒體數據
   // As it turns out, MediaStreamTracks get a new ID assigned on the other side.MediaStreams however, keep their assigned IDs, so use those when doing AddTrack, and then use a DataChannel to send information about the stream based on its ID.
   pc.ontrack = function (event) {
-    console.log("ontrack裡面的event")
-    console.log(event)
-    console.log(event.streams)
-    console.log(event.streams[0])
+    // console.log("ontrack裡面的event")
+    // console.log(event)
+    // console.log(event.streams)
+    // console.log(event.streams[0])
     // event => RTCTrackEvent
     // RTCTrackEvent有個streams屬性，每個對像表示track所屬的media stream
-    console.log(event.track)
-    // event.track=>MediaStreamTrack
+    // console.log(event.track)
 
     if (event.track.kind === 'audio') {
       return
@@ -139,10 +136,9 @@ function connect(stream) {
     eachPeerTag.id = event.streams[0].id
     let el = document.createElement(event.track.kind)
     // event.streams[0] 為MediaStream
-    console.log("增加的video")
-    console.log(event.streams[0])
+ 
     el.srcObject = event.streams[0]
-    // el.setAttribute("controls", "true")
+
     el.setAttribute("autoplay", "true")
     el.setAttribute("playsinline", "true")
     el.setAttribute("id", "localVideo")
@@ -168,18 +164,16 @@ function connect(stream) {
       el.play()
     }
 
-    // 執行removetrack方法會發生的事情，也就是移除video tag
     event.streams[0].onremovetrack = ({
       track  //MediaStreamTrack
     }) => {
-      console.log("我進來刪除")
-      console.log(event.streams[0].id)
+
       if (el.parentNode) {
         el.parentNode.remove()
       }
       // 更新上線者清單相關websocket=========================================
       if (track.kind == "video") {
-        console.log("要來刪除")
+
         let streamRemove = {}
         streamRemove["streamId"] = event.streams[0].id
         pcpsWs.send(JSON.stringify({ event: "leave", data: JSON.stringify(streamRemove) }))
@@ -195,24 +189,24 @@ function connect(stream) {
   // 透過(addTrack)載入多媒體資訊(ex: videoTrack, audioTrack ...)
   // 將stream track 與peer connection 透過addTrack()關聯起來，之後建立連結才能進行傳輸
   // 加入MediaStream object到RTCPeerconnection (pc) 中。
-  console.log("載入資訊前知道stream")
-  console.log(stream)
-  console.log(stream.getTracks())
+  // console.log("載入資訊前知道stream")
+  // console.log(stream)
+  // console.log(stream.getTracks())
   stream.getTracks().forEach(track => pc.addTrack(track, stream))
 
   let ws = new WebSocket(RoomWebsocketAddr)
-  console.log("建立新的ws")
-  console.log(ws)
+  // console.log("建立新的ws")
+  // console.log(ws)
   // 當查找到相對應的遠端端口時會做onicecandidate，也就是透過callback function將icecandidate 傳輸給 remote peers。進行網路資訊的共享。
   pc.onicecandidate = e => {
-    console.log("近來onicecandidate")
-    console.log(e)
+    // console.log("近來onicecandidate")
+    // console.log(e)
     if (!e.candidate) {
       console.log("如果沒有就停止")
       return
     }
-    console.log("ws發送訊息")
-    console.log(e.candidate)
+    // console.log("ws發送訊息")
+    // console.log(e.candidate)
     ws.send(JSON.stringify({
       event: 'candidate',
       data: JSON.stringify(e.candidate)
@@ -222,8 +216,6 @@ function connect(stream) {
   // 更新上線者清單相關websocket=========================================
   let pcpsWs = new WebSocket(PcpsWebsocketAddr)
   pcpsWs.onopen = () => {
-    console.log("當前網址")
-    console.log(window.location.href)
     let url = window.location.href
     let segments = url.split('/')
     let uuid = segments[segments.length - 1]
@@ -232,7 +224,6 @@ function connect(stream) {
     streamDict["pcpEmail"] = pcpEmail
     streamDict["pcpId"] = pcpId
     streamDict["pcpName"] = pcpName
-    console.log(streamDict)
     pcpsWs.send(JSON.stringify({ event: "join", data: JSON.stringify(streamDict) }))
   }
 
@@ -240,6 +231,7 @@ function connect(stream) {
     leaveInfo = e.data.split('\n')[0]
     let msg = JSON.parse(leaveInfo)
     let pcpMsg = JSON.parse(msg.data)
+
     switch (msg.event) {
       case 'join':
         eachPcp = document.createElement("div")
@@ -260,7 +252,6 @@ function connect(stream) {
         let children = pcpsInMeeting.children;
         Array.from(children).forEach(eachpeer => {
           if (eachpeer.id == pcpMsg.streamId) {
-            console.log(eachpeer)
             pcpsInMeeting.removeChild(eachpeer)
           }
         });
@@ -271,8 +262,7 @@ function connect(stream) {
 
 
   pcpsWs.onclose = function (e) {
-    console.log("測試上線清單websocket has closed")
-    console.log(e)
+    console.log("pcp lists websocket has closed")
     setTimeout(function () {
       connect(stream);
     }, 1000);
@@ -325,8 +315,8 @@ function connect(stream) {
 
       case 'candidate':
         let candidate = JSON.parse(msg.data)
-        console.log("如果是candidate印出candidate")
-        console.log(candidate)
+        // console.log("如果是candidate印出candidate")
+        // console.log(candidate)
         if (!candidate) {
           return console.log('failed to parse candidate')
         }
@@ -353,8 +343,8 @@ function peerConnect(defaultSet) {
     })
       .then(stream => {
         document.getElementById('localVideo').srcObject = stream
-        console.log("最最一開始")
-        console.log(stream.getTracks())
+        // console.log("最最一開始")
+        // console.log(stream.getTracks())
         let eachPeer = document.querySelector('.each-peer')
         eachPeer.id = stream.id
         connect(stream)
@@ -468,7 +458,6 @@ function audioVideoDefault(audioDefault, videoDefault) {
 const videoOpenedBtn = document.getElementById('video-opened-btn')
 const videoClosedBtn = document.getElementById('video-closed-btn')
 videoOpenedBtn.addEventListener("click", () => {
-  console.log("要進來關掉視訊了")
   // streamNow.getVideoTracks()[0].stop()
   stopVideo(streamNow);
   streamOutput.video = false;
@@ -487,8 +476,7 @@ const audioOpendBtn = document.getElementById('audio-opened-btn')
 const audioClosedBtn = document.getElementById('audio-closed-btn')
 
 audioOpendBtn.addEventListener("click", () => {
-  console.log("要進來關掉麥克風了")
-  console.log(streamOutput.audio)
+
   stopAudio(streamNow);
   streamOutput.audio = false;
   audioOpendBtn.style.display = "none"
@@ -496,7 +484,7 @@ audioOpendBtn.addEventListener("click", () => {
 })
 
 audioClosedBtn.addEventListener("click", () => {
-  console.log("要進來開始麥克風了")
+
   startAudio(streamNow)
   streamOutput.audio = true;
   audioClosedBtn.style.display = "none"
@@ -558,9 +546,6 @@ function startAudio(stream) {
 //   navigator.mediaDevices
 //     .getDisplayMedia(constraints)
 //     .then(shareStream => {
-//       console.log("這是真想螢幕的stream")
-//       console.log(shareStream)
-//       console.log(shareStream.getTracks())
 //       streamNow.getTracks().forEach(track =>{
 //         if (track.kind === 'video') {
 //           pcNow.addTrack(track, shareStream);
@@ -733,9 +718,9 @@ async function getUserAvatar() {
         testVideoClosedAvatar.style.backgroundImage = `url(${result.userAvatar})`
         // pcpAvatar.src = `${result.userAvatar}`
       }
-      // else {
-      //   videoClosedAvatar.style.backgroundImage = `url(${result.userAvatar})`
-      // }
+      else {
+        // videoClosedAvatar.style.backgroundImage = `url(${result.userAvatar})`
+      }
     }
   } catch (err) {
     console.log({ "error": err.message });
@@ -798,10 +783,8 @@ async function getPcpAvatar(pcpEmail, pcpAvatar) {
 }
 
 async function getAllPcpInRoom(uuid, streamId) {
-  console.log("我進來這裡")
   let url = `/api/allpcp/:${uuid}`
   let options = {
-    // body: `${streamId}`,
     method: "GET",
   }
   try {
@@ -809,8 +792,7 @@ async function getAllPcpInRoom(uuid, streamId) {
     let result = await response.json();
     if (response.status === 200) {
 
-      console.log(result.allpcps) //會取得不同的array
-      console.log(streamId)
+      // console.log(result.allpcps) //會取得不同的array
 
       let existPcpList = []
       result.allpcps.forEach(each => {
@@ -819,11 +801,10 @@ async function getAllPcpInRoom(uuid, streamId) {
         }
       })
 
-      console.log(existPcpList)
       existPcpList.forEach(each => {
         eachPcp = document.createElement("div")
         eachPcp.className = "each-pcp"
-        eachPcp.id = each.id
+        eachPcp.id = each.pcp_stream_url
         pcpAvatar = document.createElement("img")
         pcpAvatar.className = "pcp-avatar"
         pcpAvatar.alt = each.username
@@ -852,7 +833,6 @@ async function getPcpInfo(uuid, streamId, newUserName) {
     let response = await fetch(url, options);
     let result = await response.json();
     if (response.status === 200) {
-      console.log(result)
       newUserName.textContent = result.pcpName
     }
   } catch (err) {

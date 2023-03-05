@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/fasthttp/websocket"
-	"github.com/google/uuid"
+	// "github.com/google/uuid"
 	// "github.com/yujen77300/goroom/internal/models"
 )
 
@@ -67,11 +67,11 @@ func (c *Client) writeAndStorePump(roomUuid string) {
 		c.Conn.Close()
 	}()
 
-	uuidObj, err := uuid.NewRandom()
-	participantuuid := uuidObj.String()[0:6]
-	fmt.Println(err)
-	fmt.Println("個人代號")
-	fmt.Println(participantuuid)
+	// uuidObj, err := uuid.NewRandom()
+	// participantuuid := uuidObj.String()[0:6]
+	// fmt.Println(err)
+	// fmt.Println("個人代號")
+	// fmt.Println(participantuuid)
 
 	// userIteration := 1
 
@@ -95,18 +95,6 @@ func (c *Client) writeAndStorePump(roomUuid string) {
 			}
 			w.Write(message)
 
-			// if len(m) > 2 {
-			// 	if userIteration == 1 {
-			// 		fmt.Println("第一個迴圈")
-			// 		fmt.Println(string(message))
-			// 		// fmt.Println("存到資料庫")
-			// 		models.UpdateParticipantInfo(message, roomUuid, participantuuid)
-			// 		userIteration += 1
-			// 	}
-
-			// }
-
-			// w.Write([]byte("{\"account\":\"dylan\",\"message\":\"你只能打這樣啦\"}"))
 
 			n := len(c.Send)
 			for i := 0; i < n; i++ {
