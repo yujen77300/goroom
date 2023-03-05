@@ -63,17 +63,17 @@ function copyURL() {
 // ===================== peer to peer連線 =====================
 // 按下允許連線
 function connect(stream) {
-  let pc = new RTCPeerConnection({
-    iceServers: [{
-      'urls': 'stun:stun.l.google.com:19302',
-    },
-    {
-      'urls': 'turn:54.150.244.240:3478',
-      'username': 'Dylan',
-      'credential': 'Wehelp',
-    }
-    ]
-  })
+  // let pc = new RTCPeerConnection({
+  //   iceServers: [{
+  //     'urls': 'stun:stun.l.google.com:19302',
+  //   },
+  //   {
+  //     'urls': 'turn:54.150.244.240:3478',
+  //     'username': 'Dylan',
+  //     'credential': 'Wehelp',
+  //   }
+  //   ]
+  // })
   // let pc = new RTCPeerConnection({
   //   iceServers: [
   //     {
@@ -86,30 +86,30 @@ function connect(stream) {
   //     // },
   //   ],
   // });
-  // let pc = new RTCPeerConnection({
-  //   iceServers: [{
-  //     urls: 'stun:goroom.online:3478',
-  //   },
-  //   {
-  //     urls: 'turn:goroom.online:3478',
-  //     username: '',
-  //     credential: '',
-  //   },
-  //   {
-  //     'urls': "stun:relay.metered.ca:80",
-  //   },
-  //   {
-  //     urls: "turn:relay.metered.ca:80",
-  //     username: "",
-  //     credential: "",
-  //   },
-  //   {
-  //     urls: "turn:relay.metered.ca:443",
-  //     username: "",
-  //     credential: "",
-  //   },
-  //   ]
-  // })
+  let pc = new RTCPeerConnection({
+    iceServers: [{
+      urls: 'stun:goroom.online:3478',
+    },
+    {
+      urls: 'turn:goroom.online:3478',
+      username: '',
+      credential: '',
+    },
+    {
+      'urls': "stun:relay.metered.ca:80",
+    },
+    {
+      urls: "turn:relay.metered.ca:80",
+      username: "",
+      credential: "",
+    },
+    {
+      urls: "turn:relay.metered.ca:443",
+      username: "",
+      credential: "",
+    },
+    ]
+  })
 
   // console.log("一開始的pc")
   // console.log(pc)
@@ -202,7 +202,7 @@ function connect(stream) {
     // console.log("近來onicecandidate")
     // console.log(e)
     if (!e.candidate) {
-      console.log("如果沒有就停止")
+      // console.log("如果沒有就停止")
       return
     }
     // console.log("ws發送訊息")

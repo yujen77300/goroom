@@ -164,9 +164,6 @@ func GetUser(c *fiber.Ctx) error {
 		}
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			fmt.Println("解析jwt")
-			fmt.Println(claims)
-			fmt.Printf("資料型態 : %T\n", claims)
 			email := claims["email"].(string)
 			id := claims["id"].(float64)
 			name := claims["name"].(string)
@@ -207,7 +204,6 @@ func PutUser(c *fiber.Ctx) error {
 
 	db, _ := ConnectToMYSQL()
 	row, _ := db.Query("SELECT id,username,email FROM member WHERE email = ? AND password=?;", signInInfo.Email, signInInfo.Password)
-	fmt.Println(row)
 	defer row.Close()
 
 	var members []User

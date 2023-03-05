@@ -13,7 +13,6 @@ nameOnNavbar()
 getUserAvatar()
 
 avatarUpdateBtn.addEventListener('click', function () {
-  // console.log(hiddenInput)
   hiddenInput.click()
   hiddenInput.addEventListener('change', function (e) {
     // 透過FormData api 進行ajax上傳
