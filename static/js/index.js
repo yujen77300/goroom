@@ -12,6 +12,8 @@ const signUpCardButton = document.getElementById("signup-card-button")
 const signUpName = document.getElementById("signup-username")
 const signUpEmail = document.getElementById("signup-email")
 const signUpPassword = document.getElementById("signup-password")
+const checkbox = document.querySelector('#flexCheckChecked');
+
 
 
 signinBtn.forEach((button) => {
@@ -32,6 +34,7 @@ signUpCardButton.addEventListener("click", () => {
   let signUpInputName = signUpName.value
   let signUpInputEmail = signUpEmail.value
   let signUpInputPassword = signUpPassword.value
+  let autoLogin = checkbox.checked;
   if (signUpInputName.length != 0 && signUpInputEmail != 0 && signUpInputPassword != 0) {
     if (!emailValidation(signUpInputEmail) && !passwordValidation(signUpInputPassword)) {
       inputHint.textContent = "Invalid email and password"
@@ -48,8 +51,8 @@ signUpCardButton.addEventListener("click", () => {
         "username": signUpInputName,
         "email": signUpInputEmail,
         "password": signUpInputPassword
-      };
-      signUpAccount(signUpData)
+      }
+      signUpAccount(signUpData, autoLogin)
 
     }
   } else {
@@ -65,8 +68,7 @@ singInCardButton.addEventListener("click", () => {
     const signInData = {
       "email": signInInputEmail,
       "password": signInInputPassword
-    };
-    console.log(signInData)
+    }
     signInAccount(signInData)
   } else {
     signInHint.textContent = "Email or password is empty"
@@ -83,22 +85,22 @@ async function signInAccount(data) {
     }
   }
   try {
-    let response = await fetch(url, options);
-    let result = await response.json();
+    let response = await fetch(url, options)
+    let result = await response.json()
     if (response.status === 200) {
       document.location.href = '/member'
 
     } else if (response.status === 401) {
-      signInHint.textContent = result.message;
+      signInHint.textContent = result.message
       signInEmail.value = ""
       signInPassword.value = ""
     }
   } catch (err) {
-    console.log({ "error": err.message });
+    console.log({ "error": err.message })
   }
 }
 
-async function signUpAccount(data) {
+async function signUpAccount(data, autoLogin) {
   let url = "/api/user"
   let options = {
     method: "POST",
@@ -108,18 +110,26 @@ async function signUpAccount(data) {
     }
   }
   try {
-    let response = await fetch(url, options);
-    let result = await response.json();
+    let response = await fetch(url, options)
+    let result = await response.json()
     if (response.status === 200) {
-      inputHint.textContent = "Success! Please Sign in"
+      if (autoLogin) {
+        let newUserData = {
+          "email": result.newUsesrInfo.newUserEmail,
+          "password": result.newUsesrInfo.newUserPassword
+        }
+        signInAccount(newUserData)
+      } else {
+        inputHint.textContent = "Success! Please Sign in"
+      }
     } else if (response.status === 400) {
-      inputHint.textContent = result.message;
+      inputHint.textContent = result.message
       signUpName.value = ""
       signUpEmail.value = ""
       signUpPassword.value = ""
     }
   } catch (err) {
-    console.log({ "error": err.message });
+    console.log({ "error": err.message })
   }
 }
 

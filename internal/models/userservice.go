@@ -31,7 +31,7 @@ type UserAvatar struct {
 }
 
 type PcpAvatar struct {
-	UserId        int   `json:"id"`
+	UserId    int    `json:"id"`
 	Email     string `json:"email"`
 	AvatarUrl string `json:"avatarurl"`
 }
@@ -87,11 +87,11 @@ func NewUser(c *fiber.Ctx) error {
 			"error": true, "message": "Cannot parse data to struct",
 		})
 	}
-	fmt.Println("測試一下新增的資料")
-	fmt.Println(signUpInfo.Id)
-	fmt.Println(signUpInfo.Name)
-	fmt.Println(signUpInfo.Password)
-	fmt.Println(signUpInfo.Email)
+
+	userData := fiber.Map{
+		"newUserEmail":    signUpInfo.Email,
+		"newUserPassword": signUpInfo.Password,
+	}
 
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
@@ -100,7 +100,6 @@ func NewUser(c *fiber.Ctx) error {
 	}
 	db, _ := ConnectToMYSQL()
 	row, _ := db.Query("SELECT email FROM member WHERE email = ?;", signUpInfo.Email)
-	fmt.Println(row)
 	var signUpMember []User
 	for row.Next() {
 		var member User
@@ -111,8 +110,7 @@ func NewUser(c *fiber.Ctx) error {
 		signUpMember = append(signUpMember, member)
 	}
 	row.Close()
-	fmt.Println("測試一下")
-	fmt.Println(signUpMember)
+
 	if len(signUpMember) > 0 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": true, "message": "Email is already registered"})
 	} else {
@@ -130,7 +128,8 @@ func NewUser(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{
-		"ok": true,
+		"ok":           true,
+		"newUsesrInfo": userData,
 	})
 
 }
@@ -176,10 +175,6 @@ func GetUser(c *fiber.Ctx) error {
 				"name":  name,
 				"email": email,
 			}
-			// fmt.Println("看一下username的結果")
-			// value:= memberData["name"]
-			// UserName = value.(string)
-			// fmt.Println(UserName)
 
 			return c.JSON(fiber.Map{
 				"data": memberData,
@@ -224,7 +219,6 @@ func PutUser(c *fiber.Ctx) error {
 		members = append(members, member)
 	}
 
-
 	if len(members) == 0 {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"error":   true,
@@ -232,7 +226,6 @@ func PutUser(c *fiber.Ctx) error {
 		})
 	} else {
 		token := jwt.New(jwt.SigningMethodHS256)
-		// 存在token裡面的body
 		claims := token.Claims.(jwt.MapClaims)
 		claims["id"] = members[0].Id
 		claims["name"] = members[0].Name
@@ -332,19 +325,18 @@ func GetPcpAvatar(c *fiber.Ctx) error {
 	var pcpAvatar []PcpAvatar
 	for row.Next() {
 		var pcp PcpAvatar
-		if dberr := row.Scan(&pcp.UserId,&pcp.Email, &pcp.AvatarUrl); dberr != nil {
+		if dberr := row.Scan(&pcp.UserId, &pcp.Email, &pcp.AvatarUrl); dberr != nil {
 			fmt.Printf("scan failed, err:%v\n", dberr)
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "scan failed"})
 		}
 		pcpAvatar = append(pcpAvatar, pcp)
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"pcpUserId":pcpAvatar[0].UserId,"pcpEmail": pcpEmail, "pcpAvatarUrl": pcpAvatar[0].AvatarUrl})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"pcpUserId": pcpAvatar[0].UserId, "pcpEmail": pcpEmail, "pcpAvatarUrl": pcpAvatar[0].AvatarUrl})
 }
 
 func UpdateAvatar(c *fiber.Ctx) error {
 	region, bucketName, client := ConnectToAWS()
-	// 一個是檔案，而信箱是表單的值
 	userNow := c.FormValue("accountEmail")
 	file, err := c.FormFile("avatarUrl")
 	if err != nil {
