@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"log"
 
-	"context"
 	"time"
+	
+	"context"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -350,7 +351,9 @@ func UpdateAvatar(c *fiber.Ctx) error {
 	var alphabet []rune = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
 	alphabetSize := len(alphabet)
 	var sb strings.Builder
-	// 20碼的隨機字串
+
+	rand.Seed(time.Now().UnixNano())
+
 	for i := 0; i < 20; i++ {
 		ch := alphabet[rand.Intn(alphabetSize)]
 		sb.WriteRune(ch)
@@ -373,7 +376,6 @@ func UpdateAvatar(c *fiber.Ctx) error {
 		fmt.Printf("Couldn't upload file, Here's why: %v\n", error)
 	}
 
-	// 取得url
 	url := "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + fileName
 	fmt.Println(url)
 	cloudFrontUrl := "https://d1uumvm880lnxp.cloudfront.net/" + fileName
@@ -386,4 +388,5 @@ func UpdateAvatar(c *fiber.Ctx) error {
 	defer db.Close()
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"userEmail": userNow, "newAvatarUrl": cloudFrontUrl})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"ok": true})
 }
