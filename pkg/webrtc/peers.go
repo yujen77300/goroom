@@ -32,21 +32,21 @@ var (
 var (
 	turnConfig = webrtc.Configuration{
 		ICETransportPolicy: webrtc.ICETransportPolicyRelay,
-		// ICEServers: []webrtc.ICEServer{
-		// 	{
+		ICEServers: []webrtc.ICEServer{
+			{
 
-		// 		URLs: []string{"stun:stun.l.google.com:19302"},
-		// 	},
-		// 	{
+				URLs: []string{"stun:stun.l.google.com:19302"},
+			},
+			{
 
-		// 		URLs: []string{"turn:54.150.244.240:3478"},
+				URLs: []string{"turn:54.150.244.240:3478"},
 
-		// 		Username: "Dylan",
+				Username: "Dylan",
 
-		// 		Credential:     "Wehelp",
-		// 		CredentialType: webrtc.ICECredentialTypePassword,
-		// 	},
-		// },
+				Credential:     "Wehelp",
+				CredentialType: webrtc.ICECredentialTypePassword,
+			},
+		},
 		// ICEServers: []webrtc.ICEServer{
 		// 	// {
 
@@ -58,40 +58,40 @@ var (
 		// 	// 	CredentialType: webrtc.ICECredentialTypePassword,
 		// 	// },
 		// },
-		ICEServers: []webrtc.ICEServer{
-			{
-				URLs: []string{"stun:goroom.online:3478"},
-			},
-			{
+		// ICEServers: []webrtc.ICEServer{
+		// 	{
+		// 		URLs: []string{"stun:goroom.online:3478"},
+		// 	},
+		// 	{
 
-				URLs: []string{"turn:goroom.online:3478"},
+		// 		URLs: []string{"turn:goroom.online:3478"},
 
-				Username: "",
+		// 		Username: "",
 
-				Credential:     "",
-				CredentialType: webrtc.ICECredentialTypePassword,
-			},
-			{
-				URLs: []string{"stun:relay.metered.ca:80"},
-			},
-			{
-				URLs: []string{"turn:relay.metered.ca:80"},
+		// 		Credential:     "",
+		// 		CredentialType: webrtc.ICECredentialTypePassword,
+		// 	},
+		// 	{
+		// 		URLs: []string{"stun:relay.metered.ca:80"},
+		// 	},
+		// 	{
+		// 		URLs: []string{"turn:relay.metered.ca:80"},
 
-				Username: "",
+		// 		Username: "",
 
-				Credential:     "",
-				CredentialType: webrtc.ICECredentialTypePassword,
-			},
-			{
+		// 		Credential:     "",
+		// 		CredentialType: webrtc.ICECredentialTypePassword,
+		// 	},
+		// 	{
 
-				URLs: []string{"turn:relay.metered.ca:443"},
+		// 		URLs: []string{"turn:relay.metered.ca:443"},
 
-				Username: "",
+		// 		Username: "",
 
-				Credential:     "",
-				CredentialType: webrtc.ICECredentialTypePassword,
-			},
-		},
+		// 		Credential:     "",
+		// 		CredentialType: webrtc.ICECredentialTypePassword,
+		// 	},
+		// },
 	}
 )
 

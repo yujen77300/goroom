@@ -63,17 +63,17 @@ function copyURL() {
 // ===================== peer to peer連線 =====================
 // 按下允許連線
 function connect(stream) {
-  // let pc = new RTCPeerConnection({
-  //   iceServers: [{
-  //     'urls': 'stun:stun.l.google.com:19302',
-  //   },
-  //   {
-  //     'urls': 'turn:54.150.244.240:3478',
-  //     'username': 'Dylan',
-  //     'credential': 'Wehelp',
-  //   }
-  //   ]
-  // })
+  let pc = new RTCPeerConnection({
+    iceServers: [{
+      'urls': 'stun:stun.l.google.com:19302',
+    },
+    {
+      'urls': 'turn:54.150.244.240:3478',
+      'username': 'Dylan',
+      'credential': 'Wehelp',
+    }
+    ]
+  })
   // let pc = new RTCPeerConnection({
   //   iceServers: [
   //     {
@@ -86,30 +86,30 @@ function connect(stream) {
   //     // },
   //   ],
   // });
-  let pc = new RTCPeerConnection({
-    iceServers: [{
-      urls: 'stun:goroom.online:3478',
-    },
-    {
-      urls: 'turn:goroom.online:3478',
-      username: '',
-      credential: '',
-    },
-    {
-      'urls': "stun:relay.metered.ca:80",
-    },
-    {
-      urls: "turn:relay.metered.ca:80",
-      username: "",
-      credential: "",
-    },
-    {
-      urls: "turn:relay.metered.ca:443",
-      username: "",
-      credential: "",
-    },
-    ]
-  })
+  // let pc = new RTCPeerConnection({
+  //   iceServers: [{
+  //     urls: 'stun:goroom.online:3478',
+  //   },
+  //   {
+  //     urls: 'turn:goroom.online:3478',
+  //     username: '',
+  //     credential: '',
+  //   },
+  //   {
+  //     'urls': "stun:relay.metered.ca:80",
+  //   },
+  //   {
+  //     urls: "turn:relay.metered.ca:80",
+  //     username: "",
+  //     credential: "",
+  //   },
+  //   {
+  //     urls: "turn:relay.metered.ca:443",
+  //     username: "",
+  //     credential: "",
+  //   },
+  //   ]
+  // })
 
   // console.log("一開始的pc")
   // console.log(pc)
@@ -312,7 +312,7 @@ function connect(stream) {
           }))
         })
         return
-
+        // onicecandidate
       case 'candidate':
         let candidate = JSON.parse(msg.data)
         // console.log("如果是candidate印出candidate")
@@ -564,7 +564,8 @@ function peerSize(usersAmount, localVideo) {
     let videoWidth = (1160 * 9) / 16
     eachPeer[0].style.height = `${videoWidth}px`
     // videoClosedAvatar.style.bottom = "-220px"
-    userName.style.bottom = `-${videoWidth - 60}px`
+    // userName.style.bottom = `-${videoWidth - 60}px`
+    userName.style.bottom = `30px`
     videos.style.cssText = "display:flex;justify-content:center;align-items:center;"
   } else if (usersAmount === 2) {
     let eachPeer = document.querySelectorAll('.each-peer')
@@ -577,8 +578,8 @@ function peerSize(usersAmount, localVideo) {
     eachPeer[0].style.height = `${videoWidth}px`
     eachPeer[1].style.height = `${videoWidth}px`
     // videoClosedAvatar.style.bottom = "-75px"
-    userName[0].style.bottom = `-${videoWidth - 60}px`
-    userName[1].style.bottom = `-${videoWidth - 60}px`
+    userName[0].style.bottom = `10px`
+    userName[1].style.bottom = `10px`
     videos.style.display = "flex"
     videos.style.gap = "10px"
   } else if (usersAmount === 3) {
@@ -594,9 +595,9 @@ function peerSize(usersAmount, localVideo) {
     eachPeer[0].style.height = `${videoWidth}px`
     eachPeer[1].style.height = `${videoWidth}px`
     eachPeer[2].style.height = `${videoWidth}px`
-    userName[0].style.bottom = `-${videoWidth - 60}px`
-    userName[1].style.bottom = `-${videoWidth - 60}px`
-    userName[2].style.bottom = `-${videoWidth - 60}px`
+    userName[0].style.bottom = `10px`
+    userName[1].style.bottom = `10px`
+    userName[2].style.bottom = `10px`
     videos.style.display = "flex"
     videos.style.flexWrap = "wrap"
     videos.style.gap = "10px"
@@ -616,10 +617,10 @@ function peerSize(usersAmount, localVideo) {
     eachPeer[1].style.height = `${videoWidth}px`
     eachPeer[2].style.height = `${videoWidth}px`
     eachPeer[3].style.height = `${videoWidth}px`
-    userName[0].style.bottom = `-${videoWidth - 60}px`
-    userName[1].style.bottom = `-${videoWidth - 60}px`
-    userName[2].style.bottom = `-${videoWidth - 60}px`
-    userName[3].style.bottom = `-${videoWidth - 60}px`
+    userName[0].style.bottom = `10px`
+    userName[1].style.bottom = `10px`
+    userName[2].style.bottom = `10px`
+    userName[3].style.bottom = `10px`
     videos.style.display = "flex"
     videos.style.flexWrap = "wrap"
     videos.style.gap = "10px"
