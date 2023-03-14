@@ -1,19 +1,18 @@
 package models
 
 import (
+	"context"
 	"fmt"
 	"log"
-
+	"math/rand"
+	"regexp"
+	"strings"
 	"time"
-	
-	"context"
+	"unicode"
+	"unicode/utf8"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-
-	"math/rand"
-	"strings"
-
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"github.com/spf13/viper"
@@ -99,39 +98,47 @@ func NewUser(c *fiber.Ctx) error {
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalln(err)
 	}
-	db, _ := ConnectToMYSQL()
-	row, _ := db.Query("SELECT email FROM member WHERE email = ?;", signUpInfo.Email)
-	var signUpMember []User
-	for row.Next() {
-		var member User
-		if dberr := row.Scan(&member.Email); dberr != nil {
-			fmt.Printf("scan failed, err:%v\n", dberr)
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "scan failed"})
+	if emailValidation(signUpInfo.Email) && pwdValidation(signUpInfo.Password) {
+		db, _ := ConnectToMYSQL()
+		row, _ := db.Query("SELECT email FROM member WHERE email = ?;", signUpInfo.Email)
+		var signUpMember []User
+		for row.Next() {
+			var member User
+			if dberr := row.Scan(&member.Email); dberr != nil {
+				fmt.Printf("scan failed, err:%v\n", dberr)
+				return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "scan failed"})
+			}
+			signUpMember = append(signUpMember, member)
 		}
-		signUpMember = append(signUpMember, member)
-	}
-	row.Close()
+		row.Close()
 
-	if len(signUpMember) > 0 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": true, "message": "Email is already registered"})
+		if len(signUpMember) > 0 {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": true, "message": "Email is already registered"})
+		} else {
+			result, err := db.Exec("INSERT INTO member(username,email,password) values(?,?,?);", signUpInfo.Name, signUpInfo.Email, signUpInfo.Password)
+			defer db.Close()
+			if err != nil {
+				fmt.Printf("建立檔案失敗，原因是：%v", err)
+				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": true, "message": "Internal Server Error"})
+			}
+			rowsaffected, err := result.RowsAffected()
+			if err != nil {
+				fmt.Printf("Get RowsAffected failed,err:%v", err)
+			}
+			fmt.Println("Affected rows:", rowsaffected)
+		}
+
+		return c.JSON(fiber.Map{
+			"ok":           true,
+			"newUsesrInfo": userData,
+		})
+	} else if emailValidation(signUpInfo.Email) && !pwdValidation(signUpInfo.Password) {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Invalid password, at least 8 characters, one number and one English letter are required"})
+	} else if !emailValidation(signUpInfo.Email) && pwdValidation(signUpInfo.Password) {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Invalid email"})
 	} else {
-		result, err := db.Exec("INSERT INTO member(username,email,password) values(?,?,?);", signUpInfo.Name, signUpInfo.Email, signUpInfo.Password)
-		defer db.Close()
-		if err != nil {
-			fmt.Printf("建立檔案失敗，原因是：%v", err)
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": true, "message": "Internal Server Error"})
-		}
-		rowsaffected, err := result.RowsAffected()
-		if err != nil {
-			fmt.Printf("Get RowsAffected failed,err:%v", err)
-		}
-		fmt.Println("Affected rows:", rowsaffected)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Invalid email and password"})
 	}
-
-	return c.JSON(fiber.Map{
-		"ok":           true,
-		"newUsesrInfo": userData,
-	})
 
 }
 
@@ -384,5 +391,30 @@ func UpdateAvatar(c *fiber.Ctx) error {
 	defer db.Close()
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"userEmail": userNow, "newAvatarUrl": cloudFrontUrl})
-	
+
+}
+
+func emailValidation(email string) bool {
+	emailRegex := regexp.MustCompile(`^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$`)
+	result := emailRegex.MatchString(email)
+	return result
+}
+
+func pwdValidation(pwd string) bool {
+	hasNum := false
+	hasLetter := false
+
+	for _, r := range pwd {
+		if unicode.IsDigit(r) {
+			hasNum = true
+		} else if unicode.IsLetter(r) {
+			hasLetter = true
+		}
+	}
+
+	if hasNum && hasLetter && utf8.RuneCountInString(pwd) >= 8 {
+		return true
+	} else {
+		return false
+	}
 }
