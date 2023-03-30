@@ -15,6 +15,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
+
+	// "github.com/gomodule/redigo/redis"
 	"github.com/spf13/viper"
 )
 
@@ -23,6 +25,14 @@ type User struct {
 	Name     string `json:"username"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+type signInUser struct {
+	Id        int    `json:"id"`
+	Name      string `json:"username"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
+	AvatarUrl string `json:"avatarurl"`
 }
 
 type UserAvatar struct {
@@ -174,7 +184,7 @@ func GetUser(c *fiber.Ctx) error {
 			email := claims["email"].(string)
 			id := claims["id"].(float64)
 			name := claims["name"].(string)
-			// use interface{}to store any type
+			
 			memberData := map[string]interface{}{
 				"id":    id,
 				"name":  name,
@@ -202,7 +212,8 @@ func SignOutUser(c *fiber.Ctx) error {
 
 // Put user  登入會員
 func PutUser(c *fiber.Ctx) error {
-	signInInfo := User{}
+	// signInInfo := User{}
+	signInInfo := signInUser{}
 	if err := c.BodyParser(&signInInfo); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": true, "message": "Cannot parse data to struct",
@@ -210,13 +221,15 @@ func PutUser(c *fiber.Ctx) error {
 	}
 
 	db, _ := ConnectToMYSQL()
-	row, _ := db.Query("SELECT id,username,email FROM member WHERE email = ? AND password=?;", signInInfo.Email, signInInfo.Password)
+	row, _ := db.Query("SELECT id,username,email,avatar_url FROM member WHERE email = ? AND password=?;", signInInfo.Email, signInInfo.Password)
 	defer row.Close()
 
-	var members []User
+	// var members []User
+	var members []signInUser
 	for row.Next() {
-		var member User
-		if dberr := row.Scan(&member.Id, &member.Name, &member.Email); dberr != nil {
+		// var member User
+		var member signInUser
+		if dberr := row.Scan(&member.Id, &member.Name, &member.Email,&member.AvatarUrl); dberr != nil {
 			fmt.Printf("scan failed, err:%v\n", dberr)
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "scan failed"})
 		}
@@ -255,6 +268,11 @@ func PutUser(c *fiber.Ctx) error {
 			HTTPOnly: true,
 			Expires:  time.Now().Add(time.Hour * 24 * 7),
 		})
+
+		//redis使用登入的人的大頭貼和名字
+		redisConn := RedisDefaultPool.Get()
+		defer redisConn.Close()
+		redisConn.Do("HSET", members[0].Id, members[0].Name, members[0].AvatarUrl)
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{"ok": true})
 	}
 

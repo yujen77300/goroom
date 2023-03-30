@@ -1,13 +1,13 @@
 package models
 
 import (
-
 	"encoding/json"
 	"fmt"
 	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gomodule/redigo/redis"
 )
 
 type pcpInRoom struct {
@@ -49,6 +49,11 @@ func UpdateParticipantInfo(participantInfo []byte, roomId string) {
 		return
 	}
 	defer db.Close()
+
+	// redis使用新增上線的人
+	redisConn := RedisDefaultPool.Get()
+	defer redisConn.Close()
+	redisConn.Do("HSET", roomId, p.ParticipantStreamId, p.ParticipantId)
 }
 
 func DeleteParticipantInfo(participantInfo []byte, roomId string) {
@@ -66,6 +71,11 @@ func DeleteParticipantInfo(participantInfo []byte, roomId string) {
 		return
 	}
 	defer db.Close()
+
+	// redis使用刪除上線的人
+	redisConn := RedisDefaultPool.Get()
+	defer redisConn.Close()
+	redisConn.Do("HDEL", roomId, p.ParticipantStreamId)
 }
 
 func GetAllPcpInRoom(c *fiber.Ctx) error {
@@ -87,6 +97,24 @@ func GetAllPcpInRoom(c *fiber.Ctx) error {
 		}
 		pcpInRoomWithAvatar = append(pcpInRoomWithAvatar, eachPcp)
 	}
+
+	//redis使用抓全部的人
+	fmt.Println("測試抓全部的人")
+	redisConn := RedisDefaultPool.Get()
+	defer redisConn.Close()
+	redisdata, err := redis.Values(redisConn.Do("HGETALL", roomUuid))
+	if err != nil {
+		fmt.Println("redis get failed", err)
+	}
+	fmt.Println(redisdata)
+	pcpInRoomWithAvatarMap := make(map[string]string)
+	for i := 0; i < len(redisdata); i += 2 {
+		key := string(redisdata[i].([]byte))
+		value := string(redisdata[i+1].([]byte))
+		pcpInRoomWithAvatarMap[key] = value
+	}
+	fmt.Println(pcpInRoomWithAvatarMap)
+	fmt.Println(pcpInRoomWithAvatar)
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"allpcps": pcpInRoomWithAvatar})
 }
@@ -113,5 +141,45 @@ func GetPcpInfo(c *fiber.Ctx) error {
 		specificPcp = append(specificPcp, Pcp)
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"pcpId": specificPcp[0].PcpId,"pcpName":specificPcp[0].PcpName,"pcpAvatar":specificPcp[0].PcpAvatarUrl})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"pcpId": specificPcp[0].PcpId, "pcpName": specificPcp[0].PcpName, "pcpAvatar": specificPcp[0].PcpAvatarUrl})
+}
+
+// 暫時======================================
+
+type cacheStruct struct {
+	CacheUser cacheUserStruct
+}
+
+type cacheUserStruct struct {
+	UserId   string `json:"userId"`
+	StreamId string `json:"streamId"`
+}
+
+func CacheOneUser(c *fiber.Ctx) error {
+	testNumber := c.Params("number")
+	redisRoom := "testroom"
+	redisKey := fmt.Sprintf("user_%s", testNumber)
+	conn := RedisDefaultPool.Get()
+	defer conn.Close()
+	data, err := redis.Bytes(conn.Do("GET", redisRoom))
+	if err != nil {
+		RedisOneUser(c)
+		dbResult := RedisOneUser(c)
+		fmt.Println(dbResult)
+		redisData, _ := json.Marshal(dbResult)
+		fmt.Println(redisData)
+		fmt.Println(string(redisData))
+		// conn.Do("SETEX", redisKey, 40, redisData)
+		conn.Do("HSET", redisRoom, redisKey, redisData)
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{"ok": "from db", "data": dbResult})
+	}
+	var cachedData cacheStruct
+	json.Unmarshal(data, &cachedData)
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"ok": "from redis", "data": cachedData})
+
+}
+
+// Redis User
+func RedisOneUser(c *fiber.Ctx) cacheStruct {
+	return cacheStruct{CacheUser: cacheUserStruct{UserId: "a1012", StreamId: "poiuyt"}}
 }

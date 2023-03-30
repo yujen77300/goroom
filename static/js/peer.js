@@ -65,51 +65,28 @@ function copyURL() {
 function connect(stream) {
   let pc = new RTCPeerConnection({
     iceServers: [{
-      'urls': 'stun:stun.l.google.com:19302',
+      urls: 'stun:goroom.online:3478',
     },
     {
-      'urls': 'turn:54.150.244.240:3478',
-      'username': 'Dylan',
-      'credential': 'Wehelp',
-    }
+      urls: 'turn:goroom.online:3478',
+      username: '',
+      credential: '',
+    },
+    // {
+    //   'urls': "stun:relay.metered.ca:80",
+    // },
+    // {
+    //   urls: "turn:relay.metered.ca:80",
+    //   username: "",
+    //   credential: "",
+    // },
+    // {
+    //   urls: "turn:relay.metered.ca:443",
+    //   username: "",
+    //   credential: "",
+    // },
     ]
   })
-  // let pc = new RTCPeerConnection({
-  //   iceServers: [
-  //     {
-  //       urls: "stun:relay.metered.ca:80",
-  //     },
-  //     // {
-  //     //   urls: "turn:relay.metered.ca:443?transport=tcp",
-  //     //   username: "",
-  //     //   credential: "",
-  //     // },
-  //   ],
-  // });
-  // let pc = new RTCPeerConnection({
-  //   iceServers: [{
-  //     urls: 'stun:goroom.online:3478',
-  //   },
-  //   {
-  //     urls: 'turn:goroom.online:3478',
-  //     username: '',
-  //     credential: '',
-  //   },
-  //   {
-  //     'urls': "stun:relay.metered.ca:80",
-  //   },
-  //   {
-  //     urls: "turn:relay.metered.ca:80",
-  //     username: "",
-  //     credential: "",
-  //   },
-  //   {
-  //     urls: "turn:relay.metered.ca:443",
-  //     username: "",
-  //     credential: "",
-  //   },
-  //   ]
-  // })
 
   // console.log("一開始的pc")
   // console.log(pc)
@@ -136,7 +113,7 @@ function connect(stream) {
     eachPeerTag.id = event.streams[0].id
     let el = document.createElement(event.track.kind)
     // event.streams[0] 為MediaStream
- 
+
     el.srcObject = event.streams[0]
 
     el.setAttribute("autoplay", "true")
@@ -312,7 +289,7 @@ function connect(stream) {
           }))
         })
         return
-        // onicecandidate
+      // onicecandidate
       case 'candidate':
         let candidate = JSON.parse(msg.data)
         // console.log("如果是candidate印出candidate")
@@ -445,8 +422,6 @@ function audioVideoDefault(audioDefault, videoDefault) {
 
   } else if (videoDefault == false) {
     stopVideo(streamNow);
-    // stream.getVideoTracks()[0].enabled = false;
-    // videoClosedAvatar.style.display = "block"
     videoOpenedBtn.style.display = "none"
     videoClosedBtn.style.display = "block"
   }
