@@ -61,6 +61,8 @@ func Run() error {
 	app.Post("/api/user/avatar", models.UpdateAvatar)
 	app.Get("/api/allpcp/:uuid", models.GetAllPcpInRoom)
 	app.Get("/api/pcp/:uuid/:streamId", models.GetPcpInfo)
+	// 暫時======================================
+	app.Get("/api/cache/:number", models.CacheOneUser)
 	app.Static("/", "./static")
 
 	// 讓這兩個變量進行初始化
