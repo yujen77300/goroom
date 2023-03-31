@@ -1,9 +1,8 @@
 package handlers
 
 import (
-	// "encoding/json"
 	"fmt"
-	// "log"
+	"log"
 	"os"
 
 	"time"
@@ -17,6 +16,7 @@ import (
 	"github.com/gofiber/websocket/v2"
 	guuid "github.com/google/uuid"
 	"github.com/pion/webrtc/v3"
+	"github.com/spf13/viper"
 )
 
 // type PcpsWsPayload struct {
@@ -44,6 +44,13 @@ import (
 // var pcpsList []PcpsInfo
 
 func RoomCreate(c *fiber.Ctx) error {
+	viper.SetConfigName("config")
+	viper.AddConfigPath(".")
+	err := viper.ReadInConfig()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	livedToken := c.Cookies("MyJWT")
 	if len(livedToken) == 0 {
 		return c.Redirect("/")
@@ -76,6 +83,10 @@ func Room(c *fiber.Ctx) error {
 			"ChatWebsocketAddr":   fmt.Sprintf("%s://%s/room/%s/chat/websocket", ws, c.Hostname(), uuid),
 			"ViewerWebsocketAddr": fmt.Sprintf("%s://%s/room/%s/viewer/websocket", ws, c.Hostname(), uuid),
 			"PcpsWebsocketAddr":   fmt.Sprintf("%s://%s/room/%s/pcps/websocket", ws, c.Hostname(), uuid),
+			"TurnName":   viper.GetString("TURNNAME"),
+			"TurnPwd":   viper.GetString("TURNPWD"),
+			"TurnName2":   viper.GetString("TURNNAME2"),
+			"TurnPwd2":   viper.GetString("TURNPWD2"),
 		})
 	}
 
@@ -161,7 +172,6 @@ func roomViewerConn(c *websocket.Conn, p *w.Peers) {
 		w.Write([]byte(fmt.Sprintf("%d", len(p.Connections))))
 	}
 }
-
 
 func RoomPcpsWebsocket(c *websocket.Conn) {
 	uuid := c.Params("uuid")

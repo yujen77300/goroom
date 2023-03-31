@@ -11,8 +11,18 @@ import (
 	"github.com/pion/rtcp"
 	"github.com/pion/webrtc/v3"
 
+	"github.com/spf13/viper"
 	"github.com/yujen77300/goroom/pkg/chat"
 )
+
+func init() {
+	viper.SetConfigName("config")
+	viper.AddConfigPath(".")
+	err := viper.ReadInConfig()
+	if err != nil {
+		log.Fatalln(err)
+	}
+}
 
 type websocketMessage struct {
 	Event string `json:"event"`
@@ -40,31 +50,31 @@ var (
 
 				URLs: []string{"turn:goroom.online:3478"},
 
-				Username: "",
+				Username: viper.GetString("TURNNAME"),
 
-				Credential:     "",
+				Credential:     viper.GetString("TURNPWD"),
 				CredentialType: webrtc.ICECredentialTypePassword,
 			},
-			// {
-			// 	URLs: []string{"stun:relay.metered.ca:80"},
-			// },
-			// {
-			// 	URLs: []string{"turn:relay.metered.ca:80"},
+			{
+				URLs: []string{"stun:relay.metered.ca:80"},
+			},
+			{
+				URLs: []string{"turn:relay.metered.ca:80"},
 
-			// 	Username: "",
+				Username:  viper.GetString("TURNNAME2"),
 
-			// 	Credential:     "",
-			// 	CredentialType: webrtc.ICECredentialTypePassword,
-			// },
-			// {
+				Credential:     viper.GetString("TURNPWD2"),
+				CredentialType: webrtc.ICECredentialTypePassword,
+			},
+			{
 
-			// 	URLs: []string{"turn:relay.metered.ca:443"},
+				URLs: []string{"turn:relay.metered.ca:443"},
 
-			// 	Username: "",
+				Username:  viper.GetString("TURNNAME2"),
 
-			// 	Credential:     "",
-			// 	CredentialType: webrtc.ICECredentialTypePassword,
-			// },
+				Credential:     viper.GetString("TURNPWD2"),
+				CredentialType: webrtc.ICECredentialTypePassword,
+			},
 		},
 	}
 )

@@ -69,22 +69,22 @@ function connect(stream) {
     },
     {
       urls: 'turn:goroom.online:3478',
-      username: '',
-      credential: '',
+      username: TurnName,
+      credential: TurnPwd,
     },
-    // {
-    //   'urls': "stun:relay.metered.ca:80",
-    // },
-    // {
-    //   urls: "turn:relay.metered.ca:80",
-    //   username: "",
-    //   credential: "",
-    // },
-    // {
-    //   urls: "turn:relay.metered.ca:443",
-    //   username: "",
-    //   credential: "",
-    // },
+    {
+      'urls': "stun:relay.metered.ca:80",
+    },
+    {
+      urls: "turn:relay.metered.ca:80",
+      username: TurnName2,
+      credential: TurnPwd2,
+    },
+    {
+      urls: "turn:relay.metered.ca:443",
+      username: TurnName2,
+      credential: TurnPwd2,
+    },
     ]
   })
 
