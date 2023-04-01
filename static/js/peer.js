@@ -196,6 +196,7 @@ function connect(stream) {
     let url = window.location.href
     let segments = url.split('/')
     let uuid = segments[segments.length - 1]
+    console.log("只有一個人會進來嗎")
     getAllPcpInRoom(uuid, stream.id)
     streamDict["streamId"] = stream.id
     streamDict["pcpEmail"] = pcpEmail
@@ -320,8 +321,9 @@ function peerConnect(defaultSet) {
     })
       .then(stream => {
         document.getElementById('localVideo').srcObject = stream
-        // console.log("最最一開始")
-        // console.log(stream.getTracks())
+        console.log("最最一開始")
+        console.log(stream)
+        console.log(stream.getTracks())
         let eachPeer = document.querySelector('.each-peer')
         eachPeer.id = stream.id
         connect(stream)
@@ -411,16 +413,19 @@ function audioVideoDefault(audioDefault, videoDefault) {
     audioOpendBtn.style.display = "block"
 
   } else if (audioDefault == false) {
+    console.log("audioDefault == false")
     stopAudio(streamNow);
     audioOpendBtn.style.display = "none"
     audioClosedBtn.style.display = "block"
   }
   if (videoDefault == true) {
-    stream.getVideoTracks()[0].enabled = true;
+    // stream.getVideoTracks()[0].enabled = true;
+    startVideo(streamNow)
     videoClosedBtn.style.display = "none"
     videoOpenedBtn.style.display = "block"
 
   } else if (videoDefault == false) {
+    console.log("videoDefault == false")
     stopVideo(streamNow);
     videoOpenedBtn.style.display = "none"
     videoClosedBtn.style.display = "block"
@@ -767,8 +772,7 @@ async function getAllPcpInRoom(uuid, streamId) {
     let response = await fetch(url, options);
     let result = await response.json();
     if (response.status === 200) {
-
-      // console.log(result.allpcps) //會取得不同的array
+      console.log(result.allpcps) //會取得不同的array
 
       let existPcpList = []
       result.allpcps.forEach(each => {

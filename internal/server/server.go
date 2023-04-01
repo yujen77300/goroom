@@ -2,7 +2,6 @@ package server
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"time"
 
@@ -24,11 +23,11 @@ var (
 
 func Run() error {
 	flag.Parse()
-	fmt.Println("進來主程式")
-	fmt.Println(*cert)
-	fmt.Println(*key)
-	fmt.Println(&cert)
-	fmt.Println(&key)
+	// fmt.Println("進來主程式")
+	// fmt.Println(*cert)
+	// fmt.Println(*key)
+	// fmt.Println(&cert)
+	// fmt.Println(&key)
 
 	if *addr == ":" {
 		*addr = ":8080"
@@ -61,8 +60,6 @@ func Run() error {
 	app.Post("/api/user/avatar", models.UpdateAvatar)
 	app.Get("/api/allpcp/:uuid", models.GetAllPcpInRoom)
 	app.Get("/api/pcp/:uuid/:streamId", models.GetPcpInfo)
-	// 暫時======================================
-	app.Get("/api/cache/:number", models.CacheOneUser)
 	app.Static("/", "./static")
 
 	// 讓這兩個變量進行初始化

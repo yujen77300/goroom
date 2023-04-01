@@ -272,7 +272,7 @@ func PutUser(c *fiber.Ctx) error {
 		//redis使用登入的人的大頭貼和名字
 		redisConn := RedisDefaultPool.Get()
 		defer redisConn.Close()
-		redisConn.Do("HSET", members[0].Id, members[0].Name, members[0].AvatarUrl)
+		redisConn.Do("HMSET", members[0].Id, "cacheName",members[0].Name, "cacheAvatarUrl",members[0].AvatarUrl)
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{"ok": true})
 	}
 
