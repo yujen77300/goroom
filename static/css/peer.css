@@ -302,6 +302,7 @@ body {
   border-radius: 5px;
 }
 
+
 #chat-btn {
   color: white;
   background-color: #1158bd;
@@ -310,6 +311,11 @@ body {
   border-radius: 10px;
   width: 40px;
   height: 40px;
+}
+
+#chat-btn:hover {
+  background-color: rgba(17, 88, 189, 0.9);
+  ;
 }
 
 /*--------------------------------------------------------------
@@ -326,7 +332,7 @@ body {
 # switch and share screen button
 --------------------------------------------------------------*/
 
-#share-btn {
+/* #share-btn {
   cursor: pointer;
   background-color: #1158bd
 }
@@ -334,7 +340,7 @@ body {
 .switch {
   position: relative;
   width: 100%;
-}
+} */
 
 /*--------------------------------------------------------------
 # bottom-section
@@ -382,7 +388,11 @@ body {
   color: #fff;
   height: 40px;
   width: 40px;
+}
 
+#audio-opened-btn:hover,
+#video-opened-btn:hover {
+  background-color: rgba(17, 88, 189, 0.9);
 }
 
 #audio-closed-btn,
@@ -422,13 +432,17 @@ body {
 }
 
 #exit-btn {
-  background-color: #ea4335;
+  background-color: #dc3545;
   border: none;
   outline: none;
   border-radius: 10px;
   height: 40px;
   width: 90px;
   color: #fff;
+}
+
+#exit-btn:hover {
+  background-color: rgba(220, 53, 69, 0.8);
 }
 
 #chatroom-btn,
@@ -440,6 +454,11 @@ body {
   color: #fff;
   height: 40px;
   width: 40px;
+}
+
+#chatroom-btn:hover,
+#share-link-btn:hover {
+  background-color: rgba(17, 88, 189, 0.9);
 }
 
 .right-btn-section {
@@ -503,4 +522,47 @@ body {
   height: 40px;
   width: 40px;
   border-radius: 50%;
+}
+
+
+/*--------------------------------------------------------------
+# recording-section
+--------------------------------------------------------------*/
+.start-record {
+  background-color: #1158bd;
+  color: #fff;
+  background-image: url("../img/rec-button.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 24px 24px;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  height: 40px;
+  width: 40px;
+}
+
+.start-record:hover {
+  background-color: rgba(17, 88, 189, 0.9);
+  cursor: pointer;
+}
+
+.stop-record {
+  display: none;
+  background-color: #dc3545;
+  color: #fff;
+  background-image: url("../img/stop-button.png");
+  background-size: 24px 24px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  height: 40px;
+  width: 40px;
+}
+
+.stop-record:hover {
+  background-color: rgba(220, 53, 69, 0.8);
+  cursor: pointer;
 }
