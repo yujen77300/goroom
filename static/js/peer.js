@@ -14,6 +14,7 @@ let testStreamNow
 let pcpEmail = ""
 let pcpId = ""
 let pcpName = ""
+let handWs = ""
 
 
 let streamNow
@@ -129,7 +130,12 @@ function connect(stream) {
 
     let newUserName = document.createElement("div")
     newUserName.className = "user-name"
+    let newRaiseHandIcon = document.createElement("img");
+    newRaiseHandIcon.src = "../img/handRaise.png";
+    newRaiseHandIcon.className = "raise-yellow-hand";
+    newRaiseHandIcon.id = "hand-" + event.streams[0].id;
 
+    eachPeerTag.appendChild(newRaiseHandIcon)
     eachPeerTag.appendChild(newUserName)
     let url = window.location.href
     let segments = url.split('/')
@@ -197,6 +203,7 @@ function connect(stream) {
 
   // 更新上線者清單相關websocket=========================================
   let pcpsWs = new WebSocket(PcpsWebsocketAddr)
+  handWs = pcpsWs
   pcpsWs.onopen = () => {
     let url = window.location.href
     let segments = url.split('/')
@@ -238,6 +245,13 @@ function connect(stream) {
             pcpsInMeeting.removeChild(eachpeer)
           }
         });
+      case 'hand':
+        let userHand = document.getElementById(pcpMsg.handId)
+        if (pcpMsg.handStatus === "down") {
+          userHand.style.display = "none"
+        } else {
+          userHand.style.display = "block"
+        }
         break;
 
     }
@@ -330,6 +344,10 @@ function peerConnect(defaultSet) {
         console.log(stream)
         console.log(stream.getTracks())
         let eachPeer = document.querySelector('.each-peer')
+        yourHand = eachPeer.children[1]
+        yourHand.style.top = `30px`
+        eachPeer.children[1].id = "hand-" + stream.id
+        console.log(eachPeer.children[1])
         eachPeer.id = stream.id
         connect(stream)
         streamNow = stream
@@ -540,6 +558,26 @@ function startAudio(stream) {
 //     .catch(err => console.log(err))
 // })
 
+// ===================== 舉手 =====================
+const raiseHand = document.querySelector('.raise-hand')
+
+raiseHand.addEventListener("click", () => {
+  if (yourHand.style.display === "block") {
+    let handUpdate = {}
+    handUpdate["handId"] = yourHand.id
+    handUpdate["handStatus"] = "down"
+    handWs.send(JSON.stringify({ event: "hand", data: JSON.stringify(handUpdate) }))
+    // yourHand.style.display = "none";
+  } else {
+
+    let handUpdate = {}
+    handUpdate["handId"] = yourHand.id
+    handUpdate["handStatus"] = "raise"
+    handWs.send(JSON.stringify({ event: "hand", data: JSON.stringify(handUpdate) }))
+    // yourHand.style.display = "block";
+  }
+})
+
 // ===================== 錄製螢幕 =====================
 const startRecord = document.querySelector('.start-record')
 const stopRecord = document.querySelector('.stop-record')
@@ -584,6 +622,7 @@ function peerSize(usersAmount, localVideo) {
   } else if (usersAmount === 2) {
     let eachPeer = document.querySelectorAll('.each-peer')
     let userName = document.querySelectorAll('.user-name')
+    let raiseYellowHand = document.querySelectorAll('.raise-yellow-hand')
     localVideo[0].style.width = "565px"
     localVideo[1].style.width = "565px"
     eachPeer[0].style.width = "565px"
@@ -594,11 +633,14 @@ function peerSize(usersAmount, localVideo) {
     // videoClosedAvatar.style.bottom = "-75px"
     userName[0].style.bottom = `10px`
     userName[1].style.bottom = `10px`
+    raiseYellowHand[0].style.top = `10px`
+    raiseYellowHand[1].style.top = `10px`
     videos.style.display = "flex"
     videos.style.gap = "10px"
   } else if (usersAmount === 3) {
     let eachPeer = document.querySelectorAll('.each-peer')
     let userName = document.querySelectorAll('.user-name')
+    let raiseYellowHand = document.querySelectorAll('.raise-yellow-hand')
     localVideo[0].style.width = "565px"
     localVideo[1].style.width = "565px"
     localVideo[2].style.width = "565px"
@@ -612,12 +654,16 @@ function peerSize(usersAmount, localVideo) {
     userName[0].style.bottom = `10px`
     userName[1].style.bottom = `10px`
     userName[2].style.bottom = `10px`
+    raiseYellowHand[0].style.top = `10px`
+    raiseYellowHand[1].style.top = `10px`
+    raiseYellowHand[2].style.top = `10px`
     videos.style.display = "flex"
     videos.style.flexWrap = "wrap"
     videos.style.gap = "10px"
   } else if (usersAmount === 4) {
     let eachPeer = document.querySelectorAll('.each-peer')
     let userName = document.querySelectorAll('.user-name')
+    let raiseYellowHand = document.querySelectorAll('.raise-yellow-hand')
     localVideo[0].style.width = "565px"
     localVideo[1].style.width = "565px"
     localVideo[2].style.width = "565px"
@@ -635,18 +681,24 @@ function peerSize(usersAmount, localVideo) {
     userName[1].style.bottom = `10px`
     userName[2].style.bottom = `10px`
     userName[3].style.bottom = `10px`
+    raiseYellowHand[0].style.top = `10px`
+    raiseYellowHand[1].style.top = `10px`
+    raiseYellowHand[2].style.top = `10px`
+    raiseYellowHand[3].style.top = `10px`
     videos.style.display = "flex"
     videos.style.flexWrap = "wrap"
     videos.style.gap = "10px"
   } else if ((usersAmount > 4 && usersAmount <= 6) || usersAmount == 9) {
     let eachPeer = document.querySelectorAll('.each-peer')
     let userName = document.querySelectorAll('.user-name')
+    let raiseYellowHand = document.querySelectorAll('.raise-yellow-hand')
     let videoWidth = (373 * 9) / 16
     for (let i = 0; i < usersAmount; i++) {
       localVideo[i].style.width = "373px"
       eachPeer[i].style.width = "373px"
       eachPeer[i].style.height = `${videoWidth}px`
       userName[i].style.bottom = `-${videoWidth - 60}px`
+      raiseYellowHand[i].style.top = `10px`
     }
     videos.style.display = "flex"
     videos.style.flexWrap = "wrap"

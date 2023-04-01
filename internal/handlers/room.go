@@ -78,11 +78,11 @@ func Room(c *fiber.Ctx) error {
 
 		uuid, _ := createOrGetRoom(ruuid)
 		return c.Render("peer", fiber.Map{
-			"RoomWebsocketAddr":   fmt.Sprintf("%s://%s/room/%s/websocket", ws, c.Hostname(), uuid),
-			"RoomLink":            fmt.Sprintf("%s://%s/room/%s", c.Protocol(), c.Hostname(), uuid),
-			"ChatWebsocketAddr":   fmt.Sprintf("%s://%s/room/%s/chat/websocket", ws, c.Hostname(), uuid),
-			"ViewerWebsocketAddr": fmt.Sprintf("%s://%s/room/%s/viewer/websocket", ws, c.Hostname(), uuid),
-			"PcpsWebsocketAddr":   fmt.Sprintf("%s://%s/room/%s/pcps/websocket", ws, c.Hostname(), uuid),
+			"RoomWebsocketAddr":   fmt.Sprintf("%s://%s:8080/room/%s/websocket", ws, c.Hostname(), uuid),
+			"RoomLink":            fmt.Sprintf("%s://%s:8080/room/%s", c.Protocol(), c.Hostname(), uuid),
+			"ChatWebsocketAddr":   fmt.Sprintf("%s://%s:8080/room/%s/chat/websocket", ws, c.Hostname(), uuid),
+			"ViewerWebsocketAddr": fmt.Sprintf("%s://%s:8080/room/%s/viewer/websocket", ws, c.Hostname(), uuid),
+			"PcpsWebsocketAddr":   fmt.Sprintf("%s://%s:8080/room/%s/pcps/websocket", ws, c.Hostname(), uuid),
 			"TurnName":   viper.GetString("TURNNAME"),
 			"TurnPwd":   viper.GetString("TURNPWD"),
 			"TurnName2":   viper.GetString("TURNNAME2"),
