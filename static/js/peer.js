@@ -1,6 +1,6 @@
 const exitButton = document.getElementById("exit-btn")
 const shareLinkBtn = document.getElementById("share-link-btn")
-const shareScreenBtn = document.getElementById('share-btn')
+// const shareScreenBtn = document.getElementById('share-btn')
 const videos = document.querySelector('#videos')
 let localVideo = document.querySelectorAll('.localVideo')
 let eachPeer = document.querySelectorAll('.each-peer')
@@ -41,23 +41,28 @@ shareLinkBtn.addEventListener("click", () => {
 
 function copyURL() {
   if (!navigator.clipboard) {
-    alert('your broweser does not support clipboard API ');
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Your browser does not support clipboard API',
+    });
     return;
   }
   let infoCopied = `${window.location.href}`;
   navigator.clipboard.writeText(infoCopied).then(() => {
-    notie.alert({
-      type: 'info',
-      text: 'Link Copied Successfully',
-    })
+    Swal.fire({
+      icon: 'success',
+      title: 'Link Copied Successfully',
+      showConfirmButton: false,
+      timer: 1500,
+    });
   }).catch((err) => {
-    alert(`${err}`);
-    notie.alert({
-      type: 'error',
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
       text: `${err}`,
-    })
+    });
   });
-
 }
 
 // ===================== peer to peer連線 =====================
@@ -514,7 +519,6 @@ function startAudio(stream) {
 
 // ===================== 分享螢幕 =====================
 
-
 // shareScreenBtn.addEventListener("click", () => {
 //   console.log(streamNow.getVideoTracks())
 //   streamNow.getVideoTracks()[0].stop()
@@ -535,6 +539,36 @@ function startAudio(stream) {
 //     })
 //     .catch(err => console.log(err))
 // })
+
+// ===================== 錄製螢幕 =====================
+const startRecord = document.querySelector('.start-record')
+const stopRecord = document.querySelector('.stop-record')
+
+startRecord.addEventListener('click', function () {
+  Swal.fire({
+    title: 'Start screen recording?',
+    text: "Are you sure you want to start recording your screen?",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#1158bd',
+    cancelButtonColor: '#dc3545',
+    confirmButtonText: 'Yes',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      startRecord.style.display = "none"
+      stopRecord.style.display = "flex"
+      startRecording();
+    }
+  })
+});
+
+
+stopRecord.addEventListener('click', function () {
+  startRecord.style.display = "flex"
+  stopRecord.style.display = "none"
+  mediaRecorder.stop();
+})
 
 // ===================== 人數切版 =====================
 function peerSize(usersAmount, localVideo) {
@@ -818,4 +852,76 @@ async function getPcpInfo(uuid, streamId, newUserName) {
   } catch (err) {
     console.log({ "error": err.message });
   }
+}
+
+
+var mediaRecorder;
+var chunks = [];
+
+async function captureScreen(
+  mediaContraints = {
+    video: true,
+  }
+) {
+  const screenStream = await navigator.mediaDevices.getDisplayMedia(
+    mediaContraints
+  );
+  return screenStream;
+}
+async function captureAudio(
+  mediaContraints = {
+    video: false,
+    audio: true,
+  }
+) {
+  const audioStream = await navigator.mediaDevices.getUserMedia(
+    mediaContraints
+  );
+  return audioStream;
+}
+
+
+async function startRecording() {
+  const screenStream = await captureScreen();
+  const audioStream = await captureAudio();
+  const stream = new MediaStream([
+    ...screenStream.getTracks(),
+    ...audioStream.getTracks(),
+  ]);
+  mediaRecorder = new MediaRecorder(stream);
+  mediaRecorder.start();
+  mediaRecorder.onstop = function () {
+    Swal.fire({
+      title: 'Enter a name for your recording',
+      input: 'text',
+      showCancelButton: true,
+      confirmButtonColor: '#1158bd',
+      cancelButtonColor: '#dc3545',
+      confirmButtonText: 'Save',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const clipName = result.value;
+        stream.getTracks().forEach((track) => track.stop());
+        const blob = new Blob(chunks, {
+          type: "video/mp4",
+        });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.style.display = "none";
+        a.href = url;
+        a.download = clipName + ".mp4";
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+        }, 100);
+      }
+    });
+  };
+
+  mediaRecorder.ondataavailable = function (e) {
+    chunks.push(e.data);
+  };
 }
