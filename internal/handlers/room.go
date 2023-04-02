@@ -92,7 +92,7 @@ func Room(c *fiber.Ctx) error {
 
 }
 
-// WebSocket 處理器，接收連接請求並處理客戶端和伺服器間的通訊。
+
 func RoomWebsocket(c *websocket.Conn) {
 	uuid := c.Params("uuid")
 	if uuid == "" {

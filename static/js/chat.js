@@ -2,7 +2,7 @@ let msg = document.getElementById("msg");
 let log = document.getElementById("log");
 let chat = document.getElementById('chat-content');
 let slideOpen = true;
-let pcpsListOpen = false;
+// let pcpsListOpen = false;
 const chatInputButton = document.getElementById('chat-input-btn')
 const chatBtn = document.getElementById('chat-btn');
 const pcpsBtn = document.getElementById('pcps-btn');
@@ -15,9 +15,6 @@ const chatRightSection = document.getElementById('chat-right-section')
 let account = ""
 
 
-// messageHeader.addEventListener("click", () => {
-//     slideToggle()
-// })
 
 connectChat();
 
@@ -164,11 +161,9 @@ function connectChat() {
 
     chatWs.onmessage = function (e) {
         let length = Object.keys(JSON.parse(e.data)).length
-        // 如果超過三個資訊代表可能是後端的
         if (length >= 3) {
             return
         } else {
-            // if (e.data != "") {
             let accountName = JSON.parse(e.data).account
             let messages = JSON.parse(e.data).message
 
@@ -196,8 +191,6 @@ function connectChat() {
                 appendLog(item);
             }
         }
-        // }
-
 
     }
 

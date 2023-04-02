@@ -208,7 +208,6 @@ function connect(stream) {
     let url = window.location.href
     let segments = url.split('/')
     let uuid = segments[segments.length - 1]
-    console.log("只有一個人會進來嗎")
     getAllPcpInRoom(uuid, stream.id)
     streamDict["streamId"] = stream.id
     streamDict["pcpEmail"] = pcpEmail
@@ -245,6 +244,7 @@ function connect(stream) {
             pcpsInMeeting.removeChild(eachpeer)
           }
         });
+        break;
       case 'hand':
         let userHand = document.getElementById(pcpMsg.handId)
         if (pcpMsg.handStatus === "down") {
@@ -252,6 +252,16 @@ function connect(stream) {
         } else {
           userHand.style.display = "block"
         }
+        break;
+      case 'lottery':
+        let winnerId = pcpMsg.winnerId
+        let pcpList = document.querySelectorAll(".each-pcp")
+        pcpList.forEach((pcp) => {
+          if (pcp.id == winnerId) {
+            winner = pcp
+          }
+        });
+        startLottery(pcpList, winner)
         break;
 
     }
@@ -340,9 +350,9 @@ function peerConnect(defaultSet) {
     })
       .then(stream => {
         document.getElementById('localVideo').srcObject = stream
-        console.log("最最一開始")
-        console.log(stream)
-        console.log(stream.getTracks())
+        // console.log("最最一開始")
+        // console.log(stream)
+        // console.log(stream.getTracks())
         let eachPeer = document.querySelector('.each-peer')
         yourHand = eachPeer.children[1]
         yourHand.style.top = `30px`
@@ -567,16 +577,62 @@ raiseHand.addEventListener("click", () => {
     handUpdate["handId"] = yourHand.id
     handUpdate["handStatus"] = "down"
     handWs.send(JSON.stringify({ event: "hand", data: JSON.stringify(handUpdate) }))
-    // yourHand.style.display = "none";
   } else {
 
     let handUpdate = {}
     handUpdate["handId"] = yourHand.id
     handUpdate["handStatus"] = "raise"
     handWs.send(JSON.stringify({ event: "hand", data: JSON.stringify(handUpdate) }))
-    // yourHand.style.display = "block";
   }
 })
+
+// ===================== 抽籤 =====================
+const pcpRandom = document.querySelector('.pcp-random')
+
+pcpRandom.addEventListener("click", () => {
+  const pcpList = document.querySelectorAll(".each-pcp");
+  const winnerIndex = Math.floor(Math.random() * pcpList.length);
+  const winnerUpdate = {}
+  winnerUpdate["winnerId"] = (pcpList[winnerIndex]).id
+  handWs.send(JSON.stringify({ event: "lottery", data: JSON.stringify(winnerUpdate) }))
+  if (pcpsListOpen == false) {
+    Swal.fire({
+      icon: 'success',
+      title: 'Random selection is finished, you can open the participant list to see the results.',
+      showConfirmButton: false,
+      timer: 3000,
+    });
+  } else {
+  }
+})
+
+function startLottery(pcpList, winner) {
+  pcpList.forEach((pcp) => {
+    pcp.classList.remove("gray-background");
+  });
+
+  let counter = 0;
+  let intervalId = setInterval(() => {
+    pcpList[counter].classList.add("gray-background");
+
+    if (counter > 0) {
+      pcpList[counter - 1].classList.remove("gray-background");
+    } else {
+      pcpList[pcpList.length - 1].classList.remove("gray-background");
+    }
+
+    counter++;
+    if (counter >= pcpList.length) {
+      counter = 0;
+    }
+  }, 100);
+
+  setTimeout(() => {
+    clearInterval(intervalId);
+    pcpList.forEach((pcp) => pcp.classList.remove("gray-background"));
+    winner.classList.add("gray-background");
+  }, 3000);
+}
 
 // ===================== 錄製螢幕 =====================
 const startRecord = document.querySelector('.start-record')
@@ -858,7 +914,7 @@ async function getAllPcpInRoom(uuid, streamId) {
     let response = await fetch(url, options);
     let result = await response.json();
     if (response.status === 200) {
-      console.log(result.allpcps) //會取得不同的array
+      // console.log(result.allpcps) //會取得不同的array
 
       let existPcpList = []
       result.allpcps.forEach(each => {
