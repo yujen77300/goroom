@@ -1,7 +1,6 @@
 package chat
 
 import (
-
 	"encoding/json"
 	"fmt"
 	"log"
@@ -74,7 +73,8 @@ func (c *PcpClient) writePump(roomUuid string) {
 				dataByteSlice := []byte(dataStr)
 				models.DeleteParticipantInfo(dataByteSlice, roomUuid)
 				w.Write(message)
-
+			case "hand":
+				w.Write(message)
 			}
 
 			n := len(c.Send)

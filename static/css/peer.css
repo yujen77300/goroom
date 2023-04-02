@@ -156,6 +156,29 @@ body {
   /* bottom: -592px; */
 }
 
+/* .raise-yellow-hand {
+  background-color: #fff;
+  width: 24px;
+  height: 24px;
+  background-image: url("../img/handRaise.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 24px 24px;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  position: absolute;
+  left: 30px;
+  top: 30px;
+} */
+
+.raise-yellow-hand {
+  position: absolute;
+  height: 24px;
+  left: 30px;
+  display: none;
+}
+
 #videos {
   height: 100%;
 }
@@ -564,5 +587,29 @@ body {
 
 .stop-record:hover {
   background-color: rgba(220, 53, 69, 0.8);
+  cursor: pointer;
+}
+
+
+/*--------------------------------------------------------------
+# raise hand
+--------------------------------------------------------------*/
+
+.raise-hand {
+  background-color: #1158bd;
+  color: #fff;
+  background-image: url("../img/whitehand.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 24px 24px;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  height: 40px;
+  width: 40px;
+}
+
+.raise-hand:hover {
+  background-color: rgba(17, 88, 189, 0.9);
   cursor: pointer;
 }
