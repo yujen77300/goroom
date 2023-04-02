@@ -15,7 +15,6 @@ getUserAvatar()
 avatarUpdateBtn.addEventListener('click', function () {
   hiddenInput.click()
   hiddenInput.addEventListener('change', function (e) {
-    // 透過FormData api 進行ajax上傳
     let form = new FormData();
     console.log(e.target.files[0].type)
     let fileType = e.target.files[0].type

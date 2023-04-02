@@ -75,6 +75,8 @@ func (c *PcpClient) writePump(roomUuid string) {
 				w.Write(message)
 			case "hand":
 				w.Write(message)
+			case "lottery":
+				w.Write(message)
 			}
 
 			n := len(c.Send)

@@ -99,7 +99,7 @@
               <!-- <div class="video-avatar">
                 <div class="video-closed-avatar"></div>
               </div> -->
-              <img src="../img/handRaise.png" class="raise-yellow-hand" >
+              <img src="../img/handRaise.png" class="raise-yellow-hand">
               <div class="user-name"></div>
             </div>
           </div>
@@ -228,7 +228,10 @@
           </div>
           <div class="right-btn-section">
             <div>
-              <button type="button" class="raise-hand" ></button>
+              <button type="button" class="pcp-random"></button>
+            </div>
+            <div>
+              <button type="button" class="raise-hand"></button>
             </div>
             <div>
               <button id="share-link-btn" style="margin-right: 10px;">
@@ -322,6 +325,7 @@
     let TurnPwd = "{{.TurnPwd}}"
     let TurnName2 = "{{.TurnName2}}"
     let TurnPwd2 = "{{.TurnPwd2}}"
+    let pcpsListOpen = false;
   </script>
   <!-- <script type="module" src="/js/before.js"></script> -->
   <script src="/js/peer.js"></script>

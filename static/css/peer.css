@@ -535,7 +535,7 @@ body {
   display: flex;
   gap: 10px;
   align-items: center;
-  background-color: #2e3231;
+  background-color: #232634;
   border-radius: 5px;
   padding: 10px;
 }
@@ -612,4 +612,30 @@ body {
 .raise-hand:hover {
   background-color: rgba(17, 88, 189, 0.9);
   cursor: pointer;
+}
+
+/*--------------------------------------------------------------
+# lottery
+--------------------------------------------------------------*/
+.pcp-random {
+  background-color: #1158bd;
+  color: #fff;
+  background-image: url("../img/dice.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 24px 24px;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  height: 40px;
+  width: 40px;
+}
+
+.pcp-random:hover {
+  background-color: rgba(17, 88, 189, 0.9);
+  cursor: pointer;
+}
+
+.gray-background {
+  background-color: #1158bd;
 }
