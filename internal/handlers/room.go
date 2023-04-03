@@ -10,8 +10,6 @@ import (
 	"github.com/yujen77300/goroom/pkg/chat"
 	w "github.com/yujen77300/goroom/pkg/webrtc"
 
-	// "crypto/sha256"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
 	guuid "github.com/google/uuid"
@@ -19,29 +17,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-// type PcpsWsPayload struct {
-// 	Event string `json:"event"`
-// 	Data  string `json:"data"`
-// }
 
-// type PcpsInfo struct {
-// 	StreamID string `json:"streamId"`
-// 	PCPEmail string `json:"pcpEmail"`
-// 	PCPId    int    `json:"pcpId"`
-// 	PCPName  string `json:"pcpName"`
-// }
-
-// type LeavePcpInfo struct {
-// 	StreamID string `json:"streamId"`
-// }
-
-// type PcpsConnection struct {
-// 	Conn     *websocket.Conn
-// 	RoomUuid string
-// }
-
-// 存放全部上線的人
-// var pcpsList []PcpsInfo
 
 func RoomCreate(c *fiber.Ctx) error {
 	viper.SetConfigName("config")

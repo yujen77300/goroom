@@ -23,11 +23,6 @@ var (
 
 func Run() error {
 	flag.Parse()
-	// fmt.Println("進來主程式")
-	// fmt.Println(*cert)
-	// fmt.Println(*key)
-	// fmt.Println(&cert)
-	// fmt.Println(&key)
 
 	if *addr == ":" {
 		*addr = ":8080"
@@ -44,25 +39,20 @@ func Run() error {
 	app.Get("/room/:uuid/websocket", websocket.New(handlers.RoomWebsocket, websocket.Config{
 		HandshakeTimeout: 10 * time.Second,
 	}))
-	// app.Get("/room/:uuid/chat", handlers.RoomChat)
 	app.Get("/room/:uuid/chat/websocket", websocket.New(handlers.RoomChatWebsocket))
-	// 影響觀看人數
 	app.Get("/room/:uuid/viewer/websocket", websocket.New(handlers.RoomViewerWebsocket))
-	//上線使用者
 	app.Get("/room/:uuid/pcps/websocket", websocket.New(handlers.RoomPcpsWebsocket))
 	app.Post("/api/user", models.NewUser)
-	app.Get("/api/alluser", models.FindALLUsers)
 	app.Get("/api/user/auth", models.GetUser)
 	app.Put("/api/user/auth", models.PutUser)
 	app.Delete("/api/user/auth", models.SignOutUser)
 	app.Get("/api/user/avatar", models.GetAvatar)
-	app.Get("/api/avatar/:useremail", models.GetPcpAvatar)
+	app.Get("/api/avatar/:userEmail", models.GetPcpAvatar)
 	app.Post("/api/user/avatar", models.UpdateAvatar)
-	app.Get("/api/allpcp/:uuid", models.GetAllPcpInRoom)
-	app.Get("/api/pcp/:uuid/:streamId", models.GetPcpInfo)
+	app.Get("/api/allpcps/:roomUuid", models.GetAllPcpInRoom)
+	app.Get("/api/pcp/:roomUuid/:streamId", models.GetPcpInfo)
 	app.Static("/", "./static")
 
-	// 讓這兩個變量進行初始化
 	w.Rooms = make(map[string]*w.Room)
 	w.PcpRooms = make(map[string]*w.PcpRoom)
 

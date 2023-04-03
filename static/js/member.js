@@ -19,7 +19,7 @@ avatarUpdateBtn.addEventListener('click', function () {
     console.log(e.target.files[0].type)
     let fileType = e.target.files[0].type
     if ((fileType == "image/jpeg") || (fileType == "image/png")) {
-      form.append('avatarUrl', e.target.files[0])
+      form.append('avatarFile', e.target.files[0])
       form.append('accountEmail', accountEmail)
       let object = {};
       form.forEach((val, key) => {
@@ -28,8 +28,10 @@ avatarUpdateBtn.addEventListener('click', function () {
       console.log(object)
       avatarHint.style.display = "none"
       updateAvatar(form)
-    }else{
-      avatarHint.style.display="block"
+      console.log("測試新增大頭貼")
+      console.log(form)
+    } else {
+      avatarHint.style.display = "block"
     }
 
   })
@@ -129,7 +131,6 @@ async function updateAvatar(form) {
   let options = {
     body: form,
     method: "POST",
-    header: "test"
   }
   try {
     let response = await fetch(url, options);

@@ -80,7 +80,7 @@ func DeleteParticipantInfo(participantInfo []byte, roomId string) {
 }
 
 func GetAllPcpInRoom(c *fiber.Ctx) error {
-	roomUuid := c.Params("uuid")
+	roomUuid := c.Params("roomUuid")
 	roomUuid = strings.TrimLeft(roomUuid, ":")
 	redisConn := RedisDefaultPool.Get()
 	defer redisConn.Close()
@@ -107,7 +107,7 @@ func GetAllPcpInRoom(c *fiber.Ctx) error {
 			}
 			pcpInRoomWithAvatar = append(pcpInRoomWithAvatar, eachPcp)
 		}
-		return c.Status(fiber.StatusOK).JSON(fiber.Map{"allpcps": pcpInRoomWithAvatar})
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{"allPcps": pcpInRoomWithAvatar})
 	} else {
 		fmt.Println("近來redis")
 		pcpInRoomWithAvatarMap := make(map[string]string)
@@ -139,12 +139,12 @@ func GetAllPcpInRoom(c *fiber.Ctx) error {
 			}
 			pcpInRoomWithAvatar2 = append(pcpInRoomWithAvatar2, eachPcp2)
 		}
-		return c.Status(fiber.StatusOK).JSON(fiber.Map{"allpcps": pcpInRoomWithAvatar2})
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{"allPcps": pcpInRoomWithAvatar2})
 	}
 }
 
 func GetPcpInfo(c *fiber.Ctx) error {
-	roomUuid := c.Params("uuid")
+	roomUuid := c.Params("roomUuid")
 	streamId := c.Params("streamId")
 	roomUuid = strings.TrimLeft(roomUuid, ":")
 	streamId = strings.TrimLeft(streamId, ":")
@@ -165,5 +165,5 @@ func GetPcpInfo(c *fiber.Ctx) error {
 		specificPcp = append(specificPcp, Pcp)
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"pcpId": specificPcp[0].PcpId, "pcpName": specificPcp[0].PcpName, "pcpAvatar": specificPcp[0].PcpAvatarUrl})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"pcpUserId": specificPcp[0].PcpId, "pcpName": specificPcp[0].PcpName})
 }

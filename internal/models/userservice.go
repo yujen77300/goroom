@@ -16,7 +16,6 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 
-	// "github.com/gomodule/redigo/redis"
 	"github.com/spf13/viper"
 )
 
@@ -48,46 +47,6 @@ type PcpAvatar struct {
 
 var UserEmail string
 
-// Get all users (test)
-func FindALLUsers(c *fiber.Ctx) error {
-	db, _ := ConnectToMYSQL()
-	allUsers, err := db.Query("SELECT * FROM member;")
-	if err != nil {
-		fmt.Printf("查詢資料庫失敗，原因為：%v\n", err)
-	}
-	defer allUsers.Close()
-	// 宣告一個User結構的slice，這個 slice 將會存放查詢得到的所有使用者
-	// users := []User{}
-	var users []User
-	for allUsers.Next() {
-		// 宣告一個 User 類型的變數，這個變數將會存放每一筆查詢得到的使用者資料。
-		// user := User{}
-		var user User
-		err := allUsers.Scan(&user.Id, &user.Name, &user.Email, &user.Password)
-		if err != nil {
-			fmt.Printf("讀取資料失敗，原因為：%v\n", err)
-		}
-		users = append(users, user)
-	}
-
-	return c.JSON(users)
-
-	// [
-	// {
-	// "UserId": 1,
-	// "UserName": "dylan",
-	// "UserEmail": "dylan@gmail.com",
-	// "UserPassword": "1qaz"
-	// },
-	// {
-	// "UserId": 2,
-	// "UserName": "curry",
-	// "UserEmail": "curry@warrior.com",
-	// "UserPassword": "2wsx"
-	// }
-	// ]
-
-}
 
 // New user
 func NewUser(c *fiber.Ctx) error {
@@ -172,7 +131,6 @@ func GetUser(c *fiber.Ctx) error {
 		secretKey := JWTSECRECT
 		secret := []byte(secretKey)
 		token, err := jwt.Parse(livedToken, func(token *jwt.Token) (interface{}, error) {
-			// check token signing method
 			return secret, nil
 		})
 
@@ -184,7 +142,6 @@ func GetUser(c *fiber.Ctx) error {
 			email := claims["email"].(string)
 			id := claims["id"].(float64)
 			name := claims["name"].(string)
-			
 			memberData := map[string]interface{}{
 				"id":    id,
 				"name":  name,
@@ -212,7 +169,6 @@ func SignOutUser(c *fiber.Ctx) error {
 
 // Put user  登入會員
 func PutUser(c *fiber.Ctx) error {
-	// signInInfo := User{}
 	signInInfo := signInUser{}
 	if err := c.BodyParser(&signInInfo); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -224,10 +180,8 @@ func PutUser(c *fiber.Ctx) error {
 	row, _ := db.Query("SELECT id,username,email,avatar_url FROM member WHERE email = ? AND password=?;", signInInfo.Email, signInInfo.Password)
 	defer row.Close()
 
-	// var members []User
 	var members []signInUser
 	for row.Next() {
-		// var member User
 		var member signInUser
 		if dberr := row.Scan(&member.Id, &member.Name, &member.Email,&member.AvatarUrl); dberr != nil {
 			fmt.Printf("scan failed, err:%v\n", dberr)
@@ -269,7 +223,6 @@ func PutUser(c *fiber.Ctx) error {
 			Expires:  time.Now().Add(time.Hour * 24 * 7),
 		})
 
-		//redis使用登入的人的大頭貼和名字
 		redisConn := RedisDefaultPool.Get()
 		defer redisConn.Close()
 		redisConn.Do("HMSET", members[0].Id, "cacheName",members[0].Name, "cacheAvatarUrl",members[0].AvatarUrl)
@@ -335,7 +288,7 @@ func GetAvatar(c *fiber.Ctx) error {
 }
 
 func GetPcpAvatar(c *fiber.Ctx) error {
-	pcpEmail := c.Params("useremail")
+	pcpEmail := c.Params("userEmail")
 	pcpEmail = strings.TrimLeft(pcpEmail, ":")
 	db, _ := ConnectToMYSQL()
 	row, err := db.Query("SELECT id,email,avatar_url FROM member WHERE email = ?;", pcpEmail)
@@ -360,7 +313,7 @@ func GetPcpAvatar(c *fiber.Ctx) error {
 func UpdateAvatar(c *fiber.Ctx) error {
 	region, bucketName, client := ConnectToAWS()
 	userNow := c.FormValue("accountEmail")
-	file, err := c.FormFile("avatarUrl")
+	file, err := c.FormFile("avatarFile")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -368,7 +321,6 @@ func UpdateAvatar(c *fiber.Ctx) error {
 	fileFormat := strings.Split(contentDisposition, ".")[1]
 	fileFormat = strings.Replace(fileFormat, "\"", "", -1)
 
-	// random name
 	var alphabet []rune = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
 	alphabetSize := len(alphabet)
 	var sb strings.Builder
