@@ -55,6 +55,7 @@ func UpdateParticipantInfo(participantInfo []byte, roomId string) {
 	redisConn := RedisDefaultPool.Get()
 	defer redisConn.Close()
 	redisConn.Do("HSET", roomId, p.ParticipantStreamId, p.ParticipantId)
+	redisConn.Do("EXPIRE", roomId, 86400) 
 }
 
 func DeleteParticipantInfo(participantInfo []byte, roomId string) {
@@ -80,7 +81,7 @@ func DeleteParticipantInfo(participantInfo []byte, roomId string) {
 }
 
 func GetAllPcpInRoom(c *fiber.Ctx) error {
-	roomUuid := c.Params("uuid")
+	roomUuid := c.Params("roomUuid")
 	roomUuid = strings.TrimLeft(roomUuid, ":")
 	redisConn := RedisDefaultPool.Get()
 	defer redisConn.Close()
@@ -106,8 +107,10 @@ func GetAllPcpInRoom(c *fiber.Ctx) error {
 				return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "scan failed"})
 			}
 			pcpInRoomWithAvatar = append(pcpInRoomWithAvatar, eachPcp)
+			redisConn.Do("HSET", roomUuid, eachPcp.PcpStreamId, eachPcp.PcpId)
+			redisConn.Do("EXPIRE", roomUuid, 86400) 
 		}
-		return c.Status(fiber.StatusOK).JSON(fiber.Map{"allpcps": pcpInRoomWithAvatar})
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{"allPcps": pcpInRoomWithAvatar})
 	} else {
 		fmt.Println("近來redis")
 		pcpInRoomWithAvatarMap := make(map[string]string)
@@ -127,10 +130,7 @@ func GetAllPcpInRoom(c *fiber.Ctx) error {
 			if err != nil {
 				fmt.Println("redis get failed", err)
 			}
-			fmt.Println("印出個人資訊")
-			fmt.Println(redisUserData)
-			fmt.Println(redisUserData[0])
-			fmt.Println(redisUserData[1])
+
 			eachPcp2 := PcpInRoomWithAvatar{
 				PcpId:        value,
 				PcpName:      redisUserData[0],
@@ -139,12 +139,12 @@ func GetAllPcpInRoom(c *fiber.Ctx) error {
 			}
 			pcpInRoomWithAvatar2 = append(pcpInRoomWithAvatar2, eachPcp2)
 		}
-		return c.Status(fiber.StatusOK).JSON(fiber.Map{"allpcps": pcpInRoomWithAvatar2})
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{"allPcps": pcpInRoomWithAvatar2})
 	}
 }
 
 func GetPcpInfo(c *fiber.Ctx) error {
-	roomUuid := c.Params("uuid")
+	roomUuid := c.Params("roomUuid")
 	streamId := c.Params("streamId")
 	roomUuid = strings.TrimLeft(roomUuid, ":")
 	streamId = strings.TrimLeft(streamId, ":")
@@ -165,5 +165,5 @@ func GetPcpInfo(c *fiber.Ctx) error {
 		specificPcp = append(specificPcp, Pcp)
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"pcpId": specificPcp[0].PcpId, "pcpName": specificPcp[0].PcpName, "pcpAvatar": specificPcp[0].PcpAvatarUrl})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"pcpUserId": specificPcp[0].PcpId, "pcpName": specificPcp[0].PcpName})
 }

@@ -15,20 +15,14 @@ let pcpEmail = ""
 let pcpId = ""
 let pcpName = ""
 let handWs = ""
-
-
 let streamNow
 let pcNow
-// 一開始有一個人
 let usersAmount = 1
-// mediastream和user清單
 let streamDict = {};
 
 peerSize(usersAmount, localVideo)
 peerConnect(defaultSet)
 getUserEmail()
-
-
 
 
 exitButton.addEventListener("click", function () {
@@ -506,34 +500,11 @@ audioClosedBtn.addEventListener("click", () => {
 
 function stopVideo(stream) {
   stream.getVideoTracks()[0].enabled = false;
-  // stream.getTracks().forEach(track => pc.removeTrack(pc.addTrack(track, stream)))
-
-  // 會讓整個黑色不見
-  // document.getElementById('localVideo').srcObject = null
 
 }
 
 function startVideo(stream) {
   stream.getVideoTracks()[0].enabled = true;
-  // navigator.mediaDevices.getUserMedia({
-  //   video: {
-  //     width: { min: 1280 },
-  //     height: { min: 720 }
-  //   },
-  //   audio: true
-  // })
-  //   .then(stream => {
-  //     streamNow = stream
-  //     if (streamOutput.audio){
-  //       document.getElementById('localVideo').srcObject = stream
-  //       console.log("重新開始後取得的")
-  //       console.log(stream)
-  //       console.log(stream.getTracks())
-  //     }else{
-  //       stopAudio(stream)
-  //       document.getElementById('localVideo').srcObject = stream
-  //     }
-  //   }).catch(err => console.log(err))
 }
 
 function stopAudio(stream) {
@@ -543,30 +514,6 @@ function stopAudio(stream) {
 function startAudio(stream) {
   stream.getAudioTracks()[0].enabled = true;
 }
-
-
-// ===================== 分享螢幕 =====================
-
-// shareScreenBtn.addEventListener("click", () => {
-//   console.log(streamNow.getVideoTracks())
-//   streamNow.getVideoTracks()[0].stop()
-//   const constraints = {
-//     frameRate: 15,
-//     width: 1280,
-//     height: 720,
-//   }
-//   navigator.mediaDevices
-//     .getDisplayMedia(constraints)
-//     .then(shareStream => {
-//       streamNow.getTracks().forEach(track =>{
-//         if (track.kind === 'video') {
-//           pcNow.addTrack(track, shareStream);
-//         }
-//       })
-
-//     })
-//     .catch(err => console.log(err))
-// })
 
 // ===================== 舉手 =====================
 const raiseHand = document.querySelector('.raise-hand')
@@ -826,8 +773,6 @@ function peerSize(usersAmount, localVideo) {
 async function getUserAvatar() {
   const testAvatar = document.querySelector('.testAvatar')
   const testVideoClosedAvatar = document.getElementById('test-video-closed-avatar')
-  // const pcpAvatar = document.querySelector(".pcpAvatar")
-  // let videoClosedAvatar = document.querySelector('.video-closed-avatar')
   let url = "/api/user/avatar"
   let options = {
     method: "GET",
@@ -839,10 +784,6 @@ async function getUserAvatar() {
       if (defaultSet == false) {
         testAvatar.style.backgroundImage = `url(${result.userAvatar})`
         testVideoClosedAvatar.style.backgroundImage = `url(${result.userAvatar})`
-        // pcpAvatar.src = `${result.userAvatar}`
-      }
-      else {
-        // videoClosedAvatar.style.backgroundImage = `url(${result.userAvatar})`
       }
     }
   } catch (err) {
@@ -864,7 +805,6 @@ async function getUserName() {
     if (response.status === 200) {
       testName.textContent = result.data.name
       userName.textContent = result.data.name
-      // pcpName.textContent = result.data.name
     }
   } catch (err) {
     console.log({ "error": err.message });
@@ -906,7 +846,7 @@ async function getPcpAvatar(pcpEmail, pcpAvatar) {
 }
 
 async function getAllPcpInRoom(uuid, streamId) {
-  let url = `/api/allpcp/:${uuid}`
+  let url = `/api/allpcps/:${uuid}`
   let options = {
     method: "GET",
   }
@@ -914,10 +854,10 @@ async function getAllPcpInRoom(uuid, streamId) {
     let response = await fetch(url, options);
     let result = await response.json();
     if (response.status === 200) {
-      // console.log(result.allpcps) //會取得不同的array
+      // console.log(result.allPcps) //會取得不同的array
 
       let existPcpList = []
-      result.allpcps.forEach(each => {
+      result.allPcps.forEach(each => {
         if (each.pcp_stream_url !== `${streamId}`) {
           existPcpList.push(each)
         }
