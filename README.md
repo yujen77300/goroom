@@ -1,11 +1,6 @@
 # [GoRoom](https://goroom.yu-jen.com/)
 GoRoom is a website that provides free vedio conferencing.
 
-##  Demo
-Demo website : https://goroom.yu-jen.com/
-
-Test account and password: test@gmail.com / 1234qwer
-
 ## Table of Contents
 
 - [Demo](#demo)
@@ -16,6 +11,11 @@ Test account and password: test@gmail.com / 1234qwer
 - [Backend technique](#backend-technique)
 - [Frontend technique](#frontend-technique)
 - [API Doc](#api-doc)
+
+##  Demo
+Demo website : https://goroom.yu-jen.com/
+
+Test account and password: test@gmail.com / 1234qwer
 
 ## Main Features
 
