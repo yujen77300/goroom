@@ -55,6 +55,7 @@ func UpdateParticipantInfo(participantInfo []byte, roomId string) {
 	redisConn := RedisDefaultPool.Get()
 	defer redisConn.Close()
 	redisConn.Do("HSET", roomId, p.ParticipantStreamId, p.ParticipantId)
+	redisConn.Do("EXPIRE", roomId, 86400) 
 }
 
 func DeleteParticipantInfo(participantInfo []byte, roomId string) {
@@ -106,6 +107,8 @@ func GetAllPcpInRoom(c *fiber.Ctx) error {
 				return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "scan failed"})
 			}
 			pcpInRoomWithAvatar = append(pcpInRoomWithAvatar, eachPcp)
+			redisConn.Do("HSET", roomUuid, eachPcp.PcpStreamId, eachPcp.PcpId)
+			redisConn.Do("EXPIRE", roomUuid, 86400) 
 		}
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{"allPcps": pcpInRoomWithAvatar})
 	} else {
@@ -127,10 +130,7 @@ func GetAllPcpInRoom(c *fiber.Ctx) error {
 			if err != nil {
 				fmt.Println("redis get failed", err)
 			}
-			fmt.Println("印出個人資訊")
-			fmt.Println(redisUserData)
-			fmt.Println(redisUserData[0])
-			fmt.Println(redisUserData[1])
+
 			eachPcp2 := PcpInRoomWithAvatar{
 				PcpId:        value,
 				PcpName:      redisUserData[0],
