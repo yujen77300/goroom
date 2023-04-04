@@ -92,4 +92,4 @@ Test account and password: test@gmail.com / 1234qwer
 
 ## API Doc
 
-[API Doc](https://app.swaggerhub.com/apis-docs/padax/taipei-day-trip/1.1.0)
+[API Doc](https://app.swaggerhub.com/apis-docs/YUJENHUANG24/GoRoom/1.0.0)
