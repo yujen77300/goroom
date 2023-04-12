@@ -3,31 +3,21 @@ GoRoom is a website that provides free vedio conferencing.
 
 ## Table of Contents
 
-- [GoRoom](#goroom)
-  - [Table of Contents](#table-of-contents)
-  - [Live Demo](#live-demo)
-  - [Main Features](#main-features)
-  - [Main Skills](#main-skills)
-    - [WebRTC](#webrtc)
-    - [WebSocket](#websocket)
-  - [Architecture](#architecture)
-    - [Project architecture](#project-architecture)
-    - [Hub architecture](#hub-architecture)
-    - [Redis architecture](#redis-architecture)
-  - [Backend technique](#backend-technique)
-    - [Framework](#framework)
-    - [Database](#database)
-    - [Infrastructure](#infrastructure)
-    - [Cloud Services](#cloud-services)
-    - [Test](#test)
-    - [Version Control](#version-control)
-  - [Frontend technique](#frontend-technique)
-  - [API Doc](#api-doc)
+- [Table of Contents](#table-of-contents)
+- [Live Demo](#live-demo)
+- [Main Features](#main-features)
+- [Main Skills](#main-skills)
+- [Architecture](#architecture)
+- [Backend technique](#backend-technique)
+- [Frontend technique](#frontend-technique)
+- [API Doc](#api-doc)
 
 ## Live Demo
 Demo website : https://goroom.yu-jen.com/
 
 Test account and password: test@gmail.com / 1234qwer
+
+
 
 ## Main Features
 
