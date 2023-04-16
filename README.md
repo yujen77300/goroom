@@ -52,7 +52,7 @@ Test account and password: test@gmail.com / 1234qwer
 
 ![image](https://user-images.githubusercontent.com/54500773/229849094-cfc31c63-a1f2-4510-899e-e0795df05be5.png)
 
-## Backend technique
+## Back-end technique
 
 ### Framework
 
@@ -86,9 +86,9 @@ Test account and password: test@gmail.com / 1234qwer
 
 - Git / GitHub
 
-## Frontend technique
+## Front-end technique
 
-- HTML / CSS (SCSS) / JavaScript
+- HTML / CSS / JavaScript
 - Bootstrap
 - AJAX
 
