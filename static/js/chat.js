@@ -2,7 +2,6 @@ let msg = document.getElementById("msg");
 let log = document.getElementById("log");
 let chat = document.getElementById('chat-content');
 let slideOpen = true;
-// let pcpsListOpen = false;
 const chatInputButton = document.getElementById('chat-input-btn')
 const chatBtn = document.getElementById('chat-btn');
 const pcpsBtn = document.getElementById('pcps-btn');
@@ -11,10 +10,7 @@ const messageHeader = document.querySelector('.message-header')
 const chatBody = document.getElementById('chat-body')
 const pcpsRightSection = document.getElementById('pcps-right-section')
 const chatRightSection = document.getElementById('chat-right-section')
-// const pcpsInMeeting = document.getElementById('pcpsInMeeting')
 let account = ""
-
-
 
 connectChat();
 
@@ -99,11 +95,9 @@ pcpsBtn.addEventListener("click", () => {
 
 
 function appendLog(item) {
-
     log.appendChild(item);
     if (chatBody.clientHeight - log.clientHeight < 20) {
         chatBody.scrollTop = chatBody.scrollHeight - chatBody.clientHeight;
-
     }
 }
 

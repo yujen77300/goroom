@@ -9,6 +9,7 @@ const hiddenInput = document.querySelector('.avatar-update-input')
 const avatar = document.querySelector('.avatar')
 const avatarHint = document.querySelector('.avatar-hint')
 let accountEmail = ""
+
 nameOnNavbar()
 getUserAvatar()
 
@@ -25,18 +26,14 @@ avatarUpdateBtn.addEventListener('click', function () {
       form.forEach((val, key) => {
         object[key] = val;
       });
-      console.log(object)
       avatarHint.style.display = "none"
       updateAvatar(form)
-      console.log("測試新增大頭貼")
-      console.log(form)
     } else {
       avatarHint.style.display = "block"
     }
 
   })
 })
-
 
 signoutBtn.addEventListener("click", () => {
   fetch(
@@ -50,15 +47,6 @@ signoutBtn.addEventListener("click", () => {
   })
 });
 
-function nameOnNavbar() {
-  fetch(
-    "/api/user/auth"
-  ).then(function (response) {
-    return response.json();
-  }).then(function (data) {
-    memberName.textContent = "Hello, " + data.data.name
-  })
-}
 
 createRoomBtn.addEventListener("click", () => {
   document.location.href = "/room/create"
@@ -107,6 +95,16 @@ roomInput.addEventListener("click", () => {
 joinBtn.addEventListener("click", () => {
   document.location.href = `/room/${roomInput.value}`
 })
+
+function nameOnNavbar() {
+  fetch(
+    "/api/user/auth"
+  ).then(function (response) {
+    return response.json();
+  }).then(function (data) {
+    memberName.textContent = "Hello, " + data.data.name
+  })
+}
 
 
 async function getUserAvatar() {

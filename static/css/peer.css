@@ -43,7 +43,6 @@ body {
 }
 
 .beforeEnter-section {
-  /* display: none; */
   position: absolute;
   top: 50%;
   left: 45%;
@@ -114,15 +113,12 @@ body {
 }
 
 #localVideo {
-  /* width: 640px; */
-  /* height: 720px; */
   border-radius: 10px;
   position: absolute;
   transform: rotateY(180deg);
 }
 
 .video-closed-avatar {
-  /* display: none; */
   height: 150px;
   width: 150px;
   background-size: cover;
@@ -136,8 +132,6 @@ body {
 }
 
 .each-peer {
-  /* width: 640px; */
-  /* height: 360px;  */
   position: relative;
   margin-top: 10px;
 }
@@ -153,24 +147,9 @@ body {
   line-height: 30px;
   position: absolute;
   left: 30px;
-  /* bottom: -592px; */
 }
 
-/* .raise-yellow-hand {
-  background-color: #fff;
-  width: 24px;
-  height: 24px;
-  background-image: url("../img/handRaise.png");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: 24px 24px;
-  outline: none;
-  border: none;
-  border-radius: 10px;
-  position: absolute;
-  left: 30px;
-  top: 30px;
-} */
+
 
 .raise-yellow-hand {
   position: absolute;
@@ -237,7 +216,6 @@ body {
 }
 
 #chat-content {
-  /* display: none; */
   height: 600px;
 }
 
@@ -351,19 +329,6 @@ body {
 }
 
 
-/*--------------------------------------------------------------
-# switch and share screen button
---------------------------------------------------------------*/
-
-/* #share-btn {
-  cursor: pointer;
-  background-color: #1158bd
-}
-
-.switch {
-  position: relative;
-  width: 100%;
-} */
 
 /*--------------------------------------------------------------
 # bottom-section

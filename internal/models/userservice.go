@@ -48,7 +48,6 @@ type PcpAvatar struct {
 var UserEmail string
 
 
-// New user
 func NewUser(c *fiber.Ctx) error {
 	signUpInfo := User{}
 	if err := c.BodyParser(&signUpInfo); err != nil {
@@ -111,7 +110,6 @@ func NewUser(c *fiber.Ctx) error {
 
 }
 
-// Get user 取得當前登入資料
 func GetUser(c *fiber.Ctx) error {
 
 	livedToken := c.Cookies("MyJWT")
@@ -158,7 +156,6 @@ func GetUser(c *fiber.Ctx) error {
 	}
 }
 
-// Delete user登出會員
 func SignOutUser(c *fiber.Ctx) error {
 	c.Cookie(&fiber.Cookie{
 		Name:    "MyJWT",
@@ -167,7 +164,6 @@ func SignOutUser(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"ok": true})
 }
 
-// Put user  登入會員
 func PutUser(c *fiber.Ctx) error {
 	signInInfo := signInUser{}
 	if err := c.BodyParser(&signInInfo); err != nil {
@@ -231,7 +227,6 @@ func PutUser(c *fiber.Ctx) error {
 
 }
 
-// 取得當前大頭貼
 func GetAvatar(c *fiber.Ctx) error {
 	livedToken := c.Cookies("MyJWT")
 	if len(livedToken) == 0 {

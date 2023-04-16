@@ -30,14 +30,11 @@ func ConnectToAWS() (string, string, *s3.Client) {
 		"",
 	)
 
-	// Load the Shared AWS Configuration
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(AWS_REGION), config.WithCredentialsProvider(staticProvider))
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	// Create an Amazon S3 service client、do operation in s3
-	// 一個新的 s3.Client 的指針 (client)
 	client := s3.NewFromConfig(cfg)
 	fmt.Printf("Datatype of client : %T\n", client)
 

@@ -133,7 +133,6 @@ async function signUpAccount(data, autoLogin) {
   }
 }
 
-// Regular Expression驗證信箱
 function emailValidation(email) {
   if (email.search(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) != -1) {
     return true
@@ -141,7 +140,7 @@ function emailValidation(email) {
     return false
   }
 }
-// Regular Expression驗證密碼至少包含數字、英文字母
+
 function passwordValidation(password) {
   if (password.search(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/) != -1) {
     return true

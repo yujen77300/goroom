@@ -15,12 +15,10 @@ body {
 header {
 
   height: 70px;
-  /* background-color: #ffffff; */
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  /* background-color: rgba(15, 15, 15, 0.1); */
 }
 
 .navbar {
@@ -110,12 +108,9 @@ h1 {
   align-items: center;
 }
 
-#main {
-  /* border: 3px solid red; */
-}
+
 
 .main-section {
-  /* border: 3px solid blue; */
   width: 1200px;
   display: flex;
   flex-direction: row;
@@ -123,7 +118,6 @@ h1 {
 
 
 .action {
-  /* border: 3px solid green; */
   margin-top: 70px;
   display: flex;
   flex-direction: column;
@@ -134,7 +128,6 @@ h1 {
 }
 
 #join-room {
-  /* border: 3px red solid; */
   display: flex;
   align-items: center;
   gap: 20px;
@@ -151,7 +144,6 @@ h1 {
   padding: 10px 10px 10px 45px;
   background-image: url("../img/keyboard.png");
   background-repeat: no-repeat;
-  /* background-size: contain; */
   background-position: 5px center;
 }
 
@@ -188,7 +180,6 @@ h1 {
 
 #member-avator {
   display: block;
-  /* border: 3px solid purple; */
   border-left: 1px solid rgba(102, 102, 102, 0.3);
 }
 

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gomodule/redigo/redis"
@@ -51,7 +50,6 @@ func UpdateParticipantInfo(participantInfo []byte, roomId string) {
 	}
 	defer db.Close()
 
-	// redis使用新增上線的人
 	redisConn := RedisDefaultPool.Get()
 	defer redisConn.Close()
 	redisConn.Do("HSET", roomId, p.ParticipantStreamId, p.ParticipantId)
@@ -74,7 +72,6 @@ func DeleteParticipantInfo(participantInfo []byte, roomId string) {
 	}
 	defer db.Close()
 
-	// redis使用刪除上線的人
 	redisConn := RedisDefaultPool.Get()
 	defer redisConn.Close()
 	redisConn.Do("HDEL", roomId, p.ParticipantStreamId)
@@ -91,7 +88,6 @@ func GetAllPcpInRoom(c *fiber.Ctx) error {
 	}
 
 	if len(redisData) == 0 {
-		fmt.Println("近來資料庫")
 		db, _ := ConnectToMYSQL()
 		rows, err := db.Query("SELECT member.id,member.username,member.avatar_url,participant.pcp_stream_id FROM member JOIN participant ON member.id = participant.member_id where room_id=?;", roomUuid)
 		if err != nil {
@@ -112,7 +108,6 @@ func GetAllPcpInRoom(c *fiber.Ctx) error {
 		}
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{"allPcps": pcpInRoomWithAvatar})
 	} else {
-		fmt.Println("近來redis")
 		pcpInRoomWithAvatarMap := make(map[string]string)
 		var pcpInRoomWithAvatar2 []PcpInRoomWithAvatar
 		for i := 0; i < len(redisData); i += 2 {

@@ -89,14 +89,8 @@ func createOrGetRoom(uuid string) (string, *w.Room) {
 
 	hub := chat.NewHub()
 	pcphub := chat.NewPcpHub()
-	// fmt.Println("進來測試一下hub")
-	// fmt.Println(hub)
-	// fmt.Println(pcphub)
-	// 創建一個指向 webrtc.Peers 結構體的指標，建立新的Peers結構體，並返為地址給指標變數p
+
 	p := &w.Peers{}
-	// var p *w.Peers = &w.Peers{}
-	// fmt.Printf("p的資料型態是%T\n", p)
-	// fmt.Println(p)
 
 	p.TrackLocals = make(map[string]*webrtc.TrackLocalStaticRTP)
 	room := &w.Room{
@@ -135,16 +129,13 @@ func roomViewerConn(c *websocket.Conn, p *w.Peers) {
 	defer ticker.Stop()
 	defer c.Close()
 
-	// ticker.C=> 建立定時器事件的channel
 	for range ticker.C {
-		// NextWriter返回一個用於寫入下一個消息的寫入器
-		// websocket.TextMessage代表數據類型為text
+
 		w, err := c.Conn.NextWriter(websocket.TextMessage)
 		if err != nil {
 			return
 		}
-		// viewer := fmt.Sprintf("%d", len(p.Connections))
-		// w.Write([]byte("{\"account\":\"dylan\",\"email\":\"dylan@gmail\",\"url\":\"https:google.com\",\"viewer\":\"" + viewer + "\"}"))
+
 		w.Write([]byte(fmt.Sprintf("%d", len(p.Connections))))
 	}
 }
@@ -156,8 +147,7 @@ func RoomPcpsWebsocket(c *websocket.Conn) {
 	}
 	w.PcpRoomsLock.Lock()
 	room := w.PcpRooms[uuid]
-	// fmt.Println("我在這個裡面")
-	// fmt.Println(room)
+
 	w.PcpRoomsLock.Unlock()
 	if room == nil {
 		return

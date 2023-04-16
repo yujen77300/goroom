@@ -1,6 +1,5 @@
 const exitButton = document.getElementById("exit-btn")
 const shareLinkBtn = document.getElementById("share-link-btn")
-// const shareScreenBtn = document.getElementById('share-btn')
 const videos = document.querySelector('#videos')
 let localVideo = document.querySelectorAll('.localVideo')
 let eachPeer = document.querySelectorAll('.each-peer')
@@ -29,7 +28,7 @@ exitButton.addEventListener("click", function () {
   window.location.href = "/member";
 });
 
-// ===================== 複製url =====================
+// ===================== url copy =====================
 shareLinkBtn.addEventListener("click", () => {
   copyURL()
 })
@@ -60,8 +59,7 @@ function copyURL() {
   });
 }
 
-// ===================== peer to peer連線 =====================
-// 按下允許連線
+// ===================== peer to peer =====================
 function connect(stream) {
   let pc = new RTCPeerConnection({
     iceServers: [{
@@ -88,21 +86,9 @@ function connect(stream) {
     ]
   })
 
-  // console.log("一開始的pc")
-  // console.log(pc)
   pcNow = pc
 
-  // 接收另一端傳遞過來的多媒體資訊(videoTrack ...等)
-  // 完成連線後，透過該事件能夠在發現遠端傳輸的多媒體檔案時觸發，來處理/接收多媒體數據
-  // As it turns out, MediaStreamTracks get a new ID assigned on the other side.MediaStreams however, keep their assigned IDs, so use those when doing AddTrack, and then use a DataChannel to send information about the stream based on its ID.
   pc.ontrack = function (event) {
-    // console.log("ontrack裡面的event")
-    // console.log(event)
-    // console.log(event.streams)
-    // console.log(event.streams[0])
-    // event => RTCTrackEvent
-    // RTCTrackEvent有個streams屬性，每個對像表示track所屬的media stream
-    // console.log(event.track)
 
     if (event.track.kind === 'audio') {
       return
@@ -112,7 +98,6 @@ function connect(stream) {
     eachPeerTag.className = "each-peer"
     eachPeerTag.id = event.streams[0].id
     let el = document.createElement(event.track.kind)
-    // event.streams[0] 為MediaStream
 
     el.srcObject = event.streams[0]
 
@@ -147,20 +132,18 @@ function connect(stream) {
     }
 
     event.streams[0].onremovetrack = ({
-      track  //MediaStreamTrack
+      track  
     }) => {
 
       if (el.parentNode) {
         el.parentNode.remove()
       }
-      // 更新上線者清單相關websocket=========================================
-      if (track.kind == "video") {
 
+      if (track.kind == "video") {
         let streamRemove = {}
         streamRemove["streamId"] = event.streams[0].id
         pcpsWs.send(JSON.stringify({ event: "leave", data: JSON.stringify(streamRemove) }))
       }
-      // // 更新上線者清單相關websocket=========================================
 
       let localVideo = document.querySelectorAll('.localVideo')
       usersAmount = localVideo.length
@@ -168,34 +151,24 @@ function connect(stream) {
     }
 
   }
-  // 透過(addTrack)載入多媒體資訊(ex: videoTrack, audioTrack ...)
-  // 將stream track 與peer connection 透過addTrack()關聯起來，之後建立連結才能進行傳輸
-  // 加入MediaStream object到RTCPeerconnection (pc) 中。
-  // console.log("載入資訊前知道stream")
-  // console.log(stream)
-  // console.log(stream.getTracks())
+
   stream.getTracks().forEach(track => pc.addTrack(track, stream))
 
   let ws = new WebSocket(RoomWebsocketAddr)
-  // console.log("建立新的ws")
-  // console.log(ws)
-  // 當查找到相對應的遠端端口時會做onicecandidate，也就是透過callback function將icecandidate 傳輸給 remote peers。進行網路資訊的共享。
+
   pc.onicecandidate = e => {
-    // console.log("近來onicecandidate")
-    // console.log(e)
+
     if (!e.candidate) {
-      // console.log("如果沒有就停止")
       return
     }
-    // console.log("ws發送訊息")
-    // console.log(e.candidate)
+
     ws.send(JSON.stringify({
       event: 'candidate',
       data: JSON.stringify(e.candidate)
     }))
+
   }
 
-  // 更新上線者清單相關websocket=========================================
   let pcpsWs = new WebSocket(PcpsWebsocketAddr)
   handWs = pcpsWs
   pcpsWs.onopen = () => {
@@ -272,7 +245,7 @@ function connect(stream) {
   pcpsWs.onerror = function (e) {
     console.log("error: " + e.data)
   }
-  // signal server相關websocket=========================================
+
 
   ws.addEventListener('error', function (event) {
     console.log('error: ', event)
@@ -280,7 +253,6 @@ function connect(stream) {
 
   ws.onclose = function (e) {
     console.log("websocket has closed結束")
-    // 關閉與 WebSocket 相關的 PeerConnection（pc.close()），並將設為null；
     pc.close();
     pc = null;
     pr = document.getElementById('videos')
@@ -291,7 +263,7 @@ function connect(stream) {
       connect(stream);
     }, 1000);
   }
-  // 收到 Server 發來的訊息時觸發 webrtc/peers.go 、room.go
+
   ws.onmessage = function (e) {
     let msg = JSON.parse(e.data)
     if (!msg) {
@@ -313,15 +285,14 @@ function connect(stream) {
           }))
         })
         return
-      // onicecandidate
+
       case 'candidate':
         let candidate = JSON.parse(msg.data)
-        // console.log("如果是candidate印出candidate")
-        // console.log(candidate)
+
         if (!candidate) {
           return console.log('failed to parse candidate')
         }
-        // 當 remotePeer 藉由 Signaling channel 接收到由 localPeer 傳來的 ICE candidate 時，利用addIceCandidate將其丟給瀏覽器解析與匹配，看看這個ICE candidate 所提供的連線方式適不適合。
+
         pc.addIceCandidate(candidate)
     }
   }
@@ -331,7 +302,6 @@ function connect(stream) {
   }
 }
 
-// 這是最一開始
 function peerConnect(defaultSet) {
   getUserAvatar()
   if (defaultSet == true) {
@@ -344,9 +314,6 @@ function peerConnect(defaultSet) {
     })
       .then(stream => {
         document.getElementById('localVideo').srcObject = stream
-        // console.log("最最一開始")
-        // console.log(stream)
-        // console.log(stream.getTracks())
         let eachPeer = document.querySelector('.each-peer')
         yourHand = eachPeer.children[1]
         yourHand.style.top = `30px`
@@ -359,6 +326,7 @@ function peerConnect(defaultSet) {
         getUserName()
       }).catch(err => console.log(err))
   } else {
+
     //  ===================== Test section =====================
     const testVideoClosedBtn = document.getElementById('test-video-closed-btn')
     const testVideoOpenedBtn = document.getElementById('test-video-opened-btn')
@@ -446,7 +414,6 @@ function audioVideoDefault(audioDefault, videoDefault) {
     audioClosedBtn.style.display = "block"
   }
   if (videoDefault == true) {
-    // stream.getVideoTracks()[0].enabled = true;
     startVideo(streamNow)
     videoClosedBtn.style.display = "none"
     videoOpenedBtn.style.display = "block"
@@ -461,11 +428,9 @@ function audioVideoDefault(audioDefault, videoDefault) {
 
 
 // ===================== turn of/off microphone and camera =====================
-// 開關鏡頭的函數
 const videoOpenedBtn = document.getElementById('video-opened-btn')
 const videoClosedBtn = document.getElementById('video-closed-btn')
 videoOpenedBtn.addEventListener("click", () => {
-  // streamNow.getVideoTracks()[0].stop()
   stopVideo(streamNow);
   streamOutput.video = false;
   videoOpenedBtn.style.display = "none"
@@ -604,62 +569,47 @@ startRecord.addEventListener('click', function () {
   })
 });
 
-
 stopRecord.addEventListener('click', function () {
   startRecord.style.display = "flex"
   stopRecord.style.display = "none"
   mediaRecorder.stop();
 })
 
-// ===================== 人數切版 =====================
+// ===================== layout =====================
 function peerSize(usersAmount, localVideo) {
   if (usersAmount === 1) {
     localVideo[0].style.width = "1140px"
     eachPeer[0].style.width = "1140px"
     let videoWidth = (1160 * 9) / 16
     eachPeer[0].style.height = `${videoWidth}px`
-    // videoClosedAvatar.style.bottom = "-220px"
-    // userName.style.bottom = `-${videoWidth - 60}px`
     userName.style.bottom = `30px`
     videos.style.cssText = "display:flex;justify-content:center;align-items:center;"
   } else if (usersAmount === 2) {
     let eachPeer = document.querySelectorAll('.each-peer')
     let userName = document.querySelectorAll('.user-name')
     let raiseYellowHand = document.querySelectorAll('.raise-yellow-hand')
-    localVideo[0].style.width = "565px"
-    localVideo[1].style.width = "565px"
-    eachPeer[0].style.width = "565px"
-    eachPeer[1].style.width = "565px"
     let videoWidth = (565 * 9) / 16
-    eachPeer[0].style.height = `${videoWidth}px`
-    eachPeer[1].style.height = `${videoWidth}px`
-    // videoClosedAvatar.style.bottom = "-75px"
-    userName[0].style.bottom = `10px`
-    userName[1].style.bottom = `10px`
-    raiseYellowHand[0].style.top = `10px`
-    raiseYellowHand[1].style.top = `10px`
+    for (let i = 0; i < usersAmount; i++) {
+      localVideo[i].style.width = "565px"
+      eachPeer[i].style.width = "565px"
+      eachPeer[i].style.height = `${videoWidth}px`
+      userName[i].style.bottom = `10px`
+      raiseYellowHand[i].style.top = `10px`
+    }
     videos.style.display = "flex"
     videos.style.gap = "10px"
   } else if (usersAmount === 3) {
     let eachPeer = document.querySelectorAll('.each-peer')
     let userName = document.querySelectorAll('.user-name')
     let raiseYellowHand = document.querySelectorAll('.raise-yellow-hand')
-    localVideo[0].style.width = "565px"
-    localVideo[1].style.width = "565px"
-    localVideo[2].style.width = "565px"
-    eachPeer[0].style.width = "565px"
-    eachPeer[1].style.width = "565px"
-    eachPeer[2].style.width = "565px"
     let videoWidth = (565 * 9) / 16
-    eachPeer[0].style.height = `${videoWidth}px`
-    eachPeer[1].style.height = `${videoWidth}px`
-    eachPeer[2].style.height = `${videoWidth}px`
-    userName[0].style.bottom = `10px`
-    userName[1].style.bottom = `10px`
-    userName[2].style.bottom = `10px`
-    raiseYellowHand[0].style.top = `10px`
-    raiseYellowHand[1].style.top = `10px`
-    raiseYellowHand[2].style.top = `10px`
+    for (let i = 0; i < usersAmount; i++) {
+      localVideo[i].style.width = "565px"
+      eachPeer[i].style.width = "565px"
+      eachPeer[i].style.height = `${videoWidth}px`
+      userName[i].style.bottom = `10px`
+      raiseYellowHand[i].style.top = `10px`
+    }
     videos.style.display = "flex"
     videos.style.flexWrap = "wrap"
     videos.style.gap = "10px"
@@ -667,27 +617,14 @@ function peerSize(usersAmount, localVideo) {
     let eachPeer = document.querySelectorAll('.each-peer')
     let userName = document.querySelectorAll('.user-name')
     let raiseYellowHand = document.querySelectorAll('.raise-yellow-hand')
-    localVideo[0].style.width = "565px"
-    localVideo[1].style.width = "565px"
-    localVideo[2].style.width = "565px"
-    localVideo[3].style.width = "565px"
-    eachPeer[0].style.width = "565px"
-    eachPeer[1].style.width = "565px"
-    eachPeer[2].style.width = "565px"
-    eachPeer[3].style.width = "565px"
     let videoWidth = (565 * 9) / 16
-    eachPeer[0].style.height = `${videoWidth}px`
-    eachPeer[1].style.height = `${videoWidth}px`
-    eachPeer[2].style.height = `${videoWidth}px`
-    eachPeer[3].style.height = `${videoWidth}px`
-    userName[0].style.bottom = `10px`
-    userName[1].style.bottom = `10px`
-    userName[2].style.bottom = `10px`
-    userName[3].style.bottom = `10px`
-    raiseYellowHand[0].style.top = `10px`
-    raiseYellowHand[1].style.top = `10px`
-    raiseYellowHand[2].style.top = `10px`
-    raiseYellowHand[3].style.top = `10px`
+    for (let i = 0; i < usersAmount; i++) {
+      localVideo[i].style.width = "565px"
+      eachPeer[i].style.width = "565px"
+      eachPeer[i].style.height = `${videoWidth}px`
+      userName[i].style.bottom = `10px`
+      raiseYellowHand[i].style.top = `10px`
+    }
     videos.style.display = "flex"
     videos.style.flexWrap = "wrap"
     videos.style.gap = "10px"
@@ -700,7 +637,7 @@ function peerSize(usersAmount, localVideo) {
       localVideo[i].style.width = "373px"
       eachPeer[i].style.width = "373px"
       eachPeer[i].style.height = `${videoWidth}px`
-      userName[i].style.bottom = `-${videoWidth - 60}px`
+      userName[i].style.bottom = `10px`
       raiseYellowHand[i].style.top = `10px`
     }
     videos.style.display = "flex"
@@ -713,8 +650,9 @@ function peerSize(usersAmount, localVideo) {
       localVideo[i].style.width = "277px"
       eachPeer[i].style.width = "277px"
       eachPeer[i].style.height = `${videoWidth}px`
+      userName[i].style.bottom = `10px`
+      raiseYellowHand[i].style.top = `10px`
     }
-    // userName.style.bottom = `-${videoWidth - 60}px`
     videos.style.display = "flex"
     videos.style.flexWrap = "wrap"
     videos.style.gap = "10px"
@@ -725,8 +663,9 @@ function peerSize(usersAmount, localVideo) {
       localVideo[i].style.width = "220px"
       eachPeer[i].style.width = "220px"
       eachPeer[i].style.height = `${videoWidth}px`
+      userName[i].style.bottom = `10px`
+      raiseYellowHand[i].style.top = `10px`
     }
-    // userName.style.bottom = `-${videoWidth - 60}px`
     videos.style.display = "flex"
     videos.style.flexWrap = "wrap"
     videos.style.gap = "10px"
@@ -737,36 +676,14 @@ function peerSize(usersAmount, localVideo) {
       localVideo[i].style.width = "181px"
       eachPeer[i].style.width = "181px"
       eachPeer[i].style.height = `${videoWidth}px`
+      userName[i].style.bottom = `10px`
+      raiseYellowHand[i].style.top = `10px`
     }
-    // userName.style.bottom = `-${videoWidth - 60}px`
+
     videos.style.display = "flex"
     videos.style.flexWrap = "wrap"
     videos.style.gap = "10px"
-  } else if (usersAmount > 24 && usersAmount <= 28) {
-    let eachPeer = document.querySelectorAll('.each-peer')
-    let videoWidth = (154 * 9) / 16
-    for (let i = 0; i < usersAmount; i++) {
-      localVideo[i].style.width = "154px"
-      eachPeer[i].style.width = "154px"
-      eachPeer[i].style.height = `${videoWidth}px`
-    }
-    // userName.style.bottom = `-${videoWidth - 60}px`
-    videos.style.display = "flex"
-    videos.style.flexWrap = "wrap"
-    videos.style.gap = "10px"
-  } else if (usersAmount > 29) {
-    let eachPeer = document.querySelectorAll('.each-peer')
-    let videoWidth = (133 * 9) / 16
-    for (let i = 0; i < usersAmount; i++) {
-      localVideo[i].style.width = "133px"
-      eachPeer[i].style.width = "133px"
-      eachPeer[i].style.height = `${videoWidth}px`
-    }
-    // userName.style.bottom = `-${videoWidth - 60}px`
-    videos.style.display = "flex"
-    videos.style.flexWrap = "wrap"
-    videos.style.gap = "10px"
-  }
+  } 
 }
 
 // ===================== Async function =====================
@@ -854,8 +771,6 @@ async function getAllPcpInRoom(uuid, streamId) {
     let response = await fetch(url, options);
     let result = await response.json();
     if (response.status === 200) {
-      // console.log(result.allPcps) //會取得不同的array
-
       let existPcpList = []
       result.allPcps.forEach(each => {
         if (each.pcp_stream_url !== `${streamId}`) {
@@ -885,7 +800,6 @@ async function getAllPcpInRoom(uuid, streamId) {
   }
 }
 
-
 async function getPcpInfo(uuid, streamId, newUserName) {
   let url = `/api/pcp/:${uuid}/:${streamId}`
   let options = {
@@ -903,6 +817,8 @@ async function getPcpInfo(uuid, streamId, newUserName) {
 }
 
 
+
+// ===================== video record =====================
 var mediaRecorder;
 var chunks = [];
 

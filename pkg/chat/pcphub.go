@@ -1,7 +1,5 @@
 package chat
 
-
-
 type PcpHub struct {
 	clients    map[*PcpClient]bool
 	broadcast  chan []byte

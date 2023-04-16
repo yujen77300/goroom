@@ -6,10 +6,8 @@ import (
 	"fmt"
 	"log"
 	"time"
-
 	"github.com/fasthttp/websocket"
-	// "github.com/google/uuid"
-	// "github.com/yujen77300/goroom/internal/models"
+
 )
 
 const (
@@ -37,13 +35,11 @@ type Client struct {
 
 func (c *Client) readPump() {
 	defer func() {
-		// 送到Run()這個receiver function的資訊
 		c.Hub.unregister <- c
 		c.Conn.Close()
 	}()
 	c.Conn.SetReadLimit(maxMessageSize)
 	c.Conn.SetReadDeadline(time.Now().Add(pongWait))
-	// 如果有收到pong重新設定
 	c.Conn.SetPongHandler(func(string) error { c.Conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 	for {
 		_, message, err := c.Conn.ReadMessage()
@@ -54,8 +50,7 @@ func (c *Client) readPump() {
 			break
 		}
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
-		// message = ([]byte("{\"account\":\"dylan\",\"message\":\"你只能打這樣啦\"}"))
-		// 送到Run()這個receiver function的資訊
+
 		c.Hub.broadcast <- message
 	}
 }
@@ -67,17 +62,9 @@ func (c *Client) writeAndStorePump(roomUuid string) {
 		c.Conn.Close()
 	}()
 
-	// uuidObj, err := uuid.NewRandom()
-	// participantuuid := uuidObj.String()[0:6]
-	// fmt.Println(err)
-	// fmt.Println("個人代號")
-	// fmt.Println(participantuuid)
-
-	// userIteration := 1
-
 	for {
 		select {
-		// 接受 Run()這個receiver function的資訊
+
 		case message, ok := <-c.Send:
 			c.Conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
@@ -114,11 +101,10 @@ func (c *Client) writeAndStorePump(roomUuid string) {
 	}
 }
 
-// 建立一個websocket連接的客戶端，與Hub進行通訊。
+
 func PeerChatConn(c *websocket.Conn, hub *Hub, roomUuid string) {
 	client := &Client{Hub: hub, Conn: c, Send: make(chan []byte, 256)}
 
-	// 送到Run()這個receiver function的資訊
 	client.Hub.register <- client
 
 	go client.writeAndStorePump(roomUuid)
